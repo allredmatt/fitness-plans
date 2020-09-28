@@ -1,0 +1,21 @@
+type User {
+  UserId: String!
+  fooddiary: [FoodDiary] @relation
+  fitnessplan: [FitPlan] @relation
+}
+
+type FoodDiary {
+  UserId: User!
+  type: String!
+  time: Date!
+  details: String
+}
+
+type FitPlan {
+  UserId: User!
+  date: String
+}
+
+type Query {
+  findId(UserId: String!): User!
+}

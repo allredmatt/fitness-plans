@@ -1,65 +1,46 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head       from 'next/head'
+import TopBar                   from './components/topbar.js';
+import { makeStyles }           from '@material-ui/core/styles';
+import Card                     from '@material-ui/core/Card';
+import CardContent              from '@material-ui/core/CardContent';
+import Typography               from '@material-ui/core/Typography';
+import CardMedia                from '@material-ui/core/CardMedia';
 
-export default function Home() {
+const useStyles = makeStyles({
+  container:{
+    width: '92vw',
+    margin: '3vh 3vw',
+    height: '85vh',
+  },
+  bannerImage:{
+    height: 300,
+  }
+});
+
+export default function SimpleCard() {
+  const classes = useStyles();
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div > 
+      <Head>Millers</Head>
+        <TopBar userId={false}/>
+        <Card className={classes.container}>
+        <CardContent>
+        <CardMedia
+            className={classes.bannerImage}
+            image="https://sites.psu.edu/rgaringernutr360/files/2017/03/fitnessnutrition-142nigo.jpg"
+            title="Weights and fruit"
+            />
+            <Typography gutterBottom variant="h3" component="h1" color='secondary'>
+                Millers Fitness and Nutrition
+            </Typography>
+            <Typography variant="body1" color="textPrimary" component="p">
+                Some rubbish about what you do and how great you are.
+                <br /><br />
+                <i>"Excellent personalised service, really helped me feel less hungry. Came up with some excellent ideas of how to exercise with kids."</i>
+            </Typography>
+        </CardContent>
+        </Card>
     </div>
-  )
+  );
 }
