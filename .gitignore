@@ -34,4 +34,4 @@ yarn-error.log*
 .vercel
 
 # secure info
-#fauna.js
+fauna.js
