@@ -1,12 +1,12 @@
 const { GraphQLClient } = require('graphql-request')
 //import {FAUNA_KEY} from '../../fauna.js'
 const endpoint = 'https://graphql.fauna.com/graphql'
+const FAUNA_KEY = process.env.FAUNA_KEY
 const graphQLClient = new GraphQLClient(endpoint, {
   headers: {
     authorization: `Bearer ${FAUNA_KEY}`,
   },
 });
-const FAUNA_KEY = process.env.FAUNA_KEY
 
 export default (req, res) => {
 
