@@ -61,8 +61,56 @@ export default (req, res) => {
 
     return data
   }
+
+  async function modifyFoodData(foodData) {
   
-  if (req.method === 'GET') {
+    const mutation = /* GraphQL */ `
+    mutation updateFoodDiary($id: ID!, $type: String!, $time: Int!, $details: String!) {
+        updateFoodDiary(
+            id: $id
+            data:{
+                type: $type,
+                time: $time,
+                details: $details,
+            }
+        ) {
+        _id
+        }
+      }
+    `
+    const variables = {
+    "id": foodData.ElementId,
+    "type": foodData.type,
+    "time": foodData.time,
+    "details": foodData.details
+    }
+    const data = await graphQLClient.request(mutation, variables);
+
+    return data
+  }
+
+  async function deleteFoodData(id) {
+  
+    const mutation = /* GraphQL */ `
+    mutation deleteFoodDiary($id: ID!) {
+        deleteFoodDiary(
+            id: $id
+        ) {
+        _id
+        }
+      }
+    `
+    const variables = {
+    "id": id
+    }
+    
+    const data = await graphQLClient.request(mutation, variables);
+
+    return data
+  }
+
+  switch(req.method) {
+  case 'GET':
       if(req.query?.id != "null") {
         fetchUserData(req.query?.id)
           .then(() => {
@@ -77,12 +125,25 @@ export default (req, res) => {
         res.json({error: "No valid UserId sent"})
         res.statusCode = 400
       }
-  } else if (req.method === 'POST') {
+    break;
+  case 'POST':
     sendFoodData(req.body)
     .then((data) => res.status(200).json({id: data.createFoodDiary._id}))
     .catch((data) => res.status(400).json({error: data}))
-
-  } else {
+    break;
+  case 'PUT':
+    console.log("PUT: ", req.body)
+    modifyFoodData(req.body)
+    .then((data) => res.status(200).json({id: data.updateFoodDiary._id}))
+    .catch((data) => res.status(400).json({error: data}))
+    break
+  case 'DELETE':
+    console.log("Delete: ", req.body)
+    deleteFoodData(req.body.DeleteId)
+    .then((data) => res.status(200).json({id: data.deleteFoodDiary._id}))
+    .catch((data) => res.status(400).json({error: data}))
+    break;
+  default:
     console.log("Other of type:", req.method)
     res.statusCode = 400
   }
