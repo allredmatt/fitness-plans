@@ -22,10 +22,9 @@ import DeleteForeverIcon        from '@material-ui/icons/DeleteForever';
 import ListItemSecondaryAction  from '@material-ui/core/ListItemSecondaryAction';
 import EditIcon                 from '@material-ui/icons/Edit';
 import IconButton               from '@material-ui/core/IconButton';
-import { FormDialog }           from './FormDialog';
+import FormDialog               from './formDialog';
 import Button                   from '@material-ui/core/Button';
 import Snackbar                 from '@material-ui/core/Snackbar';
-import CloseIcon                from '@material-ui/icons/Close';
 
 
 export const useStyles = makeStyles((theme) => ({

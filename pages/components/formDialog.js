@@ -11,7 +11,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useStyles } from './foodCalendar';
 
-export default function FormDialog({ open, setOpen, saveFormData, selectedDate, setSelectedDate, currentDatesData, setCurrentDatesData, userId, editElementId, setEditElementId }) {
+export default function FormDialog ({ open, setOpen, saveFormData, selectedDate, setSelectedDate, currentDatesData, setCurrentDatesData, userId, editElementId, setEditElementId }) {
 
     const [formData, setFormData] = useState({ type: '', time: '', details: '' });
     const classes = useStyles();
