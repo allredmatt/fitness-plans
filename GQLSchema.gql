@@ -7,13 +7,22 @@ type User {
 type FoodDiary {
   UserId: User!
   type: String!
-  time: Date!
+  time: Int!
   details: String
 }
 
 type FitPlan {
   UserId: User!
-  date: String
+  isCurrent: Boolean!
+  sessionTitle: String!
+  cardInfo: [CardInfo] @relation(name: "Plan_details")
+}
+
+type CardInfo {
+  FitPlanId: [FitPlan]! @relation(name: "Plan_details")
+  cardTitle: String!
+  userInputData: String
+  listOfActivities: [String]!
 }
 
 type Query {

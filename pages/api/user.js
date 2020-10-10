@@ -1,5 +1,4 @@
 const { GraphQLClient } = require('graphql-request')
-//import {FAUNA_KEY} from '../../fauna.js'
 const endpoint = 'https://graphql.fauna.com/graphql'
 const FAUNA_KEY = process.env.FAUNA_KEY
 const graphQLClient = new GraphQLClient(endpoint, {
@@ -25,6 +24,21 @@ export default (req, res) => {
             type
             time
             details
+          }
+        }
+        fitnessplan{
+          data{
+            _id
+            isCurrent
+            sessionTitle
+            cardInfo {
+              data{
+                _id
+                cardTitle
+                userInputDataType
+                listOfActivities
+              }
+            }
           }
         }
       }
@@ -126,23 +140,27 @@ export default (req, res) => {
         res.statusCode = 400
       }
     break;
+
   case 'POST':
     sendFoodData(req.body)
     .then((data) => res.status(200).json({id: data.createFoodDiary._id}))
     .catch((data) => res.status(400).json({error: data}))
     break;
+
   case 'PUT':
     console.log("PUT: ", req.body)
     modifyFoodData(req.body)
     .then((data) => res.status(200).json({id: data.updateFoodDiary._id}))
     .catch((data) => res.status(400).json({error: data}))
-    break
+    break;
+
   case 'DELETE':
     console.log("Delete: ", req.body)
     deleteFoodData(req.body.DeleteId)
     .then((data) => res.status(200).json({id: data.deleteFoodDiary._id}))
     .catch((data) => res.status(400).json({error: data}))
     break;
+
   default:
     console.log("Other of type:", req.method)
     res.statusCode = 400

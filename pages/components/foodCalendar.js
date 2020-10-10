@@ -29,16 +29,15 @@ import Snackbar                 from '@material-ui/core/Snackbar';
 
 export const useStyles = makeStyles((theme) => ({
     card: {
-        width: '100%',
-        maxWidth: 600,
+        width: '98%',
         backgroundColor: theme.palette.background.paper,
+        marginBottom: theme.spacing(1)
     },
     actions: {
         paddingLeft: theme.spacing(1),
     },
     root: {
-        width: '100%',
-        maxWidth: 600,
+        width: '98%',
         backgroundColor: theme.palette.background.paper,
       },
     fab: {

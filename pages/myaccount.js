@@ -1,6 +1,6 @@
 import TopBar                   from './components/topbar.js';
 import { useState, useEffect }  from 'react';
-import { makeStyles }           from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card                     from '@material-ui/core/Card';
 import CardContent              from '@material-ui/core/CardContent';
 import Typography               from '@material-ui/core/Typography';
@@ -11,16 +11,17 @@ import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded';
 import Switch                   from '@material-ui/core/Switch';
 import FormControlLabel         from '@material-ui/core/FormControlLabel';
 import FoodCalendar             from './components/foodCalendar.js';
+import FitnessPlan              from './components/fitnessPlan.js';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container:{
     minWidth: 400,
-    maxWidth: '92vw',
+    maxWidth: '98%',
     margin: '3vh 3vw',
   },
   headCard: {
-    width: '95vw',
-    marginBottom: '2vh',
+    width: '98%',
+    marginBottom: theme.spacing(1)
   },
   bannerImage: {
     height: 150,
@@ -32,7 +33,7 @@ const useStyles = makeStyles({
   switch: {
     left: 20,
   }
-});
+}));
 
 export default function UserPage() {
   
@@ -42,7 +43,7 @@ export default function UserPage() {
   const [textBoxValue, setTextBoxValue] = useState('');
   const [rememberId, setRememberId] = useState(false);
   const [foodCalenderData, setFoodCalenderData] = useState();
-  const [fitnessProgData, setFitnessProgData] = useState('');
+  const [fitnessProgData, setFitnessProgData] = useState([]);
   const [accountDetailsPage, setAccountDetailsPage] = useState(
                                                                 <Card className={classes.headCard}>
                                                                 <CardContent>
@@ -68,6 +69,15 @@ export default function UserPage() {
         setUserId({...userId, id: data.findId?._id})
         let formattedFoodData = data.findId?.fooddiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
         setFoodCalenderData(formattedFoodData)
+        let formattedFitnessData = data.findId?.fitnessplan?.data.map((entry) => {
+          return(
+            {
+              id: entry._id, 
+              isCurrent: entry.isCurrent, 
+              sessionTitle: entry.sessionTitle,
+              cardInfo: entry.cardInfo.data
+            })})
+        setFitnessProgData(formattedFitnessData)
       })
       .catch(error => console.log(error))
   }, [userId.name])
@@ -79,10 +89,21 @@ export default function UserPage() {
     setUserId({...userId, name: textBoxValue})
   };
 
+  //<FitnessPlan 
+  //fitnessData={fitnessProgData}
+  ///>
   useEffect (()=> {
     //If foodData changes then re-render <FoodCalender /> page
     if(userId.id != null){
-      setAccountDetailsPage(<FoodCalendar userId={userId.id} foodData={foodCalenderData} setFoodData={setFoodCalenderData }/>)
+      setAccountDetailsPage(
+        <div>
+        <FoodCalendar u
+        serId={userId.id} 
+        foodData={foodCalenderData} 
+        setFoodData={setFoodCalenderData}
+        />
+        </div> 
+      )
     }
   }, [foodCalenderData])
 

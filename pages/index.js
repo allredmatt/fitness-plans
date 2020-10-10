@@ -8,9 +8,8 @@ import CardMedia                from '@material-ui/core/CardMedia';
 
 const useStyles = makeStyles({
   container:{
-    width: '92vw',
+    width: '98%',
     margin: '3vh 3vw',
-    height: '85vh',
   },
   bannerImage:{
     height: 300,

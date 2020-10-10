@@ -1,6 +1,6 @@
 import { useState }                       from 'react';
 import Link                               from "next/link";
-import { makeStyles, createMuiTheme }     from '@material-ui/core/styles';
+import { makeStyles}                      from '@material-ui/core/styles';
 import AppBar                             from '@material-ui/core/AppBar';
 import Toolbar                            from '@material-ui/core/Toolbar';
 import Typography                         from '@material-ui/core/Typography';
@@ -9,22 +9,11 @@ import Menu                               from '@material-ui/core/Menu';
 import MenuItem                           from '@material-ui/core/MenuItem';
 import Divider                            from '@material-ui/core/Divider';
 import MenuIcon                           from '@material-ui/icons/Menu';
-import { ThemeProvider }                  from "@material-ui/styles";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#3763db',
-    },
-    secondary: {
-      main: '#8637db',
-    },
-  },
-});
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      width: '100vw',
+      width: '100%',
       minWidth: 410,
     },
     menuButton: {
@@ -61,9 +50,6 @@ export default function TopBar({userId}) {
 
   return (
       <div className={classes.root}>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-      <ThemeProvider theme={theme}>
       <AppBar position="static">
           <Toolbar>
           <IconButton 
@@ -97,7 +83,6 @@ export default function TopBar({userId}) {
           </Link>
           </Toolbar>
       </AppBar>
-      </ThemeProvider>
       </div>
   );
 }
