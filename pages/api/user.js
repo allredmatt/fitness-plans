@@ -35,7 +35,7 @@ export default (req, res) => {
               data{
                 _id
                 cardTitle
-                userInputDataType
+                userInputData
                 listOfActivities
               }
             }
