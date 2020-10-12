@@ -117,7 +117,7 @@ export default function FormDialog ({ open, setOpen, saveFormData, selectedDate,
                 setFormData({ ...formData, type: "Training", details: currentDatesData.training.details, id: currentDatesData.training.id });
                 setEditElementId(currentDatesData.training.id);
             } else {
-                setFormData({ ...formData, type: "Notes", details: "" });
+                setFormData({ ...formData, type: "Training", details: "" });
             }
         } else {
             setFormData({ ...formData, type: newType });

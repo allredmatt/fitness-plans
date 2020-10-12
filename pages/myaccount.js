@@ -97,8 +97,8 @@ export default function UserPage() {
     if(userId.id != null){
       setAccountDetailsPage(
         <div>
-        <FoodCalendar u
-        serId={userId.id} 
+        <FoodCalendar 
+        userId={userId.id} 
         foodData={foodCalenderData} 
         setFoodData={setFoodCalenderData}
         />
