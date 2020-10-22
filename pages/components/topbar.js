@@ -1,15 +1,23 @@
-import { useState }                       from 'react';
+import { useState, useContext }           from 'react';
 import Link                               from "next/link";
 import { makeStyles}                      from '@material-ui/core/styles';
 import AppBar                             from '@material-ui/core/AppBar';
 import Toolbar                            from '@material-ui/core/Toolbar';
 import Typography                         from '@material-ui/core/Typography';
 import IconButton                         from '@material-ui/core/IconButton';
-import Menu                               from '@material-ui/core/Menu';
-import MenuItem                           from '@material-ui/core/MenuItem';
+import Drawer                             from '@material-ui/core/Drawer';
+import ListItem                           from '@material-ui/core/ListItem';
+import ListItemText                       from '@material-ui/core/ListItemText';
+import ListItemIcon                       from '@material-ui/core/ListItemIcon';
+import List                               from '@material-ui/core/List';
 import Divider                            from '@material-ui/core/Divider';
 import MenuIcon                           from '@material-ui/icons/Menu';
-
+import { userContext }                    from '../context/checkUser'
+import HomeIcon                           from '@material-ui/icons/Home';
+import InfoIcon                           from '@material-ui/icons/Info';
+import FitnessCenterIcon                  from '@material-ui/icons/FitnessCenter';
+import ContactsIcon                       from '@material-ui/icons/Contacts';
+import PersonIcon                         from '@material-ui/icons/Person';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,56 +34,100 @@ const useStyles = makeStyles((theme) => ({
       msUserSelect: "none",      
       userSelect: "none",
     },
+    menu: {
+      width: 250
+    },
+    appBar:{
+      position: 'fixed'
+    }
 }));
 
-export default function TopBar({userId}) {
+export default function TopBar({scrollToRef}) {
 
-  const [anchorMenuEl, setAnchorMenuEl] = useState(null);
-  const [anchorLoginEl, setAnchorLoginEl] = useState(null);
+  const user = useContext(userContext)
+  let userLoggedIn = user.isLoggedIn
 
-  const handleMenuClick = (event) => {
-    setAnchorMenuEl(event.currentTarget);
-  };
-  const handleLoginClick = (event) => {
-    setAnchorLoginEl(event.currentTarget);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const handleMenuClick = () => {
+    setIsDrawerOpen(true);
   };
 
-  const handleCloseMenu = (event) => {
-    console.log(event.currentTarget.firstChild?.data);
-    setAnchorMenuEl(null);
-    setAnchorLoginEl(null);
+  const handleCloseMenu = () => {
+    setIsDrawerOpen(false);
   };
+
+  const handleListClick = (ref) => {
+    handleCloseMenu()
+    scrollToRef(ref)
+  }
+
+  const handleLogout = () => {
+    user.setUserName('')
+    localStorage.removeItem('UserId')
+  }
 
   const classes = useStyles();
 
   return (
       <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar className={classes.appBar}>
           <Toolbar>
           <IconButton 
             edge="start" 
             className={classes.menuButton} 
             color="inherit" 
-            aria-label="menu" 
+            aria-label="menu"
+            onClick={handleMenuClick}
             >
-              <MenuIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}/>
-              <Menu
-                  id="simple-menu"
-                  anchorEl={anchorMenuEl}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  keepMounted
-                  open={Boolean(anchorMenuEl)}
-                  onClose={handleCloseMenu}
-                >
-              <Link href="/signup"><MenuItem onClick={handleCloseMenu}>Sign Up</MenuItem></Link>
-              <Link href="/about"><MenuItem onClick={handleCloseMenu}>About Us</MenuItem></Link>
-              <Divider />
-              <Link href="/myaccount"><MenuItem onClick={handleCloseMenu}>User Area</MenuItem></Link>
-              </Menu>
-          </IconButton>
+              <MenuIcon aria-controls="simple-menu" aria-haspopup="true" />
+            </IconButton>
+            <Drawer
+                id="simple-menu"
+                anchor="left"
+                open={isDrawerOpen}
+                onClose={handleCloseMenu}
+              >
+            <div className={classes.menu}>
+              <List>
+                <Link href="/"><ListItem button onClick={handleCloseMenu}>
+                  <ListItemIcon><HomeIcon /></ListItemIcon>
+                  <ListItemText primary="Home" />
+                </ListItem></Link>
+                
+                {userLoggedIn ?
+                <div>
+                  <Divider />
+                  <Link href="/users/"><ListItem button onClick={handleCloseMenu}>Account Home</ListItem></Link>
+                  <Link href="/users/food"><ListItem button onClick={handleCloseMenu}><ListItemText primary="Food Diary" /></ListItem></Link>
+                  <Link href="/users/fitness"><ListItem button onClick={handleCloseMenu}><ListItemText primary="Fitness Plan" /></ListItem></Link>
+                  <Link href="/users/workouts"><ListItem button onClick={handleCloseMenu}><ListItemText primary="My Workouts" /></ListItem></Link>
+                  <ListItem button onClick={handleLogout}><ListItemText primary="Log Out" /></ListItem>
+                </div>
+                :
+                <div>
+                  <ListItem button onClick={() => handleListClick("about")}>
+                  <ListItemIcon><InfoIcon /></ListItemIcon>
+                    <ListItemText primary="About Us" />
+                  </ListItem>
+                  <ListItem button onClick={() => handleListClick("service")}>
+                    <ListItemIcon><FitnessCenterIcon /></ListItemIcon>
+                    <ListItemText primary="Our Services" />
+                  </ListItem>
+                  <ListItem button onClick={() => handleListClick("contact")}>
+                    <ListItemIcon><ContactsIcon /></ListItemIcon>
+                    <ListItemText primary="Contact Us" />
+                  </ListItem>
+                  <Divider />
+                  <Link href="/login"><ListItem button onClick={handleCloseMenu}>
+                    <ListItemIcon><PersonIcon /></ListItemIcon>
+                    <ListItemText primary="User Login" />
+                  </ListItem></Link>
+                </div>
+                }
+              </List>
+            </div>
+            </Drawer>
           <Link href="/">
             <Typography variant="h6" className={classes.title}>
               Millers Fitness and Nutrition
@@ -83,6 +135,7 @@ export default function TopBar({userId}) {
           </Link>
           </Toolbar>
       </AppBar>
+      <Toolbar />
       </div>
   );
 }

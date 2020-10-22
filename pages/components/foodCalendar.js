@@ -29,7 +29,7 @@ import Snackbar                 from '@material-ui/core/Snackbar';
 
 export const useStyles = makeStyles((theme) => ({
     card: {
-        width: '98%',
+        width: '100%',
         backgroundColor: theme.palette.background.paper,
         marginBottom: theme.spacing(1)
     },
@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
         paddingLeft: theme.spacing(1),
     },
     root: {
-        width: '98%',
+        width: '100%',
         backgroundColor: theme.palette.background.paper,
       },
     fab: {
@@ -132,7 +132,7 @@ export default function FoodCalendar ({userId, foodData, setFoodData}) {
         redirect: 'follow'
         };
     
-        fetch("/api/user", requestOptions)
+        fetch("/api/food", requestOptions)
             .then(setFoodData(foodData.filter((element) => element.id != id)))
             .catch(error => console.log('error', error));
         

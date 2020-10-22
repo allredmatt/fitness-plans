@@ -32,7 +32,7 @@ export default function FormDialog ({ open, setOpen, saveFormData, selectedDate,
                 redirect: 'follow'
             };
 
-            fetch("/api/user", requestOptions)
+            fetch("/api/food", requestOptions)
                 .then(response => response.text())
                 .then(result => JSON.parse(result))
                 .then((jsonData) => saveFormData({ ...formData, id: jsonData.id }))
@@ -47,7 +47,7 @@ export default function FormDialog ({ open, setOpen, saveFormData, selectedDate,
                 redirect: 'follow'
             };
 
-            fetch("/api/user", requestOptions)
+            fetch("/api/food", requestOptions)
                 .then(response => response.text())
                 .then(result => JSON.parse(result))
                 .then((jsonData) => saveFormData({ ...formData, id: jsonData.id }))

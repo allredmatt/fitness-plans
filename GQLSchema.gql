@@ -21,7 +21,8 @@ type FitPlan {
 type CardInfo {
   FitPlanId: [FitPlan]! @relation(name: "Plan_details")
   cardTitle: String!
-  userInputData: String
+  inputDataTypes: [String]
+  inputData: String
   listOfActivities: [String]!
 }
 
