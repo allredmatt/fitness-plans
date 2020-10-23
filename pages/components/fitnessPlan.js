@@ -20,7 +20,8 @@ import Button                   from '@material-ui/core/Button';
 import CheckCircleTwoToneIcon   from '@material-ui/icons/CheckCircleTwoTone';
 import CardActions              from '@material-ui/core/CardActions';
 import TextField                from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import InputAdornment           from '@material-ui/core/InputAdornment';
+import DataLog                    from './dataLog'
 
 
 
@@ -35,7 +36,8 @@ export default function FitnessPlan ({fitnessData}) {
             
         },
         paper: {
-            padding: theme.spacing(2),  
+            padding: theme.spacing(2),
+            marginBottom: theme.spacing(1)
         },
         root: {
             width: '100%',
@@ -91,12 +93,13 @@ export default function FitnessPlan ({fitnessData}) {
     
         if(filteredFitnessData) {
             const sessionId = filteredFitnessData.id
+            const sessionTitle = filteredFitnessData.shortTitle
             initUserInputData = filteredFitnessData.cardInfo?.map((element) => {
                 if (element.inputData === null) {
                     if(element.inputDataTypes.length === 0) {
-                        return {fitPlanId: sessionId, isSubmitted: false}
+                        return {fitPlanId: sessionId, isSubmitted: false, title: sessionTitle}
                     } else {
-                        let returnedObject = {fitPlanId: sessionId, isSubmitted: false}
+                        let returnedObject = {fitPlanId: sessionId, isSubmitted: false, title: sessionTitle}
                         element.inputDataTypes.forEach(unit => returnedObject[unit] = "")
                         return returnedObject
                     }
@@ -107,9 +110,9 @@ export default function FitnessPlan ({fitnessData}) {
                         return currentSessionData
                     } else {
                         if(element.inputDataTypes.length === 0) {
-                            return {fitPlanId: sessionId, isSubmitted: false}
+                            return {fitPlanId: sessionId, isSubmitted: false, title: sessionTitle}
                         } else {
-                            let returnedObject = {fitPlanId: sessionId, isSubmitted: false}
+                            let returnedObject = {fitPlanId: sessionId, isSubmitted: false, title: sessionTitle}
                             element.inputDataTypes.forEach(unit => returnedObject[unit] = "")
                             return returnedObject
                         }
@@ -309,6 +312,7 @@ export default function FitnessPlan ({fitnessData}) {
                         </CardContent>
                     </Card>
                 )}
+                    <DataLog fitnessData={[filteredFitnessData]} />
                 </div>
             </Paper>
         </div>)

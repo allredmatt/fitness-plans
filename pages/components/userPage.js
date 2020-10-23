@@ -12,7 +12,8 @@ import FormControlLabel                     from '@material-ui/core/FormControlL
 import FoodCalendar                         from './foodCalendar.js';
 import FitnessPlan                          from './fitnessPlan.js';
 import {userContext}                        from '../context/checkUser.js'
-import { EventRounded } from '@material-ui/icons';
+import DataLog                              from "./dataLog";
+import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   container:{
@@ -31,7 +32,11 @@ const useStyles = makeStyles((theme) => ({
   },
   switch: {
     left: 20,
-  }
+  },
+  paper: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(1)
+},
 }));
 
 export default function UserPage() {
@@ -68,6 +73,7 @@ export default function UserPage() {
               isCurrent: entry.isCurrent, 
               sessionTitle: entry.sessionTitle,
               cardInfo: entry.cardInfo.data,
+              shortTitle: entry.shortTitle
             })})
         setFitnessProgData(formattedFitnessData)
       })
@@ -81,9 +87,6 @@ export default function UserPage() {
     user.setUserName(textBoxValue)
   };
 
-  /*<FitnessPlan 
-          fitnessData={fitnessProgData}
-        />*/
   useEffect (()=> {
     //If foodData changes then re-render <FoodCalender /> page
     if(user.id != null){
@@ -94,8 +97,18 @@ export default function UserPage() {
           foodData={foodCalenderData} 
           setFoodData={setFoodCalenderData}
         />
-        
-        </div> 
+        <FitnessPlan 
+                fitnessData={fitnessProgData}
+              />
+        <Paper className={classes.paper}>
+        <Typography gutterBottom variant="h5" component="h2"> 
+          All your workout history
+        </Typography>
+        <DataLog 
+                fitnessData={fitnessProgData}
+              />
+        </Paper>
+        </div>
       )
     }
   }, [foodCalenderData, fitnessProgData])

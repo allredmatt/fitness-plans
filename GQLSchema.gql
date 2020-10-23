@@ -15,6 +15,7 @@ type FitPlan {
   UserId: User!
   isCurrent: Boolean!
   sessionTitle: String!
+  shortTitle: String!
   cardInfo: [CardInfo] @relation(name: "Plan_details")
 }
 

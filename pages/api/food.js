@@ -31,6 +31,7 @@ export default (req, res) => {
             _id
             isCurrent
             sessionTitle
+            shortTitle
             cardInfo {
               data{
                 _id
