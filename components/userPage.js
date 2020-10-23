@@ -120,8 +120,8 @@ export default function UserPage() {
       <CardContent>
       <CardMedia
           className={classes.bannerImage}
-          image="https://i0.wp.com/post.healthline.com/wp-content/uploads/2020/06/Fitness_Class_1296x728-header-1.jpg?w=1155&h=1528"
-          title="People squatting"
+          image="/gym.jpg"
+          title="Empty Gym"
           />
           <Typography gutterBottom variant="h5" component="h2">
               Your personal plan and nutrition details

@@ -98,10 +98,10 @@ export default function TopBar({scrollToRef}) {
                 {userLoggedIn ?
                 <div>
                   <Divider />
-                  <Link href="/users/"><ListItem button onClick={handleCloseMenu}>Account Home</ListItem></Link>
-                  <Link href="/users/food"><ListItem button onClick={handleCloseMenu}><ListItemText primary="Food Diary" /></ListItem></Link>
-                  <Link href="/users/fitness"><ListItem button onClick={handleCloseMenu}><ListItemText primary="Fitness Plan" /></ListItem></Link>
-                  <Link href="/users/workouts"><ListItem button onClick={handleCloseMenu}><ListItemText primary="My Workouts" /></ListItem></Link>
+                  <Link href="/login"><ListItem button onClick={handleCloseMenu}>Account Home</ListItem></Link>
+                  <Link href="/login"><ListItem button onClick={handleCloseMenu}><ListItemText primary="Food Diary" /></ListItem></Link>
+                  <Link href="/login"><ListItem button onClick={handleCloseMenu}><ListItemText primary="Fitness Plan" /></ListItem></Link>
+                  <Link href="/login"><ListItem button onClick={handleCloseMenu}><ListItemText primary="My Workouts" /></ListItem></Link>
                   <ListItem button onClick={handleLogout}><ListItemText primary="Log Out" /></ListItem>
                 </div>
                 :

@@ -1,5 +1,5 @@
-import Main                                       from './components/pageWrapper.js'
-import { HomeHeader, About, Services, Contacts }  from './components/homePage.js'
+import Main                                       from '../components/pageWrapper.js'
+import { HomeHeader, About, Services, Contacts }  from '../components/homePage.js'
 import { useRef } from 'react';
 
 export default function Index() {
