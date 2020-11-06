@@ -35,3 +35,4 @@ yarn-error.log*
 
 # secure info
 fauna.js
+/components/hash.js

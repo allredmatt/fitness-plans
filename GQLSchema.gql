@@ -29,4 +29,5 @@ type CardInfo {
 
 type Query {
   findId(UserId: String!): User!
+  allUsers: [User!]
 }
