@@ -107,8 +107,25 @@ export default function AuthedArea({userList, setUserList}) {
     const [fitnessProgData, setFitnessProgData] = useState()
     const [newUserDialog, setNewUserDialog] = useState({isOpen: false})
     const [isBackDropOpen, setIsBackDropOpen] = useState(false)
+    const [tabContents, setTabContents] = useState(null)
 
     const classes = useStyles();
+
+    useEffect(()=>{
+        switch(selectedTab) {
+            case 0:
+                setTabContents(<FoodDisplay foodData={foodCalenderData}/>)
+                break
+            case 1:
+                setTabContents(<FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData} userId={userDatabaseIdLookup(userSelectBox)}/>)
+                break
+            case 2:
+                setTabContents(<p>This page is work in progress.</p>)
+                break
+            default:
+                setTabContents(null)
+        }
+    }, [selectedTab, fitnessProgData])
 
     const handleSelectChange = (event) => {
         setIsBackDropOpen(true)
@@ -222,9 +239,7 @@ export default function AuthedArea({userList, setUserList}) {
                         </Grid>
                     </Paper>
                 </Grid>
-                {selectedTab === 0 && <FoodDisplay foodData={foodCalenderData}/>}
-                {selectedTab === 1 && <FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData} userId={userDatabaseIdLookup(userSelectBox)}/>}
-                {selectedTab === 2 && <p>This page is work in progress.</p>}
+                {tabContents}
             </Grid>
             <NewUserDialog />
         </div>

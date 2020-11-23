@@ -180,7 +180,8 @@ export default function FitDisplay ({fitData, setFitData, userId}) {
                 server.updateSession(currentFormInfo._id, currentFormInfo.sessionTitle, currentFormInfo.shortTitle, currentFormInfo.isCurrent)
                 setCurrentFormInfo({...currentFormInfo, hasChanged: false})
             }
-            
+            //Update main fitness state
+            handleUpdateMainFitnessState()
         }
         currentFormInfo.cardInfo.data.forEach((card, cardIndex) => {
             if(card.hasChanged){
@@ -194,12 +195,17 @@ export default function FitDisplay ({fitData, setFitData, userId}) {
                     server.updateCard(card._id, card.listOfActivities, card.inputDataTypes, card.cardTitle, card.inputData)
                     handleCardChange(false, cardIndex, "hasChanged", false)
                 }
+                //Update main fitness state
+                handleUpdateMainFitnessState()
+
             } else if (card.isExistingCard) {
                 //add relationship to server
                 let sessionId = resData? resData.id : currentFormInfo._id
                 console.log(sessionId)
                 server.addRelation(card._id, sessionId, card.listOfActivities, card.inputDataTypes, card.cardTitle, card.inputData)
                 handleCardChange(false, cardIndex, "isExistingCard", false)
+                //Update main fitness state
+                handleUpdateMainFitnessState()
             }
         })
         if(resData) {
@@ -229,6 +235,12 @@ export default function FitDisplay ({fitData, setFitData, userId}) {
                 console.log("Undefined property to try and delete")
         }
         handleDeleteClose()
+    }
+
+    const handleUpdateMainFitnessState = () => {
+        let tempFitData = [...fitData]
+        tempFitData[currentIndex] = currentFormInfo
+        setFitData(tempFitData)
     }
 
     function DeleteDialog () {
