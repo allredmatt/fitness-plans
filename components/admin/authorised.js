@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     rootDiv:{
         width:'99%',
         margin: '1.5% 1%',
+        minWidth: "1120px",
     },
     gridRoot: {
         flexGrow: 1,
@@ -59,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     },
     header: {
         width: "100%",
+        minWidth: "1120px",
         backgroundColor: theme.palette.primary
     },
     title: {
@@ -205,7 +207,7 @@ export default function AuthedArea({userList, setUserList}) {
             <Grid container className={classes.gridRoot} spacing={2}>
                 <Grid item xs={12} className={classes.gridItem}>
                     <Paper className={classes.gridPaperFlex}>
-                        <Grid item xs={8} className={classes.gridFlex}>
+                        <Grid item xs={7} className={classes.gridFlex}>
                         <Button 
                             variant="outlined"
                             color="primary"
@@ -224,7 +226,7 @@ export default function AuthedArea({userList, setUserList}) {
                             {userList.map((user) => <MenuItem key={user._id} value={user.UserId}>{user.UserId}</MenuItem>)}
                         </Select>
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={5}>
                         <Tabs
                             value={selectedTab}
                             onChange={(event, newValue) => setSelectedTab(newValue)}
