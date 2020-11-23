@@ -80,10 +80,8 @@ export default function DataLog ({fitnessData}) {
     } else {
     return ( 
         <div className={classes.root}>
-            <Card className={classes.card} key={"workout-history"}>
-                <CardContent >
                     <Typography gutterBottom variant="subtitle2" component="span">
-                        Previous workouts
+                        Charts from your data
                     </Typography>
                     {allUserData?.map((element) =>
                         <Accordion key={element.id}>
@@ -117,9 +115,7 @@ export default function DataLog ({fitnessData}) {
                             </div>
                         </AccordionDetails>
                         </Accordion>
-                        )} 
-                </CardContent>
-            </Card>          
+                        )}         
         </div>
     )
 }
@@ -131,7 +127,6 @@ function Chart ({data, units}) {
     let maxValue;
     units.forEach((unit) => {
         data.forEach((datum) => {
-            console.log(unit)
             maxValue = maxValue >= parseInt(datum[unit]) ? maxValue : parseInt(datum[unit])
         })
     })

@@ -1,6 +1,5 @@
 import Head                     from 'next/head'
-import TopBar                   from './topbar.js';
-import {useUser, userContext}   from '../context/checkUser.js';
+import { TopBar, AuthedTopBar } from './topbar';
 import { makeStyles }           from '@material-ui/core/styles';
 import Paper                    from '@material-ui/core/Paper';
 
@@ -16,17 +15,13 @@ const useStyles = makeStyles({
 export default function Main(props) {
   const classes = useStyles();
 
-  const user = useUser();
-
   return (
     <div > 
       <Head><title>Millers</title></Head>
-      <userContext.Provider value={user}>
-        <TopBar scrollToRef={props.scrollToRef}/>
+        {props.isAuthed === true? <AuthedTopBar logout={props.handleLogout} setUserAreaToDisplay={props.setUserAreaToDisplay}/> : <TopBar scrollToRef={props.scrollToRef}/>}
         <Paper className={classes.container} elevation={0}>
           {props.children}
         </Paper>
-      </userContext.Provider>
     </div>
   );
 }

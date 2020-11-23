@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext }  from 'react';
 import FoodDisplay                          from './foodDisplay'
 import FitDisplay                           from './fitnessDisplay'
+import { addUser }                          from './serverChanges'
 import { makeStyles, withStyles }           from '@material-ui/core/styles';
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
@@ -15,6 +16,15 @@ import MenuItem                             from '@material-ui/core/MenuItem';
 import InputBase                            from '@material-ui/core/InputBase';
 import Tabs                                 from '@material-ui/core/Tabs';
 import Tab                                  from '@material-ui/core/Tab';
+import Dialog                               from '@material-ui/core/Dialog';
+import DialogActions                        from '@material-ui/core/DialogActions';
+import DialogContent                        from '@material-ui/core/DialogContent';
+import DialogContentText                    from '@material-ui/core/DialogContentText';
+import DialogTitle                          from '@material-ui/core/DialogTitle';
+import AppBar                               from '@material-ui/core/AppBar';
+import Toolbar                              from '@material-ui/core/Toolbar';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     gridPaper:{
@@ -44,12 +54,28 @@ const useStyles = makeStyles((theme) => ({
     },
     typographyPadding: {
         paddingTop: theme.spacing(0.1),
-        paddingRight: theme.spacing(1)
-    }
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1)
+    },
+    header: {
+        width: "100%",
+        backgroundColor: theme.palette.primary
+    },
+    title: {
+        flexGrow: 1,
+        webkitUserSelect: "none",  
+        mozUserSelect: "none",    
+        msUserSelect: "none",      
+        userSelect: "none",
+      },
+      backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
 }));
 
 
-export default function AuthedArea({userList}) {
+export default function AuthedArea({userList, setUserList}) {
     
     const BootstrapInput = withStyles((theme) => ({
         root: {
@@ -76,13 +102,16 @@ export default function AuthedArea({userList}) {
 
 
     const [userSelectBox, setUserSelectBox] = useState("")
-    const [selectedTab, setSelectedTab] = useState(0)
+    const [selectedTab, setSelectedTab] = useState()
     const [foodCalenderData, setFoodCalenderData] = useState()
     const [fitnessProgData, setFitnessProgData] = useState()
+    const [newUserDialog, setNewUserDialog] = useState({isOpen: false})
+    const [isBackDropOpen, setIsBackDropOpen] = useState(false)
 
     const classes = useStyles();
 
     const handleSelectChange = (event) => {
+        setIsBackDropOpen(true)
         setUserSelectBox(event.target.value)
         //add code here to change user data fetch from server
         fetch(`/api/food?id=${event.target.value}`,)
@@ -91,17 +120,81 @@ export default function AuthedArea({userList}) {
                 let formattedFoodData = data.findId?.fooddiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
                 setFoodCalenderData(formattedFoodData)
                 setFitnessProgData(data.findId?.fitnessplan?.data)
+                setIsBackDropOpen(false)
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+                setIsBackDropOpen(false)
+                console.log(error)
+            })
     }
 
+    const userDatabaseIdLookup = (userIdToFind) => {
+        const index = userList?.findIndex((user) => user.UserId === userIdToFind)
+        return userList[index]._id
+    }
+
+    const addNewUserToServer = (newUserName) => {
+        addUser(newUserName)
+        .then((data) => setUserList([...userList, {UserId: newUserName, _id: data.id}]))
+        setNewUserDialog({isOpen: false})
+    }
+
+    const NewUserDialog = () => {
+        const [inputValue, setInputValue] = useState("")
+        return(
+            <Dialog
+                open={newUserDialog.isOpen}
+                onClose={() => setNewUserDialog({isOpen: false})}
+            >
+            <DialogTitle id="alert-dialog-title">{`Add New User`}</DialogTitle>
+            <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Please enter the ID you want to use for the new user.
+                    </DialogContentText>
+                    <TextField
+                    autoFocus
+                    margin="dense"
+                    id="new-user"
+                    label="New User ID"
+                    variant="outlined"
+                    size="small"
+                    value={inputValue}
+                    onChange={(event) => setInputValue(event.target.value)}
+                    fullWidth
+                />
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={() => setNewUserDialog({isOpen: false})} variant="outlined" color="primary">
+                Cancel
+            </Button>
+            <Button onClick={() => addNewUserToServer(inputValue)} variant="outlined" color="primary" autoFocus>
+                Add
+            </Button>
+            </DialogActions>
+        </Dialog>)
+    }
     return (
+        <div>
+        <div className={classes.header}>
+        <AppBar position='static'>
+        <Toolbar>
+        <Typography variant="h6" className={classes.title}>
+              Millers Admin Area
+        </Typography>
+        </Toolbar>
+        </AppBar>
+        </div>
         <div className={classes.rootDiv}>
             <Grid container className={classes.gridRoot} spacing={2}>
                 <Grid item xs={12} className={classes.gridItem}>
                     <Paper className={classes.gridPaperFlex}>
                         <Grid item xs={8} className={classes.gridFlex}>
-                        <Typography className={classes.typographyPadding}>Please selected the user to change details of:</Typography>
+                        <Button 
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => setNewUserDialog({isOpen: true})}
+                        >New User</Button>
+                        <Typography className={classes.typographyPadding}>or selected the user to change details of:</Typography>
                         <Select
                             labelId="user-select"
                             id="user-select"
@@ -124,19 +217,20 @@ export default function AuthedArea({userList}) {
                         >
                             <Tab label="Food Info" />
                             <Tab label="Fitness Plan" />
+                            <Tab label="Food Feedback" />
                         </Tabs>
                         </Grid>
                     </Paper>
                 </Grid>
-                {(foodCalenderData || fitnessProgData) && 
-                    <React.Fragment>
-                        {selectedTab === 0? 
-                        <FoodDisplay foodData={foodCalenderData}/> 
-                        :
-                        <FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData}/>}
-                    </React.Fragment>
-                }
+                {selectedTab === 0 && <FoodDisplay foodData={foodCalenderData}/>}
+                {selectedTab === 1 && <FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData} userId={userDatabaseIdLookup(userSelectBox)}/>}
+                {selectedTab === 2 && <p>This page is work in progress.</p>}
             </Grid>
+            <NewUserDialog />
+        </div>
+        <Backdrop className={classes.backdrop} open={isBackDropOpen} >
+            <CircularProgress color="inherit" />
+        </Backdrop>
         </div>
     )
 }

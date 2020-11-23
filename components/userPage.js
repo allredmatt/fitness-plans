@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext }  from 'react';
+import { useState, useEffect }              from 'react';
 import { makeStyles }                       from '@material-ui/core/styles';
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
@@ -9,41 +9,33 @@ import TextField                            from '@material-ui/core/TextField';
 import AccountCircleRoundedIcon             from '@material-ui/icons/AccountCircleRounded';
 import Switch                               from '@material-ui/core/Switch';
 import FormControlLabel                     from '@material-ui/core/FormControlLabel';
+import Paper                                from '@material-ui/core/Paper';
+import Grid                                 from '@material-ui/core/Grid'
 import FoodCalendar                         from './foodCalendar.js';
 import FitnessPlan                          from './fitnessPlan.js';
-import {userContext}                        from '../context/checkUser.js'
-import DataLog                              from "./dataLog";
-import { Paper } from '@material-ui/core';
+import DataLog                              from './dataLog';
+import AllSessions                          from './allSessions'
+
 
 const useStyles = makeStyles((theme) => ({
   container:{
-    minWidth: 400,
+    flexGrow: 1,
   },
-  headCard: {
-    width: '100%',
-    marginBottom: theme.spacing(1)
-  },
-  bannerImage: {
-    height: 150,
-  },
-  button: {
-    margin: 2,
-    left: 10,
-  },
-  switch: {
-    left: 20,
+  bottomMargin:{
+    marginBottom: theme.spacing(0.1)
   },
   paper: {
     padding: theme.spacing(2),
-    marginBottom: theme.spacing(1)
-},
+    textAlign: 'center',
+    color: theme.palette.primary.main,
+    minHeight: "35px"
+  },
 }));
 
-export default function UserPage() {
+export default function UserPage({user, pageToShow, setPageToShow}) {
   
   const classes = useStyles();
 
-  const user = useContext(userContext)
   const [textBoxValue, setTextBoxValue] = useState('');
   const [rememberId, setRememberId] = useState(false);
   const [foodCalenderData, setFoodCalenderData] = useState();
@@ -59,8 +51,7 @@ export default function UserPage() {
 
 
   useEffect (()=> {
-    //Add code to get data from server if Id changes
-
+    //On first load - fetch data from server
     fetch(`/api/food?id=${user.name}`,)
       .then(response => response.json())
       .then(data => {
@@ -78,94 +69,73 @@ export default function UserPage() {
         setFitnessProgData(formattedFitnessData)
       })
       .catch(error => console.log(error))
-  }, [user.name])
 
-  const handleClick = () => {
-    if(user.name === null && rememberId) {
-        localStorage.setItem('UserId', textBoxValue);
-    }
-    user.setUserName(textBoxValue)
-  };
+      //Check local storage to see if page has been loaded before and set pageToShow to persist correct area.
+      if(localStorage.getItem('pageToShow') ){
+        setPageToShow(localStorage.getItem('pageToShow'))
+      }
+
+  }, [])
 
   useEffect (()=> {
-    //If foodData changes then re-render <FoodCalender /> page
-    if(user.id != null){
-      setAccountDetailsPage(
-        <div>
-        <FoodCalendar 
-          userId={user.id} 
-          foodData={foodCalenderData} 
-          setFoodData={setFoodCalenderData}
-        />
-        <FitnessPlan 
-                fitnessData={fitnessProgData}
-              />
-        <Paper className={classes.paper}>
-        <Typography gutterBottom variant="h5" component="h2"> 
-          All your workout history
-        </Typography>
-        <DataLog 
-                fitnessData={fitnessProgData}
-              />
-        </Paper>
-        </div>
-      )
-    }
-  }, [foodCalenderData, fitnessProgData])
+    //If data changes then re-render sub-pages page.
+    //Sets page to show when users changes page to show.
+      switch(pageToShow){
+        case "food":
+          setAccountDetailsPage(
+            <FoodCalendar 
+              userId={user.id} 
+              foodData={foodCalenderData} 
+              setFoodData={setFoodCalenderData}
+            />
+          )
+          break;
+        case "plan":
+          setAccountDetailsPage(
+            <FitnessPlan 
+                    fitnessData={fitnessProgData}
+                  />
+          )
+          break;
+        case "whole":
+          setAccountDetailsPage(
+            <AllSessions 
+                    fitnessData={fitnessProgData}
+                  />
+          )
+          break;
+        default:
+          setAccountDetailsPage(null)
+      }
+      localStorage.setItem('pageToShow', pageToShow);
+  }, [foodCalenderData, fitnessProgData, pageToShow])
+
 
   return (
     <div className={classes.container}>
-
-      <Card className={classes.headCard}>
-      <CardContent>
-      <CardMedia
-          className={classes.bannerImage}
-          image="/gym.jpg"
-          title="Empty Gym"
-          />
-          <Typography gutterBottom variant="h5" component="h2">
-              Your personal plan and nutrition details
-          </Typography>
-          </CardContent>
-      </Card>
-
-      {user.id ?
-      accountDetailsPage
-      : 
-      <Card className={classes.headCard}>
-      <CardContent>
-          <Typography gutterBottom variant="body1" color="textPrimary" component="p">
-              Please log in to view your details
-          </Typography>
-          <TextField 
-              id="outlined-basic"
-              size="small"
-              label="User ID" 
-              variant="outlined"
-              autoFocus={true}
-              value={textBoxValue} 
-              onChange={(event) => setTextBoxValue(event.target.value)}
-              onKeyPress={(event) => {event.key === 'Enter' ? handleClick() : null}}
-          />
-          <Button className={classes.button} variant="outlined" color="primary" onClick={handleClick} endIcon={<AccountCircleRoundedIcon />}>
-              Login
-          </Button><br />
-          <FormControlLabel
-              control={
-              <Switch
-                  checked={rememberId}
-                  onChange={(event) => setRememberId(event.target.checked)}
-                  color="primary"
-              />
-              }
-              label="Remember Me"
-              />
-          <Typography variant="body2" color="textSecondary" component="p">
-              If you chose to remember your ID, then you agree to this website storing this ID on your computer (do not use on shared computers).
-          </Typography>
-      </CardContent>
-      </Card>
-      }
+      <Grid container spacing={3} className={classes.bottomMargin}>
+        <Grid item xs={6} sm={3}>
+            <Paper className={classes.paper} button onClick={() => setPageToShow("food")}>
+            <Typography variant="h5">Food Diary</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} sm={3}>
+            <Paper className={classes.paper} button onClick={() => setPageToShow("feedback")}>
+            <Typography variant="h5">Food Feedback</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} sm={3}>
+            <Paper className={classes.paper} button onClick={() => setPageToShow("plan")}>
+            <Typography variant="h5">Daily Plan</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} sm={3}>
+            <Paper className={classes.paper} button onClick={() => setPageToShow("whole")}>
+            <Typography variant="h5">Overall Plan</Typography>
+            </Paper>
+          </Grid>  
+      </Grid>
+      {accountDetailsPage}
     </div>
   );
 }

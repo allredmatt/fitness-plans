@@ -106,7 +106,7 @@ export default function Admin () {
 
     if(authResult){
         return (
-            <AuthedArea userList={userList}/>
+            <AuthedArea userList={userList} setUserList={setUserList}/>
         )
     } else {
         return (

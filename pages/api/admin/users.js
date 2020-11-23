@@ -26,27 +26,49 @@ export default (req, res) => {
     }`
     
     let data = await graphQLClient.request(listUsers)
-    console.log(data)
     return data
   }
 
-  switch(req.method) {
-    case 'POST':
-      console.log(req)
-      break;
-    case 'GET':
-          bcrypt.compare(ADMIN_TOKEN, req.cookies.authToken, function(err, result) {
-              if(result) {
-                fetchUserList()
-                .then((data) => res.status(200).json(data.allUsers.data))
-              } else {
+  async function addUser(user) {
+  
+    const mutation = /* GraphQL */ `
+    mutation createUser($UserId: String!) {
+        createUser(
+            data: {UserId: $UserId}
+        ) {
+        _id
+        }
+      }
+    `
+    const variables = {
+    "UserId": user
+    }
+    
+    let data = await graphQLClient.request(mutation, variables);
+    return data
+  }
+
+  bcrypt.compare(ADMIN_TOKEN, req.cookies.authToken, function(err, result) {
+    if(result) {
+      switch(req.method) {
+      case 'PUT':
+        addUser(req.body.userId)
+          .then((data) => res.status(200).json({id: data.createUser._id}))
+          .catch((data) => res.status(400).json({error: data}))
+        console.log(req)
+        break;
+      case 'GET':
+        fetchUserList()
+          .then((data) => res.status(200).json(data.allUsers.data))
+          .catch((data) => res.status(400).json({error: data}))
+        break;
+      default:
+        console.log("Other of type:", req.method)
+        res.statusCode = 400
+      }
+      } else {
                 res.status(401).json({error: "Unauthorized access attempt"})
               }
-          })
-      break;
-    default:
-      console.log("Other of type:", req.method)
-      res.statusCode = 400
-    }
-res.end;
+  })
+  res.end;
 }

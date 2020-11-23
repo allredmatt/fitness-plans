@@ -1,0 +1,148 @@
+import Main                                 from '../components/pageWrapper.js'
+import UserPage                             from '../components/userPage.js'
+import { useState, useEffect}               from 'react';
+import { makeStyles }                       from '@material-ui/core/styles';
+import Card                                 from '@material-ui/core/Card';
+import CardContent                          from '@material-ui/core/CardContent';
+import Typography                           from '@material-ui/core/Typography';
+import CardMedia                            from '@material-ui/core/CardMedia';
+import Button                               from '@material-ui/core/Button';
+import TextField                            from '@material-ui/core/TextField';
+import AccountCircleRoundedIcon             from '@material-ui/icons/AccountCircleRounded';
+import Switch                               from '@material-ui/core/Switch';
+import FormControlLabel                     from '@material-ui/core/FormControlLabel';
+import Snackbar                             from '@material-ui/core/Snackbar';
+import MuiAlert                             from '@material-ui/lab/Alert';
+
+
+const useStyles = makeStyles((theme) => ({
+  container:{
+    minWidth: 400,
+  },
+  headCard: {
+    width: '100%',
+    marginBottom: theme.spacing(1)
+  },
+  bannerImage: {
+    height: 150,
+  },
+  button: {
+    margin: 2,
+    left: 10,
+  },
+  switch: {
+    left: 20,
+  },
+}));
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+export default function UserArea() {
+
+  const classes = useStyles();
+
+  const [textBoxValue, setTextBoxValue] = useState('');
+  const [rememberId, setRememberId] = useState(false);
+  const [user, setUser] = useState({name: null, id: null, isLoggedIn: false})
+  const [userAreaToDisplay, setUserAreaToDisplay] = useState()
+  const [incorrectLogin, setIncorrectLogin] = useState(false)
+
+  useEffect(() => {
+    if(localStorage.getItem('UserId') ){
+      fetchUserID(localStorage.getItem('UserId'))
+    }
+  }, [])
+
+  const handleClick = () => {
+    fetchUserID(textBoxValue)
+  };
+
+  const fetchUserID = (name) => {
+      fetch(`/api/user?id=${name}`,)
+        .then(response => {
+          if(response.status === 200){
+            if(rememberId) {
+              localStorage.setItem('UserId', name);
+            }
+            return(response.json())
+          } else {
+            throw new Error
+          }
+        })
+        .then((data) => setUser({name: name, id: data.findId?._id, isLoggedIn: true}))
+        .catch((error) => {
+          setIncorrectLogin(true)
+        })
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('UserId')
+    localStorage.removeItem('pageToShow')
+    setUser({name: null, id: null, isLoggedIn: false})
+  }
+
+  return (
+    <Main isAuthed={user.isLoggedIn} handleLogout={handleLogout} setUserAreaToDisplay={setUserAreaToDisplay}>
+      <div className={classes.container}>
+
+        <Card className={classes.headCard}>
+        <CardContent>
+        <CardMedia
+            className={classes.bannerImage}
+            image="/gym.jpg"
+            title="Empty Gym"
+            />
+            <Typography gutterBottom variant="h5" component="h2">
+                Your personal plan and nutrition details
+            </Typography>
+            </CardContent>
+        </Card>
+
+        {user.isLoggedIn ?
+        <UserPage user={user} pageToShow={userAreaToDisplay} setPageToShow={setUserAreaToDisplay}/>
+        : 
+        <Card className={classes.headCard}>
+        <CardContent>
+            <Typography gutterBottom variant="body1" color="textPrimary" component="p">
+                Please log in to view your details
+            </Typography>
+            <TextField 
+                id="outlined-basic"
+                size="small"
+                label="User ID" 
+                variant="outlined"
+                autoFocus={true}
+                value={textBoxValue} 
+                onChange={(event) => setTextBoxValue(event.target.value)}
+                onKeyPress={(event) => {event.key === 'Enter' ? handleClick() : null}}
+            />
+            <Button className={classes.button} variant="outlined" color="primary" onClick={handleClick} endIcon={<AccountCircleRoundedIcon />}>
+                Login
+            </Button><br />
+            <FormControlLabel
+                control={
+                <Switch
+                    checked={rememberId}
+                    onChange={(event) => setRememberId(event.target.checked)}
+                    color="primary"
+                />
+                }
+                label="Remember Me"
+                />
+            <Typography variant="body2" color="textSecondary" component="p">
+                If you chose to remember your ID, then you agree to this website storing this ID on your computer (do not use on shared computers).
+            </Typography>
+        </CardContent>
+        </Card>
+        }
+        <Snackbar open={incorrectLogin} autoHideDuration={3000} onClose={() => setIncorrectLogin(false)}>
+        <Alert onClose={() => setIncorrectLogin(false)} severity="warning">
+          This user does not exist, please try again.
+        </Alert>
+        </Snackbar>
+      </div>
+    </Main>
+  );
+}

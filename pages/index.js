@@ -25,7 +25,7 @@ export default function Index() {
   }
 
   return (
-    <Main scrollToRef={scrollToRef}>
+    <Main isAuthed={false} scrollToRef={scrollToRef}>
           <HomeHeader />
           <About ref={aboutRef} />
           <Services ref={servicesRef} />

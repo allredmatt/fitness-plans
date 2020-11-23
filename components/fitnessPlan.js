@@ -285,6 +285,7 @@ export default function FitnessPlan ({fitnessData}) {
                                         id="outlined-start-adornment"
                                         className={classes.textField}
                                         type="number"
+                                        InputLabelProps={{ shrink: true }}
                                         InputProps={{
                                             endAdornment: <InputAdornment position="end">{element}</InputAdornment>,
                                         }}

@@ -66,6 +66,9 @@ export default function UserFitnessPlan ({fitnessData}) {
     if(fitnessData){
         return(
             <div className={classes.root}>
+                <Typography className={classes.nested} variant="h6" component="h3">
+                            {fitnessData.sessionTitle}
+                </Typography>
                 <div className={classes.flexDiv}>
                 {fitnessData.cardInfo?.data.map((cardData, index) => 
                     <Card className={classes.card} key={index}>

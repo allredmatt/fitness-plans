@@ -18,8 +18,6 @@ export default (req, res) => {
 
   const cookies = new Cookies(req, res)
 
-  let serverData = ""
-
   async function lookupUserID(user) {
   
     const findIdQuery = /* GraphQL */
@@ -29,24 +27,18 @@ export default (req, res) => {
       }
     }`
     
-    serverData = await graphQLClient.request(findIdQuery)
+    let serverData = await graphQLClient.request(findIdQuery)
+    return serverData
   }
 
   switch(req.method) {
   case 'GET':
       if(req.query?.id != "null") {
         lookupUserID(req.query?.id)
-          .then(() => {
-            res.json(serverData)
-            res.statusCode = 200
-          })
-          .catch((error) => {
-            res.json({error: error})
-            res.statusCode = 400
-          })
+          .then((data) => res.status(200).json(data))
+          .catch((error) => res.status(401).json({error: "User does not exist"}))
       } else {
-        res.json({error: "No valid UserId sent"})
-        res.statusCode = 400
+        res.status(400).json({error: "No valid UserId sent"})
       }
     break;
   case 'POST':

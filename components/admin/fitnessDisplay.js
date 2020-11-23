@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext }  from 'react';
 import { makeStyles, withStyles }           from '@material-ui/core/styles';
 import UserFitnessPlan                      from './userFit'
+import * as server                          from './serverChanges'
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
 import Typography                           from '@material-ui/core/Typography';
@@ -61,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(2),
         padding: theme.spacing(1),
     },
-    typograpyPad:{
+    typographyPad:{
         padding: theme.spacing(1),
     },
     rightAlign:{
@@ -69,17 +70,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function FitDisplay ({fitData, setFitData}) {
+export default function FitDisplay ({fitData, setFitData, userId}) {
 
     const classes = useStyles();
 
     const blankActivity = JSON.stringify({primary: "", secondary: ""})
-    const blankCardInfo = {cardTitle: "", inputDataTypes: [], listOfActivities: [blankActivity]}
+    const blankCardInfo = {cardTitle: "", inputDataTypes: [], listOfActivities: [blankActivity], isNew: true, inputData: '[]'}
     const blankSession = {
-        sessionTitle: "",
-        shortTitle: "",
+        sessionTitle: "New Session",
+        shortTitle: "New",
         isCurrent: false,
-        cardInfo: {data: [blankCardInfo]}
+        cardInfo: {data: [blankCardInfo]},
+        isNew: true
     }
 
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -87,10 +89,16 @@ export default function FitDisplay ({fitData, setFitData}) {
     const [deletePopUpInfo, setDeletePopUpInfo] = useState({isOpen: false, targetTitle: ""})
     const [existingListPopupAnchor, setExistingListPopupAnchor] = useState(null)
 
+    //useEffect to check if user selects new entry for session data. Creates blank session, needs work to change fitData accordingly.
+    //add to this to enable saving to server when tab changes
     useEffect(()=> {
         if(fitData){
+            //Save current tab to server before changing to new tab.
+            //Won't do anything if hasChanged not flagged in data.
+            handleSaveToServer()
             if(currentIndex >= fitData.length){
-                //new form needed
+                //new form needed, append a blank array for new session to fitData
+                setFitData([...fitData, blankSession])
                 setCurrentFormInfo(blankSession)
             } else {
                 //set form info from exiting data
@@ -116,11 +124,11 @@ export default function FitDisplay ({fitData, setFitData}) {
         setDeletePopUpInfo({isOpen: false, targetTitle: ""})
     }
 
-    const handleCardChange = (newValue, cardIndex, type) => {
+    const handleCardChange = (newValue, cardIndex, type, sessionHasChanged = true) => {
         let newInfoObject = {...currentFormInfo.cardInfo.data[cardIndex]}
         newInfoObject[type] = newValue
         let data = [...currentFormInfo.cardInfo.data]
-        data[cardIndex] = newInfoObject
+        data[cardIndex] = {...newInfoObject, hasChanged: sessionHasChanged}
         let cardInfo = {}
         cardInfo.data = data
         setCurrentFormInfo({...currentFormInfo, cardInfo})
@@ -160,26 +168,63 @@ export default function FitDisplay ({fitData, setFitData}) {
         setExistingListPopupAnchor(null)
     }
 
-    const handleSaveToServer = () => {
-        //Update server code
-
-        //Update local state code
+    const handleSaveToServer = async () => {
+        let resData = null
+        if(currentFormInfo.hasChanged) {
+            if(currentFormInfo.isNew) {
+                //Add new FitPlan on server
+                resData = await server.newSession(userId, currentFormInfo.sessionTitle, currentFormInfo.shortTitle, currentFormInfo.isCurrent)
+                console.log(resData)
+            } else {
+                //update FitPlan on server
+                server.updateSession(currentFormInfo._id, currentFormInfo.sessionTitle, currentFormInfo.shortTitle, currentFormInfo.isCurrent)
+                setCurrentFormInfo({...currentFormInfo, hasChanged: false})
+            }
+            
+        }
+        currentFormInfo.cardInfo.data.forEach((card, cardIndex) => {
+            if(card.hasChanged){
+                let sessionId = resData? resData.id : currentFormInfo._id
+                if (card.isNew){
+                    //add new card to server
+                    server.newCard(sessionId, card.listOfActivities, card.inputDataTypes, card.cardTitle, card.inputData)
+                    handleCardChange(false, cardIndex, "isNew", false)
+                } else {
+                    //update cardInfo on server
+                    server.updateCard(card._id, card.listOfActivities, card.inputDataTypes, card.cardTitle, card.inputData)
+                    handleCardChange(false, cardIndex, "hasChanged", false)
+                }
+            } else if (card.isExistingCard) {
+                //add relationship to server
+                let sessionId = resData? resData.id : currentFormInfo._id
+                console.log(sessionId)
+                server.addRelation(card._id, sessionId, card.listOfActivities, card.inputDataTypes, card.cardTitle, card.inputData)
+                handleCardChange(false, cardIndex, "isExistingCard", false)
+            }
+        })
+        if(resData) {
+            setCurrentFormInfo({...currentFormInfo, hasChanged: false, isNew: false, _id: resData.id})
+        }
     }
 
-    const handleDeleteFromState = () => {
+    const handleDelete = () => {
         switch(deletePopUpInfo.toDelete) {
             case 'session':
-                setCurrentIndex(fitData.length)
+                //delete from state
+                setCurrentIndex(currentIndex === 0? 1 : 0)
                 setFitData(fitData.filter((element, index) => index != currentIndex))
-                break
+                //delete from server
+                server.deleteSession(currentFormInfo._id)
+                break;
             case 'card':
+                //delete from server
+                let card = currentFormInfo.cardInfo.data[deletePopUpInfo.index]
+                server.deleteRelation(card._id, currentFormInfo._id, card.listOfActivities, card.inputDataTypes, card.cardTitle, card.inputData)
+                //delete from state
                 let cardInfo = {}
                 cardInfo.data = currentFormInfo.cardInfo.data.filter((curr, index) => index != deletePopUpInfo.index)
                 setCurrentFormInfo({...currentFormInfo, cardInfo})
-                break
-            case 'activity':
-                let listOfActivities = currentFormInfo.cardInfo.data[deletePopUpInfo.cardIndex].listOfActivities.filter((ele, index) => index != deletePopUpInfo.activityIndex)
-                handleCardChange(listOfActivities, deletePopUpInfo.cardIndex, "listOfActivities")
+                break;
             default:
                 console.log("Undefined property to try and delete")
         }
@@ -193,15 +238,15 @@ export default function FitDisplay ({fitData, setFitData}) {
                 >
                     <DialogTitle id="alert-dialog-title">{`Do you wish to delete ${deletePopUpInfo.targetTitle}?`}</DialogTitle>
                     <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Please confirm that you want to delete {deletePopUpInfo.targetTitle} for the fitness plan, this action can still be undone using the undo button.
-                    </DialogContentText>
+                            <DialogContentText id="alert-dialog-description">
+                                Please confirm that you want to delete {deletePopUpInfo.targetTitle} for the fitness plan, this action cannot be undone.
+                            </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleDeleteClose} variant="outlined" color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleDeleteFromState} variant="outlined" color="primary" autoFocus>
+                    <Button onClick={handleDelete} variant="outlined" color="primary" autoFocus>
                         Delete
                     </Button>
                     </DialogActions>
@@ -244,7 +289,7 @@ export default function FitDisplay ({fitData, setFitData}) {
         <React.Fragment>
             <Grid item xs={8}>
             <Paper className={classes.gridPaper}>
-                <Typography>Enter the users fitness data below:</Typography>
+                <Typography>Enter the users fitness data below. If you want a user to be able to track their work out, please ensure you use the add exiting workout button.</Typography>
                 <Tabs 
                     value={currentIndex}
                     onChange={(event, newValue) => setCurrentIndex(newValue)}
@@ -265,7 +310,7 @@ export default function FitDisplay ({fitData, setFitData}) {
                     size="small"
                     className={classes.textArea}
                     value={currentFormInfo.sessionTitle}
-                    onChange={(event) => setCurrentFormInfo({...currentFormInfo, sessionTitle: event.target.value})}
+                    onChange={(event) => setCurrentFormInfo({...currentFormInfo, sessionTitle: event.target.value, hasChanged: true})}
                 />
                 <TextField
                     id="short-title"
@@ -274,13 +319,13 @@ export default function FitDisplay ({fitData, setFitData}) {
                     size="small"
                     className={classes.textArea}
                     value={currentFormInfo.shortTitle}
-                    onChange={(event) => setCurrentFormInfo({...currentFormInfo, shortTitle: event.target.value})}
+                    onChange={(event) => setCurrentFormInfo({...currentFormInfo, shortTitle: event.target.value, hasChanged: true})}
                 />
                 <FormControlLabel
                     control={
                         <Switch
                             checked={currentFormInfo.isCurrent}
-                            onChange={(event) => setCurrentFormInfo({...currentFormInfo, isCurrent: event.target.value})}
+                            onChange={(event) => setCurrentFormInfo({...currentFormInfo, isCurrent: event.target.checked, hasChanged: true})}
                             name="isCurrent"
                             color="primary"
                             
@@ -299,9 +344,9 @@ export default function FitDisplay ({fitData, setFitData}) {
                     <Grid container className={classes.gridRoot} spacing={2}>
                         <Grid item xs={12} className={classes.gridItemFlex}>
                         {card.isExistingCard? 
-                        <Typography className={classes.typograpyPad}>Existing cards are read only</Typography>
+                        <Typography className={classes.typographyPad}>Existing cards are read only</Typography>
                         : 
-                        <Typography className={classes.typograpyPad}>Card {cardIndex + 1}:</Typography>
+                        <Typography className={classes.typographyPad}>Card {cardIndex + 1}:</Typography>
                         }
                         <TextField
                             id="card-title"
@@ -375,11 +420,9 @@ export default function FitDisplay ({fitData, setFitData}) {
                                 <IconButton 
                                     edge="end" 
                                     aria-label="delete" 
-                                    onClick={() => setDeletePopUpInfo({isOpen: true, 
-                                                                        targetTitle: `Activity ${activityIndex + 1} on Card ${cardIndex + 1}`,
-                                                                        toDelete: "activity",
-                                                                        cardIndex: cardIndex,
-                                                                        activityIndex: activityIndex})} 
+                                    onClick={() => handleCardChange(currentFormInfo.cardInfo.data[cardIndex].listOfActivities.filter((ele, index) => index != activityIndex), 
+                                                        cardIndex, 
+                                                        "listOfActivities")} 
                                     className={classes.textArea}
                                 >
                                     <DeleteIcon color="secondary"/>
@@ -397,7 +440,7 @@ export default function FitDisplay ({fitData, setFitData}) {
                         </Grid>
                         
                         <Grid item xs={12} className={classes.gridItemFlex}>
-                        <Typography className={classes.typograpyPad}>User input items:</Typography>
+                        <Typography className={classes.typographyPad}>User input items:</Typography>
                         <ToggleButtonGroup
                             size="small" 
                             value={card.inputDataTypes}
@@ -411,6 +454,9 @@ export default function FitDisplay ({fitData, setFitData}) {
                         </ToggleButton>
                         <ToggleButton value="reps">
                             Reps
+                        </ToggleButton>
+                        <ToggleButton value="km">
+                            Dist
                         </ToggleButton>
                         </ToggleButtonGroup>
                         </Grid>

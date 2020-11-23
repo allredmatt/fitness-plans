@@ -4,6 +4,7 @@ import Paper                    from '@material-ui/core/Paper';
 import CardContent              from '@material-ui/core/CardContent';
 import Typography               from '@material-ui/core/Typography';
 import CardMedia                from '@material-ui/core/CardMedia';
+import { Divider } from '@material-ui/core';
 
 const useAboutStyles = makeStyles((theme) => ({
   flexDiv: {
@@ -16,7 +17,7 @@ const useAboutStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   bannerImage: {
-    height: 150,
+    height: 640,
   },
   profileImage: {
     height: 200,
@@ -37,12 +38,15 @@ const useAboutStyles = makeStyles((theme) => ({
 const useStyles = makeStyles((theme) => ({
     container:{
       width: '100%',
+      backgroundColor: '#6d7896',
+      marginBottom: theme.spacing(1),
+      marginTop: theme.spacing(1),
     },
     card:{
       marginBottom: theme.spacing(1),
     },
     bannerImage:{
-      height: 400,
+      width: "100%"
     }
   }));
 
@@ -50,25 +54,13 @@ const HomeHeader = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}> 
-        <Card className={classes.card}>
-        <CardContent>
-        <CardMedia
+    <Paper className={classes.container} elevation={0}> 
+        <img
             className={classes.bannerImage}
-            image="/weightspepper.jpg"
+            src="/weightspepper.jpg"
             title="Weights and fruit"
             />
-            <Typography gutterBottom variant="h4" component="h1" color='primary'>
-                Millers Fitness and Nutrition
-            </Typography>
-            <Typography variant="h6" color="textPrimary" component="p">
-                Some rubbish about what you do and how great you are.
-                <br /><br />
-                <i>"Excellent personalised service, really helped me feel less hungry. Came up with some excellent ideas of how to exercise with kids."</i>
-            </Typography>
-        </CardContent>
-        </Card>
-    </div>
+    </Paper>
   );
 }
 
@@ -81,6 +73,12 @@ const About = React.forwardRef((props, ref) => {
         <Typography gutterBottom variant="h5" component="h2" color="primary">
             About our company...
         </Typography>
+        <Typography gutterBottom variant="h6" color="textPrimary" component="p">
+                Some rubbish about what you do and how great you are.
+                <br />
+                <i>"Excellent personalised service, really helped me feel less hungry. Came up with some excellent ideas of how to exercise with kids."</i>
+        </Typography>
+        <Divider />
         <Typography variant="body1" color="textPrimary" component="p">
             Millers fitness are founded on the belief that everyone can attain their potential. We are a husband and wife team who will help you on your journey:
         </Typography>
