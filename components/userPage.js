@@ -115,22 +115,22 @@ export default function UserPage({user, pageToShow, setPageToShow}) {
     <div className={classes.container}>
       <Grid container spacing={3} className={classes.bottomMargin}>
         <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button onClick={() => setPageToShow("food")}>
+            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("food")}>
             <Typography variant="h5">Food Diary</Typography>
             </Paper>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button onClick={() => setPageToShow("feedback")}>
+            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("feedback")}>
             <Typography variant="h5">Food Feedback</Typography>
             </Paper>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button onClick={() => setPageToShow("plan")}>
+            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("plan")}>
             <Typography variant="h5">Daily Plan</Typography>
             </Paper>
           </Grid>
           <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button onClick={() => setPageToShow("whole")}>
+            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("whole")}>
             <Typography variant="h5">Overall Plan</Typography>
             </Paper>
           </Grid>  

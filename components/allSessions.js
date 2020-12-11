@@ -70,7 +70,7 @@ export default function AllSessions ({fitnessData}) {
 
     const classes = useStyles();
 
-    let cardData = fitnessData[0].cardInfo[1]
+    let cardData = fitnessData[0]?.cardInfo[0] || null
 
     return (
         <Paper className={classes.paper}>
