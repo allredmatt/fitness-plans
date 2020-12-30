@@ -40,12 +40,13 @@ export default (req, res) => {
   async function modifyPlanData(planData) {
 
     const mutation = /* GraphQL */ `
-    mutation updateFitPlan($id: ID!, $isCurrent: Boolean!, $sessionTitle: String!) {
+    mutation updateFitPlan($id: ID!, $isCurrent: Boolean!, $sessionTitle: String!, $shortTitle: String!) {
         updateFitPlan(
             id: $id
             data:{
                 isCurrent: $isCurrent,
                 sessionTitle: $sessionTitle,
+                shortTitle: $shortTitle
             }
         ) {
         _id
@@ -55,13 +56,15 @@ export default (req, res) => {
     const variables1 = {
       "id": planData.newCurrent.id,
       "isCurrent": true,
-      "sessionTitle": planData.newCurrent.title
+      "sessionTitle": planData.newCurrent.title,
+      "shortTitle": planData.newCurrent.shortTitle
     }
 
     const variables2 = {
       "id": planData.oldCurrent.id,
         "isCurrent": false,
-        "sessionTitle": planData.oldCurrent.title
+        "sessionTitle": planData.oldCurrent.title,
+        "shortTitle": planData.oldCurrent.shortTitle
     }
 
     const dataNew = await graphQLClient.request(mutation, variables1);

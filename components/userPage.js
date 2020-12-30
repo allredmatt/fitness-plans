@@ -49,10 +49,8 @@ export default function UserPage({user, pageToShow, setPageToShow}) {
                                                                 </CardContent>
                                                                 </Card>)
 
-
-  useEffect (()=> {
-    //On first load - fetch data from server
-    fetch(`/api/food?id=${user.name}`,)
+  const fetchServerData = () => {
+      fetch(`/api/food?id=${user.name}`,)
       .then(response => response.json())
       .then(data => {
         let formattedFoodData = data.findId?.fooddiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
@@ -74,7 +72,11 @@ export default function UserPage({user, pageToShow, setPageToShow}) {
       if(localStorage.getItem('pageToShow') ){
         setPageToShow(localStorage.getItem('pageToShow'))
       }
+  }
 
+  useEffect (()=> {
+    //On first load - fetch data from server
+    fetchServerData()
   }, [])
 
   useEffect (()=> {
@@ -93,7 +95,7 @@ export default function UserPage({user, pageToShow, setPageToShow}) {
         case "plan":
           setAccountDetailsPage(
             <FitnessPlan 
-                    fitnessData={fitnessProgData}
+                    fitnessData={fitnessProgData} reloadData={fetchServerData}
                   />
           )
           break;

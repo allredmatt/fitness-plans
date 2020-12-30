@@ -21,11 +21,12 @@ import CheckCircleTwoToneIcon   from '@material-ui/icons/CheckCircleTwoTone';
 import CardActions              from '@material-ui/core/CardActions';
 import TextField                from '@material-ui/core/TextField';
 import InputAdornment           from '@material-ui/core/InputAdornment';
-import DataLog                    from './dataLog'
+import DataLog                  from './dataLog'
+import Snackbar                 from '@material-ui/core/Snackbar';
 
 
 
-export default function FitnessPlan ({fitnessData}) {
+export default function FitnessPlan ({fitnessData, reloadData}) {
 
     const minWidth700 = useMediaQuery('(min-width:700px)');
     
@@ -69,13 +70,19 @@ export default function FitnessPlan ({fitnessData}) {
         },
         textField: {
             width: '25ch',
-        }
+        },
+        backdrop: {
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
+        },
     }));
 
-    const classes = useStyles();
+    const classes = useStyles()
+
     const [indexToBeDisplayed, setIndexToBeDisplayed] = useState(0)
     const [userInputData, setUserInputData] = useState()
     const [filteredFitnessData, setFilteredFitnessData] = useState()
+    const [isFinishedSessionSnackbarOpen, setIsFinishedSessionSnackbarOpen] = useState(false)
 
 
     useEffect(()=> {
@@ -126,14 +133,17 @@ export default function FitnessPlan ({fitnessData}) {
     
      
     const handleNextClick = () => {
+        //If user selects next session change index to be displayed, check if it's the last session before advancing
         setIndexToBeDisplayed(fitnessData.length === (indexToBeDisplayed + 1) ? indexToBeDisplayed : indexToBeDisplayed + 1)
     }
     
     const handlePreviousClick = () => {
+        //As above but for going backwards
         setIndexToBeDisplayed((indexToBeDisplayed - 1) === -1 ? 0 : indexToBeDisplayed - 1)
     }
 
     const handleFinishedClick = (index) => {
+        //User has inputted data and now need to change state and upload so server
         //Change the local state:
         let tempUserData = [...userInputData]
         tempUserData[index].isSubmitted = true
@@ -180,15 +190,18 @@ export default function FitnessPlan ({fitnessData}) {
             //server wants oldCurrent.id and .title along with newCurrent.id and .title in body of post method PUT
             let newCurrent = {}
             if(fitnessData.length === (indexToBeDisplayed + 1)) {
-                //Already at end of sessions add alert to user that they have finished
+                //Already at end of sessions
+                setIsFinishedSessionSnackbarOpen(true)
                 newCurrent =  {
                         id: fitnessData[0].id,
-                        title: fitnessData[0].sessionTitle
+                        title: fitnessData[0].sessionTitle,
+                        shortTitle: fitnessData[0].shortTitle
                     }
             } else {
                 newCurrent = {
                         id: fitnessData[indexToBeDisplayed + 1].id,
-                        title: fitnessData[indexToBeDisplayed + 1].sessionTitle
+                        title: fitnessData[indexToBeDisplayed + 1].sessionTitle,
+                        shortTitle: fitnessData[indexToBeDisplayed + 1].shortTitle
                 }
             }
 
@@ -196,7 +209,8 @@ export default function FitnessPlan ({fitnessData}) {
                     type: "plan",
                     oldCurrent: {
                         id: filteredFitnessData.id,
-                        title: filteredFitnessData.sessionTitle
+                        title: filteredFitnessData.sessionTitle,
+                        shortTitle: filteredFitnessData.shortTitle
                     },
                     newCurrent: newCurrent
             }
@@ -211,7 +225,7 @@ export default function FitnessPlan ({fitnessData}) {
             };
 
             fetch("/api/fit", requestOptions)
-                .then(data => console.log("Changed current session", data))
+                .then(() => reloadData())
                 .catch(error => console.log('error', error));
         }
     }
@@ -316,6 +330,16 @@ export default function FitnessPlan ({fitnessData}) {
                     <DataLog fitnessData={[filteredFitnessData]} />
                 </div>
             </Paper>
+            <Snackbar
+                anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'centre',
+                }}
+                open={isFinishedSessionSnackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setIsFinishedSessionSnackbarOpen(false)}
+                message="You have finished all your current sessions"
+            />
         </div>)
     } else {return null}
 }
