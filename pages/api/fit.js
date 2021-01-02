@@ -8,6 +8,26 @@ const graphQLClient = new GraphQLClient(endpoint, {
 });
 
 export default (req, res) => {
+
+    async function fetchPlanData (user) {
+      const findIdQuery = /* GraphQL */
+    `{
+      findId(UserId: "${user}") {
+        _id
+        UserId
+        fitnessPlan{
+          data{
+            _id
+            isCurrent
+            sessionTitle
+            shortTitle
+          }
+        }
+      }
+    }`
+    
+    return await graphQLClient.request(findIdQuery)
+    }
     
     async function modifyCardData(cardData) {
 
@@ -75,29 +95,15 @@ export default (req, res) => {
   }
 
   switch(req.method) {
-  /*case 'GET':
+  case 'GET':
       if(req.query?.id != "null") {
-        fetchUserData(req.query?.id)
-          .then(() => {
-            res.json(serverData)
-            res.statusCode = 200
-          })
-          .catch((error) => {
-            res.json({error: error})
-            res.statusCode = 400
-          })
+        fetchPlanData(req.query?.id)
+          .then((data) => res.status(200).json(data))
+          .catch((data) => res.status(400).json({error: data}))
       } else {
-        res.json({error: "No valid UserId sent"})
-        res.statusCode = 400
+        res.status(400).json({error: "No valid UserId sent"})
       }
     break;
-
-  case 'POST':
-    sendFoodData(req.body)
-    .then((data) => res.status(200).json({id: data.createFoodDiary._id}))
-    .catch((data) => res.status(400).json({error: data}))
-    break;
-*/
   case 'PUT':
     if (req.body.type === "card"){
       modifyCardData(req.body)

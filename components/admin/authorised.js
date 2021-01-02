@@ -23,8 +23,8 @@ import DialogContentText                    from '@material-ui/core/DialogConten
 import DialogTitle                          from '@material-ui/core/DialogTitle';
 import AppBar                               from '@material-ui/core/AppBar';
 import Toolbar                              from '@material-ui/core/Toolbar';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop                             from '@material-ui/core/Backdrop';
+import CircularProgress                     from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
     gridPaper:{
@@ -114,12 +114,42 @@ export default function AuthedArea({userList, setUserList}) {
     const classes = useStyles();
 
     useEffect(()=>{
+        setIsBackDropOpen(true)
         switch(selectedTab) {
             case 0:
-                setTabContents(<FoodDisplay foodData={foodCalenderData}/>)
+                if(foodCalenderData) {
+                    setTabContents(<FoodDisplay foodData={foodCalenderData}/>)
+                } else {
+                    fetch(`/api/food?id=${userSelectBox}`,)
+                    .then(response => response.json())
+                    .then(data => {
+                        let formattedFoodData = data.findId?.foodDiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
+                        setTabContents(<FoodDisplay foodData={formattedFoodData}/>)
+                        setFoodCalenderData(formattedFoodData)
+                        setIsBackDropOpen(false)
+                    })
+                    .catch(error => {
+                        setIsBackDropOpen(false)
+                        console.log(error)
+                    })
+                }   
                 break
             case 1:
-                setTabContents(<FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData} userId={userDatabaseIdLookup(userSelectBox)}/>)
+                if(fitnessProgData){
+                    setTabContents(<FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData} userId={userDatabaseIdLookup(userSelectBox)}/>)
+                } else {
+                    fetch(`/api/fit?id=${userSelectBox}`,)
+                    .then(response => response.json())
+                    .then(data => {
+                        setTabContents(<FitDisplay foodData={data.findId?.fitnessPlan?.data}/>)
+                        setFitnessProgData(data.findId?.fitnessPlan?.data)
+                        setIsBackDropOpen(false)
+                    })
+                    .catch(error => {
+                        setIsBackDropOpen(false)
+                        console.log(error)
+                    })
+                }
                 break
             case 2:
                 setTabContents(<p>This page is work in progress.</p>)
@@ -130,21 +160,7 @@ export default function AuthedArea({userList, setUserList}) {
     }, [selectedTab, fitnessProgData])
 
     const handleSelectChange = (event) => {
-        setIsBackDropOpen(true)
         setUserSelectBox(event.target.value)
-        //add code here to change user data fetch from server
-        fetch(`/api/food?id=${event.target.value}`,)
-            .then(response => response.json())
-            .then(data => {
-                let formattedFoodData = data.findId?.fooddiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
-                setFoodCalenderData(formattedFoodData)
-                setFitnessProgData(data.findId?.fitnessplan?.data)
-                setIsBackDropOpen(false)
-            })
-            .catch(error => {
-                setIsBackDropOpen(false)
-                console.log(error)
-            })
     }
 
     const userDatabaseIdLookup = (userIdToFind) => {

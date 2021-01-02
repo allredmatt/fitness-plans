@@ -18,29 +18,12 @@ export default (req, res) => {
       findId(UserId: "${user}") {
         _id
         UserId
-        fooddiary{
+        foodDiary{
           data{
             _id
             type
             time
             details
-          }
-        }
-        fitnessplan{
-          data{
-            _id
-            isCurrent
-            sessionTitle
-            shortTitle
-            cardInfo {
-              data{
-                _id
-                cardTitle
-                inputDataTypes
-                inputData
-                listOfActivities
-              }
-            }
           }
         }
       }

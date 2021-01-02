@@ -1,7 +1,7 @@
 type User {
   userId: String!
-  fooddiary: [FoodDiary] @relation
-  fitnessplan: [FitPlan] @relation
+  foodDiary: [FoodDiary] @relation
+  fitnessPlan: [FitPlan] @relation
 }
 
 type FoodDiary {
