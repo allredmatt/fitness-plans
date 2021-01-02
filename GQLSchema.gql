@@ -1,33 +1,53 @@
 type User {
-  UserId: String!
+  userId: String!
   fooddiary: [FoodDiary] @relation
   fitnessplan: [FitPlan] @relation
 }
 
 type FoodDiary {
-  UserId: User!
+  userId: User!
   type: String!
   time: Int!
   details: String
 }
 
 type FitPlan {
-  UserId: User!
+  userId: User!
   isCurrent: Boolean!
   sessionTitle: String!
   shortTitle: String!
-  cardInfo: [CardInfo] @relation(name: "Plan_details")
+  cardInfo: [CardInfo] @relation(name: "FitPlan-Card-Link")
 }
 
 type CardInfo {
-  FitPlanId: [FitPlan]! @relation(name: "Plan_details")
+  fitPlanId: [FitPlan]! @relation(name: "FitPlan-Card-Link")
   cardTitle: String!
+  listOfActivities: [Activity]! @relation(name: "Card-Activity-Link")
+}
+
+type UserInputData {
+  userId: User!
   inputDataTypes: [String]
-  inputData: String
-  listOfActivities: [String]!
+  ActivityId: [Activity]! @relation(name: "Input-Activity-Link")
+  Data: [UserData]
+}
+
+type Activity {
+  cardId: [CardInfo]! @relation(name: "Card-Activity-Link")
+  userInputDataId: UserInputData @relation(name: "Input-Activity-Link")
+  primary: String!
+  secondary: String
+  video: String
+}
+
+type UserData @embedded {
+  fitPlanId: FitPlan
+  isSubmitted: Boolean
+  unit: String
+  datum: Float
 }
 
 type Query {
-  findId(UserId: String!): User!
+  findId(userId: String!): User!
   allUsers: [User!]
 }
