@@ -56,6 +56,9 @@ const useAboutStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
+  media:{
+    height: 150
+  }
 }));
 
 const useStyles = makeStyles((theme) => ({
@@ -91,17 +94,18 @@ const About = React.forwardRef((props, ref) => {
   const classes = useAboutStyles();
 
   return (
-    <div ref={ref} > 
+    <div ref={ref} >
+      <Typography gutterBottom variant="h5" component="h2" color="secondary">
+            About us
+      </Typography>
       <Paper className={classes.headCard}>
-        <Typography gutterBottom variant="h5" component="h2" color="primary">
-            About our company...
-        </Typography>
+        
         <Typography gutterBottom variant="h6" color="textPrimary" component="p">
                 Some rubbish about what you do and how great you are.
                 <br />
                 <i>"Excellent personalised service, really helped me feel less hungry. Came up with some excellent ideas of how to exercise with kids."</i>
         </Typography>
-        <Divider />
+        <Divider variant="middle"/>
         <Typography variant="body1" color="textPrimary" component="p">
             Millers fitness are founded on the belief that everyone can attain their potential. We are a husband and wife team who will help you on your journey:
         </Typography>
@@ -162,6 +166,11 @@ const Services = React.forwardRef((props, ref) => {
             </Typography>
             <div className={classes.flexDiv}>
             <Card className={classes.serviceCard1}>
+              <CardMedia
+                className={classes.media}
+                image="/veg.jpg"
+                title="Vegetables"
+              />
               <CardContent>
                   <Typography gutterBottom variant="subtitle2" component="h3">
                     Dietary analysis
@@ -173,6 +182,11 @@ const Services = React.forwardRef((props, ref) => {
               </CardContent>
             </Card>
             <Card className={classes.serviceCard2}>
+              <CardMedia
+                className={classes.media}
+                image="/running.jpg"
+                title="Vegetables"
+              />
               <CardContent>
                   <Typography gutterBottom variant="subtitle2" component="h3">
                     Bespoke fitness plans
@@ -184,6 +198,11 @@ const Services = React.forwardRef((props, ref) => {
               </CardContent>
             </Card>
             <Card className={classes.serviceCard3}>
+              <CardMedia
+                className={classes.media}
+                image="/tape.jpg"
+                title="Vegetables"
+              />
               <CardContent>
                   <Typography gutterBottom variant="subtitle2" component="h3">
                     Combined Service
@@ -203,18 +222,19 @@ const Contacts = React.forwardRef((props, ref) => {
   const classes = useAboutStyles();
 
   return (
-    <div ref={ref}> 
-        <Paper className={classes.headCard}>
-            <Typography gutterBottom variant="h6" component="h1" color='primary'>
+    <div ref={ref}>
+      <Typography gutterBottom variant="h6" component="h1" color='secondary'>
                 Contact Us
-            </Typography>
+      </Typography>
+      <Paper className={classes.headCard}>
+            
             <Typography variant="body1" color="textPrimary" component="p">
                 Please contact us in any of the following way:
             </Typography>
             <IconButton aria-label="Email" className={classes.margin} href="mailto:donotsend@test.com">
               <MailOutlineIcon fontSize="large" />
             </IconButton>
-        </Paper>
+      </Paper>
     </div>
   );
 })
