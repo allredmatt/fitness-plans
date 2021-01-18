@@ -29,3 +29,47 @@ reduce main image in size.
 Google docs.
 
 minutes don't change if form is reopened in food
+
+mutation CreateAUser{
+  createUser(data: {
+    userId: "testUser",
+    userData:{
+      create:[
+        {name: "jogging", inputDataTypes: ["km"]}
+      ]
+    }
+    foodDiary:{
+      create:[
+        {type: "lunch", time: 1609961795, details: "Eat Food"},
+        {type: "dinner", time: 1609961795, details: "Eat More Food"},
+        {type: "training", time: 1609961795, details: "Ran"}
+      ]
+    },
+    fitnessPlan:{
+      create:[
+        {isCurrent: true, sessionTitle: "Session 1", shortTitle: "S1", 
+        cardInfo:{
+          create:[
+            {cardTitle: "", 
+              listOfActivities: {
+                create:[
+                  {primary:"Run", 
+                    secondary:"as fast as you can", 
+                    userInputDataId:{
+                      create:{
+                        name:"running", 
+                        inputDataTypes:["km", "reps"],
+                      }
+                    }}
+                ]
+              }}
+          ]
+        }
+        },
+      ]
+    }
+  })
+  {
+    _id
+  }
+}

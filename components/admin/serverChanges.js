@@ -32,6 +32,7 @@ export async function newSession (userId, sessionTitle, shortTitle, isCurrent) {
     return sendData("session", "POST", raw)
 }
 
+
 export async function deleteCard (id)  {
 
     const raw = JSON.stringify({"DeleteId": id});
@@ -97,6 +98,12 @@ export async function addUser(userId) {
     const raw = JSON.stringify({userId: userId})
 
     return sendData("users", "PUT", raw)
+}
+
+export async function findCard(cardId) {
+    const raw = JSON.stringify({id: cardId})
+
+    return sendData("card", "GET", raw)
 }
 
 async function sendData (path, method, raw) {

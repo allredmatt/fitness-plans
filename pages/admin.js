@@ -17,6 +17,7 @@ import CircularProgress                     from '@material-ui/core/CircularProg
 import Grid                                 from '@material-ui/core/Grid'
 import Select                               from '@material-ui/core/Select'
 import MenuItem                             from '@material-ui/core/MenuItem';
+import {getUserList}                          from '../components/serverFetch'
 
 const useStyles = makeStyles((theme) => ({
     container:{
@@ -59,7 +60,7 @@ export default function Admin () {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        const raw = JSON.stringify({"admin": true, "password": passwordTextInput});
+        const raw = JSON.stringify({"password": passwordTextInput});
         
         const requestOptions = {
         method: 'POST',
@@ -68,7 +69,7 @@ export default function Admin () {
         redirect: 'follow'
         };
 
-        fetch("/api/user", requestOptions)
+        fetch("/api/admin", requestOptions)
             .then(response => response.json())
             .then(data => {
                 setAuthResult(data.isAuth)
@@ -82,26 +83,18 @@ export default function Admin () {
             })
             .catch(error => {
                 console.log('error', error)
-                setSnackBarOpen(true)
+                setSnackBarOpen(true) 
                 setBackdropOpen(false)
             });
     }
 
     const fetchUserListFromAPI = () => {
         
-        const requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-            };
-    
-            fetch("/api/admin/users", requestOptions)
-                .then(response => response.json())
-                .then(data => {
-                    setUserList(data)
-                })
-                .catch(error => {
-                    console.log('error', error)
-                });
+        getUserList()
+            .then(data => setUserList(data))
+            .catch(error => {
+                console.log('error', error)
+            });
     }
 
     if(authResult){

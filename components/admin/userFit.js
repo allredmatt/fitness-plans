@@ -70,7 +70,7 @@ export default function UserFitnessPlan ({fitnessData}) {
                             {fitnessData.sessionTitle}
                 </Typography>
                 <div className={classes.flexDiv}>
-                {fitnessData.cardInfo?.data.map((cardData, index) => 
+                {fitnessData.cardInfo?.map((cardData, index) => 
                     <Card className={classes.card} key={index}>
                         <CardContent >
                             <Typography variant="subtitle2" component="span" >
@@ -78,7 +78,7 @@ export default function UserFitnessPlan ({fitnessData}) {
                             </Typography>
                             <List className={classes.listRoot}>
                                     {cardData.listOfActivities.map((activityString, index) => {
-                                        let activity = JSON.parse(activityString)
+                                        let activity = activityString
                                         return( 
                                         <ListItem key ={"listKey"+index}>
                                             <ListItemText
@@ -122,7 +122,7 @@ export default function UserFitnessPlan ({fitnessData}) {
                                         variant="outlined"
                                         color="primary"
                                     >
-                                        {cardData?.inputDataTypes.length === 0? "Finished" : "Submit"}
+                                       Submit
                                     </Button>
                             </CardActions>
                         </CardContent>

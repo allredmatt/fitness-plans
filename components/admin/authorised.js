@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext }  from 'react';
 import FoodDisplay                          from './foodDisplay'
 import FitDisplay                           from './fitnessDisplay'
-import { addUser }                          from './serverChanges'
 import { makeStyles, withStyles }           from '@material-ui/core/styles';
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
@@ -25,6 +24,7 @@ import AppBar                               from '@material-ui/core/AppBar';
 import Toolbar                              from '@material-ui/core/Toolbar';
 import Backdrop                             from '@material-ui/core/Backdrop';
 import CircularProgress                     from '@material-ui/core/CircularProgress';
+import * as fetchServer                     from '../../components/serverFetch'
 
 const useStyles = makeStyles((theme) => ({
     gridPaper:{
@@ -113,18 +113,25 @@ export default function AuthedArea({userList, setUserList}) {
 
     const classes = useStyles();
 
+    const blankSession = {
+        _id: "noIdYet",
+        sessionTitle: "New Session",
+        shortTitle: "New",
+        isNew: true, 
+    }
+
     useEffect(()=>{
         setIsBackDropOpen(true)
         switch(selectedTab) {
             case 0:
                 if(foodCalenderData) {
-                    setTabContents(<FoodDisplay foodData={foodCalenderData}/>)
+                    setTabContents(<FoodDisplay foodData={foodCalenderData} setIsBackDropOpen={setIsBackDropOpen}/>)
+                    setIsBackDropOpen(false)
                 } else {
-                    fetch(`/api/food?id=${userSelectBox}`,)
-                    .then(response => response.json())
+                    fetchServer.getFoodList(userSelectBox)
                     .then(data => {
-                        let formattedFoodData = data.findId?.foodDiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
-                        setTabContents(<FoodDisplay foodData={formattedFoodData}/>)
+                        let formattedFoodData = data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
+                        setTabContents(<FoodDisplay foodData={formattedFoodData} setIsBackDropOpen={setIsBackDropOpen}/>)
                         setFoodCalenderData(formattedFoodData)
                         setIsBackDropOpen(false)
                     })
@@ -135,14 +142,18 @@ export default function AuthedArea({userList, setUserList}) {
                 }   
                 break
             case 1:
+
                 if(fitnessProgData){
-                    setTabContents(<FitDisplay fitData={fitnessProgData} setFitData={setFitnessProgData} userId={userDatabaseIdLookup(userSelectBox)}/>)
+                    setTabContents(<FitDisplay sessionServerData={fitnessProgData} setSessionServerData={setFitnessProgData} user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} setIsBackDropOpen={setIsBackDropOpen}/>)
+                    setIsBackDropOpen(false)
                 } else {
-                    fetch(`/api/fit?id=${userSelectBox}`,)
-                    .then(response => response.json())
+                    fetchServer.getSessionList(userSelectBox)
                     .then(data => {
-                        setTabContents(<FitDisplay foodData={data.findId?.fitnessPlan?.data}/>)
-                        setFitnessProgData(data.findId?.fitnessPlan?.data)
+                        let serverFitData = data
+                        debugger
+                        serverFitData.push(blankSession)
+                        setTabContents(<FitDisplay sessionServerData={serverFitData} setSessionServerData={setFitnessProgData} user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} setIsBackDropOpen={setIsBackDropOpen}/>)
+                        setFitnessProgData(serverFitData)
                         setIsBackDropOpen(false)
                     })
                     .catch(error => {
@@ -153,9 +164,11 @@ export default function AuthedArea({userList, setUserList}) {
                 break
             case 2:
                 setTabContents(<p>This page is work in progress.</p>)
+                setIsBackDropOpen(false)
                 break
             default:
                 setTabContents(null)
+                setIsBackDropOpen(false)
         }
     }, [selectedTab, fitnessProgData])
 
@@ -164,13 +177,13 @@ export default function AuthedArea({userList, setUserList}) {
     }
 
     const userDatabaseIdLookup = (userIdToFind) => {
-        const index = userList?.findIndex((user) => user.UserId === userIdToFind)
-        return userList[index]._id
+        const index = userList?.findIndex((user) => user.userId === userIdToFind)
+        return {id: userList[index]._id, currentSession: userList[index].currentSession}
     }
 
     const addNewUserToServer = (newUserName) => {
-        addUser(newUserName)
-        .then((data) => setUserList([...userList, {UserId: newUserName, _id: data.id}]))
+        fetchServer.newUser(newUserName, "both")
+        .then((data) => setUserList([...userList, {userId: newUserName, _id: data.id}]))
         setNewUserDialog({isOpen: false})
     }
 
@@ -239,7 +252,7 @@ export default function AuthedArea({userList, setUserList}) {
                             onChange={handleSelectChange}
                             input={<BootstrapInput />}
                             >
-                            {userList.map((user) => <MenuItem key={user._id} value={user.UserId}>{user.UserId}</MenuItem>)}
+                            {userList.map((user) => <MenuItem key={user._id} value={user.userId}>{user.userId}</MenuItem>)}
                         </Select>
                         </Grid>
                         <Grid item xs={5}>
