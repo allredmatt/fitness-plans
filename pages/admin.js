@@ -17,19 +17,24 @@ import CircularProgress                     from '@material-ui/core/CircularProg
 import Grid                                 from '@material-ui/core/Grid'
 import Select                               from '@material-ui/core/Select'
 import MenuItem                             from '@material-ui/core/MenuItem';
+import {getUserList}                          from '../components/serverFetch'
 
 const useStyles = makeStyles((theme) => ({
-    container:{
-      width: '98%',
-      margin: '1.5% 1.5%',
-      height: '100%',
-      backgroundColor: 'white',
-      padding: '5px'
-    },
+
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    container:{
+        width: '97%',
+        margin: '1.5% 1.5% -2%',
+        minHeight: '90vh',
+        backgroundColor: theme.palette.mainBackground
+    },
+    colourBackground:{
+        backgroundColor: theme.palette.mainBackground,
+        minHeight: '98vh',
+    }
 }));
 
 export default function Admin () {
@@ -59,7 +64,7 @@ export default function Admin () {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        const raw = JSON.stringify({"admin": true, "password": passwordTextInput});
+        const raw = JSON.stringify({"password": passwordTextInput});
         
         const requestOptions = {
         method: 'POST',
@@ -68,7 +73,7 @@ export default function Admin () {
         redirect: 'follow'
         };
 
-        fetch("/api/user", requestOptions)
+        fetch("/api/admin", requestOptions)
             .then(response => response.json())
             .then(data => {
                 setAuthResult(data.isAuth)
@@ -82,31 +87,25 @@ export default function Admin () {
             })
             .catch(error => {
                 console.log('error', error)
-                setSnackBarOpen(true)
+                setSnackBarOpen(true) 
                 setBackdropOpen(false)
             });
     }
 
     const fetchUserListFromAPI = () => {
         
-        const requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-            };
-    
-            fetch("/api/admin/users", requestOptions)
-                .then(response => response.json())
-                .then(data => {
-                    setUserList(data)
-                })
-                .catch(error => {
-                    console.log('error', error)
-                });
+        getUserList()
+            .then(data => setUserList(data))
+            .catch(error => {
+                console.log('error', error)
+            });
     }
 
     if(authResult){
         return (
+            <div className={classes.colourBackground}>
             <AuthedArea userList={userList} setUserList={setUserList}/>
+            </div>
         )
     } else {
         return (
@@ -126,7 +125,7 @@ export default function Admin () {
                 </Paper>
                 <Snackbar 
                     open={snackBarOpen} 
-                    utoHideDuration={2000} 
+                    AutoHideDuration={2000} 
                     onClose={() => {setSnackBarOpen(false)}} 
                     message="Log in unsuccessful"
                     color="rgb(255, 152, 0)"

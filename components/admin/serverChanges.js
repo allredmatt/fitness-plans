@@ -99,6 +99,12 @@ export async function addUser(userId) {
     return sendData("users", "PUT", raw)
 }
 
+export async function findCard(cardId) {
+    const raw = JSON.stringify({id: cardId})
+
+    return sendData("card", "GET", raw)
+}
+
 async function sendData (path, method, raw) {
     const requestOptions = {
             method: method,

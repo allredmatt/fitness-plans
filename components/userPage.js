@@ -3,18 +3,13 @@ import { makeStyles }                       from '@material-ui/core/styles';
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
 import Typography                           from '@material-ui/core/Typography';
-import CardMedia                            from '@material-ui/core/CardMedia';
-import Button                               from '@material-ui/core/Button';
-import TextField                            from '@material-ui/core/TextField';
-import AccountCircleRoundedIcon             from '@material-ui/icons/AccountCircleRounded';
-import Switch                               from '@material-ui/core/Switch';
-import FormControlLabel                     from '@material-ui/core/FormControlLabel';
 import Paper                                from '@material-ui/core/Paper';
 import Grid                                 from '@material-ui/core/Grid'
-import FoodCalendar                         from './foodCalendar.js';
-import FitnessPlan                          from './fitnessPlan.js';
-import DataLog                              from './dataLog';
+import FoodCalendar                         from './foodPage/foodCalendar.js';
+import FoodFeedback                         from './foodFeedback'
+import FitnessPlan                          from './fitnessPage/fitnessPlan.js';
 import AllSessions                          from './allSessions'
+import * as serverFetch                     from './serverFetch'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -27,115 +22,161 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
+    //padding: 'auto',
     color: theme.palette.primary.main,
-    minHeight: "35px"
+    minHeight: "35px",
+    height: '100%'
   },
+  iframePaper: {
+    padding: theme.spacing(0.5),
+    textAlign: 'center',
+  },
+  iframe:{
+    width: '100%',
+    border: 0,
+    minHeight: '50vh'
+  }
 }));
 
-export default function UserPage({user, pageToShow, setPageToShow}) {
+const testPath = "https://docs.google.com/document/d/e/2PACX-1vQYsv6-xmLMZIteNTnjmZqUNm9Rn3bGZjsZ6Eq2dzHFZ3x5FtLVJ-8gdAhOtiYZdNkIzUJ4Yct_jm-s/pub"
+
+export default function UserPage({user, pageToShow, setPageToShow, setShowBackDrop}) {
   
   const classes = useStyles();
+  
+  const LoadingPage = () => 
+    <Card className={classes.headCard}>
+      <CardContent>
+          <Typography gutterBottom variant="body1" color="textPrimary" component="p">
+              You are logged in as user: <i>{user.name}  </i>loading your data...
+          </Typography>
+      </CardContent>
+    </Card>
 
-  const [textBoxValue, setTextBoxValue] = useState('');
-  const [rememberId, setRememberId] = useState(false);
   const [foodCalenderData, setFoodCalenderData] = useState();
-  const [fitnessProgData, setFitnessProgData] = useState([]);
-  const [accountDetailsPage, setAccountDetailsPage] = useState(
-                                                                <Card className={classes.headCard}>
-                                                                <CardContent>
-                                                                    <Typography gutterBottom variant="body1" color="textPrimary" component="p">
-                                                                        You are logged in as user: <i>{user.name}  </i>loading your data...
-                                                                    </Typography>
-                                                                </CardContent>
-                                                                </Card>)
-
-  const fetchServerData = () => {
-      fetch(`/api/food?id=${user.name}`,)
-      .then(response => response.json())
-      .then(data => {
-        let formattedFoodData = data.findId?.fooddiary?.data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
-        setFoodCalenderData(formattedFoodData)
-        let formattedFitnessData = data.findId?.fitnessplan?.data.map((entry) => {
-          return(
-            {
-              id: entry._id, 
-              isCurrent: entry.isCurrent, 
-              sessionTitle: entry.sessionTitle,
-              cardInfo: entry.cardInfo.data,
-              shortTitle: entry.shortTitle
-            })})
-        setFitnessProgData(formattedFitnessData)
-      })
-      .catch(error => console.log(error))
-
-      //Check local storage to see if page has been loaded before and set pageToShow to persist correct area.
-      if(localStorage.getItem('pageToShow') ){
-        setPageToShow(localStorage.getItem('pageToShow'))
-      }
-  }
+  const [fitnessSessionList, setFitnessSessionList] = useState();
+  const [accountDetailsPage, setAccountDetailsPage] = useState(<LoadingPage />)
 
   useEffect (()=> {
-    //On first load - fetch data from server
-    fetchServerData()
+    //On first load - check to see if a page have been loaded before
+    if(localStorage.getItem('pageToShow') ){
+      setPageToShow(localStorage.getItem('pageToShow'))
+    } else {
+      setShowBackDrop(false)
+    }
   }, [])
 
   useEffect (()=> {
+    setShowBackDrop(true)
     //If data changes then re-render sub-pages page.
     //Sets page to show when users changes page to show.
       switch(pageToShow){
         case "food":
-          setAccountDetailsPage(
-            <FoodCalendar 
-              userId={user.id} 
-              foodData={foodCalenderData} 
-              setFoodData={setFoodCalenderData}
-            />
-          )
+          if(foodCalenderData) {
+            setAccountDetailsPage(
+              <FoodCalendar 
+                user={user} 
+                foodData={foodCalenderData} 
+                setFoodData={setFoodCalenderData}
+                setShowBackDrop={setShowBackDrop}
+              />
+            )
+          } else {
+            serverFetch.getFoodList(user.name)
+              .then((data) => {
+                let tempFoodData = data.map(entry => {
+                    return(
+                      {id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time)}
+                    )
+                })
+                setFoodCalenderData(tempFoodData)
+                setAccountDetailsPage(
+                  <FoodCalendar 
+                    user={user} 
+                    foodData={tempFoodData} 
+                    setFoodData={setFoodCalenderData}
+                    setShowBackDrop={setShowBackDrop}
+                  />
+                )
+              })
+              .catch((error) => console.log("Error fetching food data:", error))
+          }
           break;
         case "plan":
-          setAccountDetailsPage(
-            <FitnessPlan 
-                    fitnessData={fitnessProgData} reloadData={fetchServerData}
+          if(fitnessSessionList){
+            setAccountDetailsPage(
+              <FitnessPlan 
+                fitnessData={fitnessSessionList} user={user} setShowBackDrop={setShowBackDrop}
+              />
+            )
+          } else {
+            serverFetch.getSessionList(user.name)
+              .then((data) => {
+                setFitnessSessionList(data)
+                setAccountDetailsPage(
+                  <FitnessPlan 
+                    fitnessData={data} user={user} setShowBackDrop={setShowBackDrop}
                   />
-          )
+                )
+              })
+              .catch((error) => console.log("Error fetching fitness plan data:", error))
+          }
           break;
         case "whole":
-          setAccountDetailsPage(
-            <AllSessions 
-                    fitnessData={fitnessProgData}
+          if(fitnessSessionList){
+            setAccountDetailsPage(
+              <AllSessions 
+                fitnessData={fitnessSessionList} setShowBackDrop={setShowBackDrop}
+              />
+            )
+          } else {
+            serverFetch.getSessionList(user.name)
+              .then((data) => {
+                setFitnessSessionList(data)
+                setAccountDetailsPage(
+                  <AllSessions 
+                    fitnessData={data} setShowBackDrop={setShowBackDrop}
                   />
-          )
+                )
+              })
+              .catch((error) => console.log("Error fetching fitness plan data:", error))
+          }
           break;
+        case 'feedback':
+          setAccountDetailsPage(<FoodFeedback user={user} />)
+          setShowBackDrop(false)
+          break
         default:
+          setShowBackDrop(false)
           setAccountDetailsPage(null)
       }
       localStorage.setItem('pageToShow', pageToShow);
-  }, [foodCalenderData, fitnessProgData, pageToShow])
+  }, [pageToShow, foodCalenderData])
 
 
   return (
     <div className={classes.container}>
-      <Grid container spacing={3} className={classes.bottomMargin}>
+      <Grid container spacing={3} alignItems="stretch" className={classes.bottomMargin} >
         <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("food")}>
-            <Typography variant="h5">Food Diary</Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("feedback")}>
-            <Typography variant="h5">Food Feedback</Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("plan")}>
-            <Typography variant="h5">Daily Plan</Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={6} sm={3}>
-            <Paper className={classes.paper} button="true" onClick={() => setPageToShow("whole")}>
-            <Typography variant="h5">Overall Plan</Typography>
-            </Paper>
-          </Grid>  
+          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("food")}>
+          <Typography variant="h5">Food Diary</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("feedback")}>
+          <Typography variant="h5">Food Feedback</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("plan")}>
+          <Typography variant="h5">Daily Plan</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("whole")}>
+          <Typography variant="h5">Overall Plan</Typography>
+          </Paper>
+        </Grid>  
       </Grid>
       {accountDetailsPage}
     </div>
