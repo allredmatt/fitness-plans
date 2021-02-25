@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext }  from 'react';
 import FoodDisplay                          from './foodDisplay'
 import FitDisplay                           from './fitnessDisplay'
+import FoodFeedbackInput                    from './foodFeedback'
 import { makeStyles, withStyles }           from '@material-ui/core/styles';
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
@@ -34,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
     gridPaperFlex:{
         display: 'flex',
         padding: theme.spacing(1),
-        height: "42px",
     },
     gridFlex:{
         display: 'flex',
@@ -130,7 +130,7 @@ export default function AuthedArea({userList, setUserList}) {
                 } else {
                     fetchServer.getFoodList(userSelectBox)
                     .then(data => {
-                        let formattedFoodData = data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time*1000)})})
+                        let formattedFoodData = data.map((entry) => {return({id: entry._id, details: entry.details, type: entry.type, time: new Date(entry.time)})})
                         setTabContents(<FoodDisplay foodData={formattedFoodData} setIsBackDropOpen={setIsBackDropOpen}/>)
                         setFoodCalenderData(formattedFoodData)
                         setIsBackDropOpen(false)
@@ -142,17 +142,24 @@ export default function AuthedArea({userList, setUserList}) {
                 }   
                 break
             case 1:
-
                 if(fitnessProgData){
-                    setTabContents(<FitDisplay sessionServerData={fitnessProgData} setSessionServerData={setFitnessProgData} user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} setIsBackDropOpen={setIsBackDropOpen}/>)
-                    setIsBackDropOpen(false)
+                    if(fitnessProgData[fitnessProgData.length - 1].isNew){
+                        setTabContents(<FitDisplay sessionServerData={fitnessProgData} setSessionServerData={setFitnessProgData} user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} setIsBackDropOpen={setIsBackDropOpen}/>)
+                        setIsBackDropOpen(false)
+                    } else {
+                        setFitnessProgData(fitnessProgData.concat([{...blankSession}]))
+                    }
                 } else {
                     fetchServer.getSessionList(userSelectBox)
                     .then(data => {
                         let serverFitData = data
-                        debugger
-                        serverFitData.push(blankSession)
-                        setTabContents(<FitDisplay sessionServerData={serverFitData} setSessionServerData={setFitnessProgData} user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} setIsBackDropOpen={setIsBackDropOpen}/>)
+                        serverFitData.push({...blankSession})
+                        setTabContents(<FitDisplay 
+                                            sessionServerData={serverFitData} 
+                                            setSessionServerData={setFitnessProgData} 
+                                            user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} 
+                                            setIsBackDropOpen={setIsBackDropOpen}
+                                            />)
                         setFitnessProgData(serverFitData)
                         setIsBackDropOpen(false)
                     })
@@ -163,7 +170,7 @@ export default function AuthedArea({userList, setUserList}) {
                 }
                 break
             case 2:
-                setTabContents(<p>This page is work in progress.</p>)
+                setTabContents(<FoodFeedbackInput user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} />)
                 setIsBackDropOpen(false)
                 break
             default:
@@ -171,6 +178,11 @@ export default function AuthedArea({userList, setUserList}) {
                 setIsBackDropOpen(false)
         }
     }, [selectedTab, fitnessProgData])
+
+    useEffect(() => {
+        setSelectedTab(null)
+        setFitnessProgData(null)
+    }, [userSelectBox])
 
     const handleSelectChange = (event) => {
         setUserSelectBox(event.target.value)

@@ -15,8 +15,8 @@ export default function sessionAPI (req, res) {
             break
         case 'POST':
             newSession(req.body)
-                .then((data) => res.status(200).json(data))
-                .catch(() => res.status(401).json({error: "User does not exist"}))
+                .then((data) => res.status(200).json(data.createFitPlan))
+                .catch((error) => res.status(401).json(error))
             break
         default:
             res.setHeader('Allow', ['GET', 'POST'])

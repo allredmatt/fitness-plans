@@ -19,7 +19,7 @@ const useAboutStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   bannerImage: {
-    height: 640,
+    height: 420,
   },
   profileImage: {
     height: 200,
@@ -72,7 +72,8 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(1),
     },
     bannerImage:{
-      width: "100%"
+      width: "100%",
+      height: "640px",
     }
   }));
 
@@ -95,11 +96,10 @@ const About = React.forwardRef((props, ref) => {
 
   return (
     <div ref={ref} >
-      <Typography gutterBottom variant="h5" component="h2" color="secondary">
+      <Paper className={classes.headCard}>
+        <Typography gutterBottom variant="h5" component="h2" color="secondary">
             About us
       </Typography>
-      <Paper className={classes.headCard}>
-        
         <Typography gutterBottom variant="h6" color="textPrimary" component="p">
                 Some rubbish about what you do and how great you are.
                 <br />
@@ -223,15 +223,14 @@ const Contacts = React.forwardRef((props, ref) => {
 
   return (
     <div ref={ref}>
-      <Typography gutterBottom variant="h6" component="h1" color='secondary'>
+      <Paper className={classes.headCard}>
+            <Typography gutterBottom variant="h6" component="h1" color='secondary'>
                 Contact Us
       </Typography>
-      <Paper className={classes.headCard}>
-            
             <Typography variant="body1" color="textPrimary" component="p">
                 Please contact us in any of the following way:
             </Typography>
-            <IconButton aria-label="Email" className={classes.margin} href="mailto:donotsend@test.com">
+            <IconButton aria-label="Email" className={classes.margin} href="mailto:millersfitnessandnutrition@gmail.com">
               <MailOutlineIcon fontSize="large" />
             </IconButton>
       </Paper>

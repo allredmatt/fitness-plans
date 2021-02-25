@@ -11,12 +11,12 @@ export default function userAPI (req, res) {
         case 'GET':
             userDataById(dataId)
                 .then((data) => res.status(200).json(data))
-                .catch(() => res.status(401).json({error: "No user data with ID given"}))
+                .catch((error) => res.status(401).json({error: "No user data with ID given", info: error}))
             break
         case 'PUT':
             modifyUserData(dataId, req.body)
                 .then((data) => res.status(200).json(data))
-                .catch(() => res.status(401).json({error: "No user data with ID given"}))
+                .catch((error) => res.status(401).json({error: "No user data with ID given", info: error}))
             break
         case 'DELETE':
             deleteUserData(dataId)

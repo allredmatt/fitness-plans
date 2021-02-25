@@ -1,6 +1,6 @@
-import Paper from '@material-ui/core/Paper';
-import DataLog from "./dataLog";
-import { makeStyles } from '@material-ui/core/styles';
+import Paper                    from '@material-ui/core/Paper';
+import DataLog                  from "./fitnessPage/dataLog";
+import { makeStyles }           from '@material-ui/core/styles';
 import { useState, useEffect }  from "react";
 import useMediaQuery            from '@material-ui/core/useMediaQuery';
 import Accordion                from '@material-ui/core/Accordion';
@@ -21,11 +21,18 @@ import TextField                from '@material-ui/core/TextField';
 import InputAdornment           from '@material-ui/core/InputAdornment';
 import IconButton               from '@material-ui/core/IconButton';
 import Divider                  from '@material-ui/core/Divider';
+import Tabs                     from '@material-ui/core/Tabs';
+import Tab                      from '@material-ui/core/Tab';
+import Box                      from '@material-ui/core/Box';
+import UserFitnessPlan          from './fitnessPage/userFit'
+import * as serverFetch         from './serverFetch'
+import { getNullableType } from 'graphql';
 
 
-export default function AllSessions ({fitnessData}) {
+export default function AllSessions ({fitnessData, setShowBackDrop}) {
     
-    const minWidth700 = useMediaQuery('(min-width:700px)');
+    const minWidth1000 = useMediaQuery('(min-width:1000px)');
+    const minWidth1300 = useMediaQuery('(min-width:1300px)')
 
     const useStyles = makeStyles((theme) => ({
         bottomMargin:{
@@ -39,100 +46,97 @@ export default function AllSessions ({fitnessData}) {
             width: '100%',
             marginBottom: theme.spacing(2)
             },
-            heading: {
+        heading: {
             fontSize: theme.typography.pxToRem(15),
             fontWeight: theme.typography.fontWeightRegular,
-            },
-            flex: {
+        },
+        flex: {
             display: 'flex',
             paddingLeft: theme.spacing(1),
             width: '100%',
             flexGrow: '1'
-            },
-            padLeft:{
+        },
+        padLeft:{
             paddingLeft: theme.spacing(1)
-            },
-            chartDiv: {
+        },
+        chartDiv: {
             width: '100%',
             flexGrow: '1'
-            },
-            accord: {
-                display: 'flex',
-                flexDirection: minWidth700? "row" : "column",
-                minWidth: '180px'
-            },
-            card: {
+        },
+        accord: {
+            display: 'flex',
+            flexDirection: minWidth1300? "row" : "column",
+            minWidth: '180px'
+        },
+        card: {
             backgroundColor: theme.palette.background.paper,
             margin: theme.spacing(1),
         },
+        tabs:{
+            minWidth: "130px"
+        }
         }));
 
 
     const classes = useStyles();
 
-    let cardData = fitnessData[0]?.cardInfo[0] || null
-
+    setShowBackDrop(false)
+        //Add data log still
     return (
         <Paper className={classes.paper}>
 
             <Typography gutterBottom variant="h5" component="h2"> 
               All your workout session and logged data
             </Typography>
-            <AllSessionList fitnessData={fitnessData} classes={classes}/>
-            <DataLog fitnessData={fitnessData} />
+            <AllSessionList fitnessData={fitnessData} classes={classes} minWidthLarge={minWidth1000} minWidthXL={minWidth1300}/>
+            <DataLog fitnessData={[]} />
         </Paper>
     )
 }
 
-function AllSessionList ({fitnessData, classes}) {
+function AllSessionList ({fitnessData, classes, minWidthLarge, minWidthXL}) {
+
+    const [tabValue, setTabValue] = useState(0)
+    const [currentFitnessPlan, setCurrentFitnessPlan] = useState()
+
+    useEffect(()=> {
+        //Load data for current session chosen by tab from Tabs
+        serverFetch.getSessionById(fitnessData[tabValue]?._id)
+            .then(data => {
+                setCurrentFitnessPlan(data)
+                setShowBackDrop(false)
+            })
+            .catch(error => console.log("Error fetching session data:", error))
+    }, [tabValue])
 
     return(
-        <div className={classes.root}>
-                    <Typography gutterBottom variant="subtitle2" component="span">
-                        All your workout sessions
-                    </Typography>
-                    {fitnessData?.map((element) =>
-                        <Accordion key={element.id}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel-content"
-                            id="panel-header"
-                        >
-                            <Typography className={classes.heading}>{element.sessionTitle}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails className={classes.accord}>
-                               { element.cardInfo.map((cardData, index) => 
-                               <Card className={classes.card} key={index}>
-                               <CardContent >
-                                   <Typography variant="subtitle2" component="span" >
-                                       {cardData.cardTitle}
-                                   </Typography>
-                                   <List className={classes.listRoot}>
-                                           {cardData.listOfActivities.map((activityString, index) => {
-                                               let activity = JSON.parse(activityString)
-                                               return( 
-                                               <ListItem key ={"listKey"+index}>
-                                                   <ListItemText
-                                                   className={classes.listItem}
-                                                   primary={activity.primary}
-                                                   secondary={activity.secondary}
-                                                   />
-                                                   {Boolean(activity.video) && 
-                                                   <ListItemSecondaryAction>
-                                                       <IconButton edge="end" aria-label="youtube-link" target="_blank" href={activity.video}>
-                                                       <YouTubeIcon  />
-                                                       </IconButton>
-                                                   </ListItemSecondaryAction>}
-                                               </ListItem>
-                                               )
-                                           })}
-                                   </List>                                
-                               </CardContent>
-                           </Card>
-                               )}
-                        </AccordionDetails>
-                        </Accordion>
-                        )}         
+        <div className={classes.accord}>
+            <Tabs
+                className={classes.tabs}
+                value={tabValue}
+                onChange={(event, newValue) => setTabValue(newValue)}
+                indicatorColor="primary"
+                textColor="primary"
+                orientation={minWidthXL? "vertical" : "horizontal"}
+                variant={minWidthXL? "scrollable" : "fullWidth" }
+                aria-label="session tabs"
+            >
+                {fitnessData.map( (session, index) => 
+                    <Tab label={session.sessionTitle} key={session._id} id={`tab-index-${index}`} aria-controls={`tab-panel-${session.shortTitle}`}/>
+                )}
+            </Tabs>
+            <Divider orientation="vertical"/>
+            <UserFitnessPlan 
+                fitnessData={currentFitnessPlan}
+                setFitnessData={setCurrentFitnessPlan} 
+                userInputData={[]} 
+                handleCardChange={() => null} 
+                saveToInputToServer={() => null} 
+                handleNextClick={() => null} 
+                handlePreviousClick={() => null}
+                flexDirection={minWidthLarge? "row" : "column"}
+                allSessionsRendered={true}
+            />
         </div>
     )
 }

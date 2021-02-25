@@ -3,6 +3,7 @@ type User {
   foodDiary: [FoodDiary] @relation
   fitnessPlan: [FitPlan] @relation
   userData: [UserInputData] @relation
+  foodFeedback: String
   currentSession: String
   subscriptionType: String!
 }
@@ -10,7 +11,7 @@ type User {
 type FoodDiary {
   userId: User!
   type: String!
-  time: Int!
+  time: String!
   details: String
 }
 
@@ -29,8 +30,8 @@ type CardInfo @embedded{
 }
 
 type Activity @embedded {
-  userInputDataId: [String]
-  datum: [Float]
+  userInputDataId: [Int]
+  datum: [String]
   units: [String]
   primary: String!
   secondary: String
@@ -40,6 +41,7 @@ type Activity @embedded {
 type UserInputData {
   userId: User!
   name: String!
+  customId: Int!
   inputDataUnit: String!
   inputtedData: [UserData]
 }
@@ -47,10 +49,11 @@ type UserInputData {
 type UserData @embedded {
   sessionId: String!
   shortTitle: String!
-  datum: Float!
+  datum: String!
 }
 
 type Query {
   findId(userId: String!): User!
+  findUserInput(customId: Int!): UserInputData
   allUsers: [User!]
 }

@@ -1,4 +1,6 @@
 const { GraphQLClient } = require('graphql-request')
+const { userDataById } = require('./query')
+
 const endpoint = 'https://graphql.fauna.com/graphql'
 const FAUNA_KEY = process.env.FAUNA_KEY
 const graphQLClient = new GraphQLClient(endpoint, {
@@ -10,7 +12,7 @@ const graphQLClient = new GraphQLClient(endpoint, {
 export async function modifyFoodDataById(foodId, foodData) {
   
     const mutation = /* GraphQL */ `
-    mutation updateFoodDiary($id: ID!, $type: String!, $time: Int!, $details: String!) {
+    mutation updateFoodDiary($id: ID!, $type: String!, $time: String!, $details: String!) {
         updateFoodDiary(
             id: $id
             data:{
@@ -50,10 +52,10 @@ export async function deleteFoodDataById(id) {
     return await graphQLClient.request(mutation, variables);
 }
 
-export async function createFoodData(foodData) {
+export async function createFoodData(userId, foodData) {
   
     const mutation = /* GraphQL */ `
-    mutation createFoodDiary($id: ID!, $type: String!, $time: Int!, $details: String!) {
+    mutation createFoodDiary($id: ID!, $type: String!, $time: String!, $details: String!) {
         createFoodDiary(
             data:{
                 type: $type,
@@ -77,6 +79,48 @@ export async function createFoodData(foodData) {
     const data = await graphQLClient.request(mutation, variables);
 
     return data
+}
+
+export async function modifyFoodFeedback (userId, link) {
+  //Read data for user first
+  const findIdQuery = /* GraphQL */
+    `{
+        findId(userId: "${userId}") {
+          _id
+          currentSession
+          subscriptionType
+          currentSession
+        }
+    }`
+    let returnedData
+  try { returnedData = await graphQLClient.request(findIdQuery) }
+  catch ( error ) { return {error: error} }
+
+  //When data is returned then use this data with food data in body to amend user
+  const mutation = /* GraphQL */ `
+    mutation updateUserInputData($id: ID!, $userId: String!, $subscriptionType: String!, $currentSession: String, $foodFeedback: String) {
+    updateUser(
+          id: $id
+          data:{
+              userId: $userId,
+              subscriptionType: $subscriptionType,
+              currentSession: $currentSession,
+              foodFeedback: $foodFeedback
+          }
+      ) {
+      _id
+      }
+    }
+  `
+  const variables = {
+    "id": returnedData.findId._id,
+    "userId": userId,
+    "subscriptionType": returnedData.findId.subscriptionType,
+    "currentSession": returnedData.findId.currentSession,
+    "foodFeedback": link
+  }
+
+  return await graphQLClient.request(mutation, variables);
 }
 
 export async function modifySessionById(sessionId, sessionData) {
@@ -137,18 +181,14 @@ export async function newSession(sessionData) {
     $userId: ID!,
     $sessionTitle: String!,
     $shortTitle: String!,
-    $rating: Int,
-    $notes: String,
     $cardInfo: [CardInfoInput]!
     ) {
       createFitPlan(
           data:{
-            userId: {connect: userId},
-            sessionTitle: sessionTitle,
-            shortTitle: shortTitle,
-            rating: rating,
-            notes: notes,
-            cardInfo: cardInfo
+            userId: {connect: $userId},
+            sessionTitle: $sessionTitle,
+            shortTitle: $shortTitle,
+            cardInfo: $cardInfo
           }
       ) {
       _id
@@ -157,10 +197,10 @@ export async function newSession(sessionData) {
   `
   const variables = {
     "userId": sessionData.user_id,
+    "sessionTitle": sessionData.sessionTitle,
     "shortTitle": sessionData.shortTitle,
-    "rating": sessionData.rating,
-    "notes": sessionData.notes,
     "cardInfo": sessionData.cardInfo
+    
   }
   return await graphQLClient.request(mutation, variables);
 }
@@ -168,7 +208,7 @@ export async function newSession(sessionData) {
 export async function addUser(userId, subscriptionType) {
   
   const mutation = /* GraphQL */ `
-  mutation createUser($userId: String!, subscriptionType: String!) {
+  mutation createUser($userId: String!, $subscriptionType: String!) {
       createUser(
           data: {
             userId: $userId,
@@ -190,11 +230,12 @@ export async function addUser(userId, subscriptionType) {
 export async function newUserData(inputData) {
   
   const mutation = /* GraphQL */ `
-  mutation createUser($userId: String!, subscriptionType: String!) {
+  mutation createUserInput($userId: ID!, $name: String!, $customId: Int! ,$inputDataUnit: String!) {
       createUserInputData(
           data: {
-            userId: $userId,
+            userId: {connect: $userId},
             name: $name,
+            customId: $customId,
             inputDataUnit: $inputDataUnit,
             }
       ) {
@@ -205,13 +246,14 @@ export async function newUserData(inputData) {
   const variables = {
   "userId": inputData.userId,
   "name": inputData.name,
-  "userInputUnit": inputData.unit
+  "customId": inputData.customId,
+  "inputDataUnit": inputData.unit
   }
   
   return await graphQLClient.request(mutation, variables);
 }
 
-export async function deleteUserData(userDataId) {
+async function deleteUserDataById (userDataId) {
   const mutation = /* GraphQL */ `
   mutation deleteUserInputData($id: ID!) {
     deleteUserInputData(
@@ -222,22 +264,22 @@ export async function deleteUserData(userDataId) {
     }
   `
   const variables = {
-  "id": sessionId
+  "id": userDataId
   }
   
   return await graphQLClient.request(mutation, variables);
 }
 
-export async function modifyUserData(dataId, userInputData) {
+async function modifyUserDataById(dataId, userInputData) {
   const mutation = /* GraphQL */ `
-    mutation updateUserInputData($id: ID!, $name: String!, $inputDataUnit: String!, $inputtedData: [UserData], $userId: User!) {
+    mutation updateUserInputData($id: ID!, $name: String!, $customId: Int! ,$inputDataUnit: String!, $inputtedData: [UserDataInput]) {
       updateUserInputData(
             id: $id
             data:{
                 name: $name,
                 inputDataUnit: $inputDataUnit,
+                customId: $customId,
                 inputtedData: $inputtedData,
-                userId: $userId
             }
         ) {
         _id
@@ -247,9 +289,9 @@ export async function modifyUserData(dataId, userInputData) {
     const variables = {
     "id": dataId,
     "name": userInputData.name,
+    "customId": parseInt(userInputData.customId),
     "inputDataUnit": userInputData.inputDataUnit,
     "inputtedData": userInputData.inputtedData,
-    "userId": userInputData.userId
     }
     return await graphQLClient.request(mutation, variables);
 }
@@ -262,7 +304,7 @@ export async function modifyUser (user_id, userData) {
           data:{
               userId: $userId,
               subscriptionType: $subscriptionType,
-              currentSession: $currentSession
+              currentSession: $currentSession,
           }
       ) {
       _id
@@ -287,8 +329,35 @@ export async function changeCurrentSession (user_id, newSessionId) {
       }
   }`
 
-  let data = await graphQLClient.request(findIdQuery)
+  let data = await graphQLClient.request(findUserByID)
   console.log({...data.findUserByID, currentSession: newSessionId})
   return modifyUser(user_id, {...data.findUserByID, currentSession: newSessionId})
 
+}
+
+export async function modifyUserData (customId, body) {
+
+  let returnedData = await userDataById(customId)
+
+  let data = returnedData.findUserInput
+
+  return await modifyUserDataById(
+    data._id,
+    {
+      name: data.name,
+      customId: customId,
+      inputDataUnit: data.inputDataUnit,
+      inputtedData: data.inputtedData.concat([body]),
+    }
+  )
+
+}
+
+export async function deleteUserData (customId) {
+
+  let returnedData = await userDataById(customId)
+
+  let data = returnedData.findUserInput
+
+  return await deleteUserDataById(data._id)
 }

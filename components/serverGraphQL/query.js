@@ -52,6 +52,17 @@ export async function foodDataById(foodId) {
     return await graphQLClient.request(findIdQuery)
 }
 
+export async function foodFeedback(userId) {
+    const findIdQuery = /* GraphQL */
+    `{
+        findId(userId: "${userId}") {
+            foodFeedback
+        }
+    }`
+
+    return await graphQLClient.request(findIdQuery)
+}
+
 export async function sessionDataList (userId) {
     const findIdQuery = /* GraphQL */
     `{
@@ -103,7 +114,13 @@ export async function userDataList(userId) {
                 data{
                     _id
                     name
+                    customId
                     inputDataUnit
+                    inputtedData{
+                        sessionId
+                        shortTitle
+                        datum
+                    }
                 }
             }
         }
@@ -112,11 +129,12 @@ export async function userDataList(userId) {
     return await graphQLClient.request(findIdQuery)
 }
 
-export async function userDataById(userDataId) {
+export async function userDataById(customDataId) {
 
     const findIdQuery = /* GraphQL */
     `{
-        findUserInputDataByID(id: "${userDataId}") {
+        findUserInput(customId: ${customDataId}) {
+            _id
             name
             inputDataUnit
             inputtedData{

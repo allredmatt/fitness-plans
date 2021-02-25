@@ -14,9 +14,9 @@ export default function foodAPI (req, res) {
                 .catch(() => res.status(401).json({error: "User does not exist"}))
             break
         case 'POST':
-            createFoodData(req.body)
+            createFoodData(id, req.body)
                 .then((data) => res.status(200).json({id: data.createFoodDiary._id}))
-                .catch(() => res.status(401).json({error: "User does not exist"}))
+                .catch((error) => res.status(401).json({error: error}))
             break
         default:
             res.setHeader('Allow', ['GET', 'POST'])

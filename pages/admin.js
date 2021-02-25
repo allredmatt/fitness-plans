@@ -20,17 +20,21 @@ import MenuItem                             from '@material-ui/core/MenuItem';
 import {getUserList}                          from '../components/serverFetch'
 
 const useStyles = makeStyles((theme) => ({
-    container:{
-      width: '98%',
-      margin: '1.5% 1.5%',
-      height: '100%',
-      backgroundColor: 'white',
-      padding: '5px'
-    },
+
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    container:{
+        width: '97%',
+        margin: '1.5% 1.5% -2%',
+        minHeight: '90vh',
+        backgroundColor: theme.palette.mainBackground
+    },
+    colourBackground:{
+        backgroundColor: theme.palette.mainBackground,
+        minHeight: '98vh',
+    }
 }));
 
 export default function Admin () {
@@ -99,7 +103,9 @@ export default function Admin () {
 
     if(authResult){
         return (
+            <div className={classes.colourBackground}>
             <AuthedArea userList={userList} setUserList={setUserList}/>
+            </div>
         )
     } else {
         return (
@@ -119,7 +125,7 @@ export default function Admin () {
                 </Paper>
                 <Snackbar 
                     open={snackBarOpen} 
-                    utoHideDuration={2000} 
+                    AutoHideDuration={2000} 
                     onClose={() => {setSnackBarOpen(false)}} 
                     message="Log in unsuccessful"
                     color="rgb(255, 152, 0)"

@@ -1,18 +1,21 @@
-import Main                                 from '../components/pageWrapper.js'
-import UserPage                             from '../components/userPage.js'
-import { useState, useEffect}               from 'react';
-import { makeStyles }                       from '@material-ui/core/styles';
-import Card                                 from '@material-ui/core/Card';
-import CardContent                          from '@material-ui/core/CardContent';
-import Typography                           from '@material-ui/core/Typography';
-import CardMedia                            from '@material-ui/core/CardMedia';
-import Button                               from '@material-ui/core/Button';
-import TextField                            from '@material-ui/core/TextField';
-import AccountCircleRoundedIcon             from '@material-ui/icons/AccountCircleRounded';
-import Switch                               from '@material-ui/core/Switch';
-import FormControlLabel                     from '@material-ui/core/FormControlLabel';
-import Snackbar                             from '@material-ui/core/Snackbar';
-import MuiAlert                             from '@material-ui/lab/Alert';
+import Main                                     from '../components/pageWrapper.js'
+import UserPage                                 from '../components/userPage.js'
+import { useState, useEffect }                  from 'react';
+import { makeStyles }                           from '@material-ui/core/styles';
+import Card                                     from '@material-ui/core/Card';
+import CardContent                              from '@material-ui/core/CardContent';
+import Typography                               from '@material-ui/core/Typography';
+import CardMedia                                from '@material-ui/core/CardMedia';
+import Button                                   from '@material-ui/core/Button';
+import TextField                                from '@material-ui/core/TextField';
+import AccountCircleRoundedIcon                 from '@material-ui/icons/AccountCircleRounded';
+import Switch                                   from '@material-ui/core/Switch';
+import FormControlLabel                         from '@material-ui/core/FormControlLabel';
+import Snackbar                                 from '@material-ui/core/Snackbar';
+import MuiAlert                                 from '@material-ui/lab/Alert';
+import { getUserDBId }                          from '../components/serverFetch'
+import Backdrop                                 from '@material-ui/core/Backdrop';
+import CircularProgress                         from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
   switch: {
     left: 20,
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 function Alert(props) {
@@ -48,33 +55,30 @@ export default function UserArea() {
   const [user, setUser] = useState({name: null, id: null, isLoggedIn: false})
   const [userAreaToDisplay, setUserAreaToDisplay] = useState()
   const [incorrectLogin, setIncorrectLogin] = useState(false)
+  const [showBackDrop, setShowBackDrop] = useState(true)
 
   useEffect(() => {
     if(localStorage.getItem('UserId') ){
       fetchUserID(localStorage.getItem('UserId'))
+    } else {
+      setShowBackDrop(false)
     }
   }, [])
 
   const handleClick = () => {
+    setShowBackDrop(true)
     fetchUserID(textBoxValue)
   };
 
   const fetchUserID = (name) => {
-      fetch(`/api/user?id=${name}`,)
-        .then(response => {
-          if(response.status === 200){
-            if(rememberId) {
-              localStorage.setItem('UserId', name);
-            }
-            return(response.json())
-          } else {
-            throw new Error
-          }
-        })
-        .then((data) => setUser({name: name, id: data.findId?._id, isLoggedIn: true}))
-        .catch((error) => {
-          setIncorrectLogin(true)
-        })
+    getUserDBId(name)
+      .then((data) => {
+        if(rememberId) {
+          localStorage.setItem('UserId', name);
+        }
+        setUser({name: name, id: data._id, isLoggedIn: true, currentSession: data.currentSession})
+      })
+      .catch((error) => setIncorrectLogin(true))
   }
 
   const handleLogout = () => {
@@ -101,7 +105,7 @@ export default function UserArea() {
         </Card>
 
         {user.isLoggedIn ?
-        <UserPage user={user} pageToShow={userAreaToDisplay} setPageToShow={setUserAreaToDisplay}/>
+        <UserPage user={user} pageToShow={userAreaToDisplay} setPageToShow={setUserAreaToDisplay} setShowBackDrop={setShowBackDrop}/>
         : 
         <Card className={classes.headCard}>
         <CardContent>
@@ -143,6 +147,9 @@ export default function UserArea() {
         </Alert>
         </Snackbar>
       </div>
+      <Backdrop className={classes.backdrop} open={showBackDrop} >
+        <CircularProgress color="primary" />
+      </Backdrop>
     </Main>
   );
 }

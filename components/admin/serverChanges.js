@@ -32,7 +32,6 @@ export async function newSession (userId, sessionTitle, shortTitle, isCurrent) {
     return sendData("session", "POST", raw)
 }
 
-
 export async function deleteCard (id)  {
 
     const raw = JSON.stringify({"DeleteId": id});

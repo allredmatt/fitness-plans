@@ -17,6 +17,10 @@ export function getFoodList (userId) {
     return sendData(`food?id=${userId}`, 'GET')
 } 
 
+export function getFoodFeedback (userId) {
+    return sendData(`feedback?id=${userId}`, 'GET')
+} 
+
 export function getInputDataList (userId) {
     return sendData(`data?id=${userId}`, 'GET')
 }
@@ -43,7 +47,7 @@ export function newUser (newUserName, subsType) {
 
 export function newSession (args) {
     
-    return sendData(`/session`, 'POST', args)
+    return sendData(`session`, 'POST', args)
 }
 
 export function newFood (args) {
@@ -53,7 +57,7 @@ export function newFood (args) {
 
 export function newInputData (args) {
 
-    return sendData(``, 'POST', args)
+    return sendData(`data`, 'POST', args)
 }
 
 export function modifyFood (id, args) {
@@ -72,6 +76,12 @@ export function modifyUser (id, args) {
     return sendData(`admin/users/${id}`, 'PUT', args)
 }
 
+export function modifyFoodFeedbackLink (userId, link){
+    const body = {link: link}
+    
+    return sendData(`feedback?id=${userId}`, 'PUT', body)
+}
+
 export function changeCurrentSession (user_id, newSessionId) {
     const body = {
         id: user_id,
@@ -85,6 +95,10 @@ export function deleteSession (sessionId) {
     return sendData(`session/${sessionId}`, 'DELETE')
 }
 
+export function deleteFood (foodId) {
+    return sendData(`session/${foodId}`, 'DELETE')
+}
+
 async function sendData (path, method, raw) {
     const requestOptions = {
             method: method,
@@ -93,6 +107,7 @@ async function sendData (path, method, raw) {
         };
 
     if(raw) {
+        console.log(raw)
         requestOptions.body = JSON.stringify(raw)
     }
 
