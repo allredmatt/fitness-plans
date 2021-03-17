@@ -99,6 +99,10 @@ export function deleteFood (foodId) {
     return sendData(`session/${foodId}`, 'DELETE')
 }
 
+export function adminLogin (password) {
+    return sendData('admin', 'POST', {password: password})
+}
+
 async function sendData (path, method, raw) {
     const requestOptions = {
             method: method,

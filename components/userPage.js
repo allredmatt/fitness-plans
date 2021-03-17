@@ -15,6 +15,7 @@ import * as serverFetch                     from './serverFetch'
 const useStyles = makeStyles((theme) => ({
   container:{
     flexGrow: 1,
+    backgroundColor: theme.palette.primary.dark,
   },
   bottomMargin:{
     marginBottom: theme.spacing(0.1)
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     //padding: 'auto',
-    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main,
     minHeight: "35px",
     height: '100%'
   },
@@ -37,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '50vh'
   }
 }));
-
-const testPath = "https://docs.google.com/document/d/e/2PACX-1vQYsv6-xmLMZIteNTnjmZqUNm9Rn3bGZjsZ6Eq2dzHFZ3x5FtLVJ-8gdAhOtiYZdNkIzUJ4Yct_jm-s/pub"
 
 export default function UserPage({user, pageToShow, setPageToShow, setShowBackDrop}) {
   
@@ -159,22 +158,22 @@ export default function UserPage({user, pageToShow, setPageToShow, setShowBackDr
       <Grid container spacing={3} alignItems="stretch" className={classes.bottomMargin} >
         <Grid item xs={6} sm={3}>
           <Paper className={classes.paper} button="true" onClick={() => setPageToShow("food")}>
-          <Typography variant="h5">Food Diary</Typography>
+          <Typography variant="h5" color="secondary">Food Diary</Typography>
           </Paper>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Paper className={classes.paper} button="true" onClick={() => setPageToShow("feedback")}>
-          <Typography variant="h5">Food Feedback</Typography>
+          <Typography variant="h5" color="secondary">Food Feedback</Typography>
           </Paper>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Paper className={classes.paper} button="true" onClick={() => setPageToShow("plan")}>
-          <Typography variant="h5">Daily Plan</Typography>
+          <Typography variant="h5" color="secondary">Daily Plan</Typography>
           </Paper>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Paper className={classes.paper} button="true" onClick={() => setPageToShow("whole")}>
-          <Typography variant="h5">Overall Plan</Typography>
+          <Typography variant="h5" color="secondary">Overall Plan</Typography>
           </Paper>
         </Grid>  
       </Grid>

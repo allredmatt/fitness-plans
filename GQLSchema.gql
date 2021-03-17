@@ -43,6 +43,7 @@ type UserInputData {
   name: String!
   customId: Int!
   inputDataUnit: String!
+  details: String!
   inputtedData: [UserData]
 }
 

@@ -26,6 +26,7 @@ import Toolbar                              from '@material-ui/core/Toolbar';
 import Backdrop                             from '@material-ui/core/Backdrop';
 import CircularProgress                     from '@material-ui/core/CircularProgress';
 import * as fetchServer                     from '../../components/serverFetch'
+import Divider                              from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => ({
     gridPaper:{
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     gridPaperFlex:{
         display: 'flex',
         padding: theme.spacing(1),
+        backgroundColor: theme.palette.primary.main
     },
     gridFlex:{
         display: 'flex',
@@ -65,15 +67,14 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         flexGrow: 1,
-        webkitUserSelect: "none",  
-        mozUserSelect: "none",    
-        msUserSelect: "none",      
-        userSelect: "none",
-      },
-      backdrop: {
+    },
+    backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
-      },
+    },
+    backColour:{
+        backgroundColor: theme.palette.text.primary,
+      }
 }));
 
 
@@ -181,6 +182,7 @@ export default function AuthedArea({userList, setUserList}) {
 
     useEffect(() => {
         setSelectedTab(null)
+        setFoodCalenderData(null)
         setFitnessProgData(null)
     }, [userSelectBox])
 
@@ -224,10 +226,10 @@ export default function AuthedArea({userList, setUserList}) {
                 />
             </DialogContent>
             <DialogActions>
-            <Button onClick={() => setNewUserDialog({isOpen: false})} variant="outlined" color="primary">
+            <Button onClick={() => setNewUserDialog({isOpen: false})} variant="outlined" >
                 Cancel
             </Button>
-            <Button onClick={() => addNewUserToServer(inputValue)} variant="outlined" color="primary" autoFocus>
+            <Button onClick={() => addNewUserToServer(inputValue)} variant="outlined" autoFocus>
                 Add
             </Button>
             </DialogActions>
@@ -243,6 +245,7 @@ export default function AuthedArea({userList, setUserList}) {
         </Typography>
         </Toolbar>
         </AppBar>
+        <Divider className={classes.backColour}/>
         </div>
         <div className={classes.rootDiv}>
             <Grid container className={classes.gridRoot} spacing={2}>
@@ -251,9 +254,10 @@ export default function AuthedArea({userList, setUserList}) {
                         <Grid item xs={7} className={classes.gridFlex}>
                         <Button 
                             variant="outlined"
-                            color="primary"
                             onClick={() => setNewUserDialog({isOpen: true})}
-                        >New User</Button>
+                        >
+                            New User
+                        </Button>
                         <Typography className={classes.typographyPadding}>or selected the user to change details of:</Typography>
                         <Select
                             labelId="user-select"
@@ -271,8 +275,6 @@ export default function AuthedArea({userList, setUserList}) {
                         <Tabs
                             value={selectedTab}
                             onChange={(event, newValue) => setSelectedTab(newValue)}
-                            indicatorColor="primary"
-                            textColor="primary"
                             centered
                         >
                             <Tab label="Food Info" />

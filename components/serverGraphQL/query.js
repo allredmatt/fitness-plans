@@ -116,6 +116,7 @@ export async function userDataList(userId) {
                     name
                     customId
                     inputDataUnit
+                    details
                     inputtedData{
                         sessionId
                         shortTitle
@@ -136,6 +137,7 @@ export async function userDataById(customDataId) {
         findUserInput(customId: ${customDataId}) {
             _id
             name
+            details
             inputDataUnit
             inputtedData{
                 sessionId

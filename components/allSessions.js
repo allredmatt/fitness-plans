@@ -115,8 +115,7 @@ function AllSessionList ({fitnessData, classes, minWidthLarge, minWidthXL}) {
                 className={classes.tabs}
                 value={tabValue}
                 onChange={(event, newValue) => setTabValue(newValue)}
-                indicatorColor="primary"
-                textColor="primary"
+
                 orientation={minWidthXL? "vertical" : "horizontal"}
                 variant={minWidthXL? "scrollable" : "fullWidth" }
                 aria-label="session tabs"

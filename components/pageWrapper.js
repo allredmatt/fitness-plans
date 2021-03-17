@@ -8,10 +8,10 @@ const useStyles = makeStyles((theme) => ({
     width: '97%',
     margin: '1.5% 1.5% -2%',
     minHeight: '90vh',
-    backgroundColor: theme.palette.mainBackground
+    backgroundColor: theme.palette.primary.main
   },
   backColour:{
-    backgroundColor: theme.palette.mainBackground
+    backgroundColor: theme.palette.primary.main
   }
 })
 )

@@ -1,19 +1,9 @@
 import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme }     from '@material-ui/core/styles';
 import { useEffect }  from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Head from 'next/head';
+import theme from '../components/theme'
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#3763db',
-    },
-    secondary: {
-      main: '#f5915f',
-    },
-    mainBackground: "#6d7896"
-  },
-});
 
 function MyApp({ Component, pageProps }) {
 
@@ -27,12 +17,16 @@ function MyApp({ Component, pageProps }) {
 
 
   return (
-    <ThemeProvider theme={theme}>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-      <CssBaseline />
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <React.Fragment>
+      <Head>
+        <title>Millers</title>
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </React.Fragment>
   )
 }
 

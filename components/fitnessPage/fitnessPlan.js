@@ -38,7 +38,8 @@ import DialogTitle              from '@material-ui/core/DialogTitle';
 const useStyles = makeStyles((theme) => ({
         paper: {
             padding: theme.spacing(2),
-            marginBottom: theme.spacing(1)
+            marginBottom: theme.spacing(1),
+            backgroundColor: theme.palette.primary.main,
         },
         root: {
             width: '100%',
@@ -76,8 +77,6 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
     const [idOfFitnessPlanToDisplay, setIdOfFitnessPlanToDisplay] = useState(user.currentSession)
     const [isFinishedSessionSnackbarOpen, setIsFinishedSessionSnackbarOpen] = useState(false)
     const [isSubmitRatingDialogOpen, setIsSubmitRatingDialogOpen] = useState(false)
-
-    let customIdToServerIdMap = {}
     
     useEffect(()=> {
         //Load userInputData for that session, only needs to happen once, all data loaded
@@ -238,7 +237,6 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                     </DialogActions>
                 </Dialog>)
     }
-
     if(currentFitnessPlan){
         return(
             
@@ -258,7 +256,13 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                         flexDirection={minWidth? "row" : "column"}
                         allSessionsRendered={false}
                     />
-                    <DataLog fitnessData={[]} />
+            </Paper>
+            <Paper className={classes.paper} elevation={2}>
+                {
+                    currentFitnessPlan.cardInfo?.map(card => card.listOfActivities.map(activity => activity.userInputDataId.map(customId => 
+                        <DataLog key={customId} customId={customId} sessionTitle={currentFitnessPlan.sessionTitle} cardTitle={card.cardTitle} activityTitle={activity.primary} />
+                    )))
+                }
             </Paper>
             <Snackbar
                 anchorOrigin={{

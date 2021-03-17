@@ -5,7 +5,7 @@ import * as serverFetch                     from './serverFetch'
 
 const useStyles = makeStyles((theme) => ({
     iframePaper: {
-      padding: theme.spacing(0.5),
+      padding: theme.spacing(2),
       textAlign: 'center',
     },
     iframe:{

@@ -37,3 +37,4 @@ yarn-error.log*
 fauna.js
 /components/hash.js
 /pages/oldapi
+/components/customHook.js

@@ -19,11 +19,12 @@ import ContactsIcon                       from '@material-ui/icons/Contacts';
 import PersonIcon                         from '@material-ui/icons/Person';
 import RestaurantIcon                     from '@material-ui/icons/Restaurant';
 import ExitToAppIcon                      from '@material-ui/icons/ExitToApp';
+import EventIcon                          from '@material-ui/icons/Event';
+import ViewListIcon                       from '@material-ui/icons/ViewList';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      width: '100%',
-      minWidth: 410,
+      width: '100%'
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -39,7 +40,11 @@ const useStyles = makeStyles((theme) => ({
       width: 250
     },
     appBar:{
+      backgroundColor: theme.palette.primary.main,
       position: 'fixed'
+    },
+    backColour:{
+      backgroundColor: theme.palette.secondary.main,
     }
 }));
 
@@ -64,7 +69,7 @@ export function TopBar({scrollToRef}) {
 
   return (
       <div className={classes.root}>
-      <AppBar className={classes.appBar}>
+      <AppBar className={classes.appBar} color="primary">
           <Toolbar>
           <IconButton 
             edge="start" 
@@ -117,6 +122,7 @@ export function TopBar({scrollToRef}) {
           </Toolbar>
       </AppBar>
       <Toolbar />
+      <Divider className={classes.backColour}/>
       </div>
   );
 }
@@ -168,7 +174,7 @@ export function AuthedTopBar({logout, setUserAreaToDisplay}) {
                 <Divider />
                 <div>
                   <ListItem button onClick={() => handleListClick("food")}>
-                  <ListItemIcon><RestaurantIcon color="primary"/></ListItemIcon>
+                  <ListItemIcon><EventIcon /></ListItemIcon>
                     <ListItemText primary="Food Diary" />
                   </ListItem>
                   <ListItem button onClick={() => handleListClick("feedback")}>
@@ -176,11 +182,11 @@ export function AuthedTopBar({logout, setUserAreaToDisplay}) {
                     <ListItemText primary="Food Feedback" />
                   </ListItem>
                   <ListItem button onClick={() => handleListClick("plan")}>
-                    <ListItemIcon><FitnessCenterIcon color="primary"/></ListItemIcon>
+                    <ListItemIcon><FitnessCenterIcon /></ListItemIcon>
                     <ListItemText primary="Daily Sessions" />
                   </ListItem>
                   <ListItem button onClick={() => handleListClick("whole")}>
-                    <ListItemIcon><FitnessCenterIcon /></ListItemIcon>
+                    <ListItemIcon><ViewListIcon /></ListItemIcon>
                     <ListItemText primary="All Sessions" />
                   </ListItem>
                 </div>
@@ -200,6 +206,7 @@ export function AuthedTopBar({logout, setUserAreaToDisplay}) {
           </Toolbar>
       </AppBar>
       <Toolbar />
+      <Divider className={classes.backColour}/>
       </div>
   );
 }
