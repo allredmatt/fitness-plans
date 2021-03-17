@@ -230,12 +230,13 @@ export async function addUser(userId, subscriptionType) {
 export async function newUserData(inputData) {
   
   const mutation = /* GraphQL */ `
-  mutation createUserInput($userId: ID!, $name: String!, $customId: Int! ,$inputDataUnit: String!) {
+  mutation createUserInput($userId: ID!, $name: String!, $customId: Int!, $details: String! ,$inputDataUnit: String!) {
       createUserInputData(
           data: {
             userId: {connect: $userId},
             name: $name,
             customId: $customId,
+            details: $details,
             inputDataUnit: $inputDataUnit,
             }
       ) {
@@ -247,6 +248,7 @@ export async function newUserData(inputData) {
   "userId": inputData.userId,
   "name": inputData.name,
   "customId": inputData.customId,
+  "details": inputData.details,
   "inputDataUnit": inputData.unit
   }
   
@@ -272,13 +274,14 @@ async function deleteUserDataById (userDataId) {
 
 async function modifyUserDataById(dataId, userInputData) {
   const mutation = /* GraphQL */ `
-    mutation updateUserInputData($id: ID!, $name: String!, $customId: Int! ,$inputDataUnit: String!, $inputtedData: [UserDataInput]) {
+    mutation updateUserInputData($id: ID!, $name: String!, $customId: Int!, $details: String!,$inputDataUnit: String!, $inputtedData: [UserDataInput]) {
       updateUserInputData(
             id: $id
             data:{
                 name: $name,
                 inputDataUnit: $inputDataUnit,
                 customId: $customId,
+                details: $details
                 inputtedData: $inputtedData,
             }
         ) {
@@ -290,6 +293,7 @@ async function modifyUserDataById(dataId, userInputData) {
     "id": dataId,
     "name": userInputData.name,
     "customId": parseInt(userInputData.customId),
+    "details": userInputData.details,
     "inputDataUnit": userInputData.inputDataUnit,
     "inputtedData": userInputData.inputtedData,
     }
@@ -346,6 +350,7 @@ export async function modifyUserData (customId, body) {
     {
       name: data.name,
       customId: customId,
+      details: data.details,
       inputDataUnit: data.inputDataUnit,
       inputtedData: data.inputtedData.concat([body]),
     }

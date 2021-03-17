@@ -17,7 +17,7 @@ import CircularProgress                     from '@material-ui/core/CircularProg
 import Grid                                 from '@material-ui/core/Grid'
 import Select                               from '@material-ui/core/Select'
 import MenuItem                             from '@material-ui/core/MenuItem';
-import {getUserList}                          from '../components/serverFetch'
+import {getUserList, adminLogin}            from '../components/serverFetch'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -28,12 +28,19 @@ const useStyles = makeStyles((theme) => ({
     container:{
         width: '97%',
         margin: '1.5% 1.5% -2%',
-        minHeight: '90vh',
-        backgroundColor: theme.palette.mainBackground
+        padding: theme.spacing(2),
+        minHeight: '95vh',
+        backgroundColor: theme.palette.primary.light
     },
     colourBackground:{
-        backgroundColor: theme.palette.mainBackground,
+        backgroundColor: theme.palette.primary.dark,
         minHeight: '98vh',
+    },
+    flexDiv:{
+        display: 'flex'
+    },
+    leftMargin:{
+        marginLeft: theme.spacing(1)
     }
 }));
 
@@ -61,20 +68,7 @@ export default function Admin () {
     
     const checkNewPassword = () => {
         setBackdropOpen(true)
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        const raw = JSON.stringify({"password": passwordTextInput});
-        
-        const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-        };
-
-        fetch("/api/admin", requestOptions)
-            .then(response => response.json())
+        adminLogin(passwordTextInput)
             .then(data => {
                 setAuthResult(data.isAuth)
                 if (data.isAuth === false){
@@ -104,15 +98,17 @@ export default function Admin () {
     if(authResult){
         return (
             <div className={classes.colourBackground}>
-            <AuthedArea userList={userList} setUserList={setUserList}/>
+                <AuthedArea userList={userList} setUserList={setUserList}/>
             </div>
         )
     } else {
         return (
             <div>
-                <Paper className={classes.container} elevation={2}>   
+                <Paper className={classes.container} elevation={2}>
+                    <Typography gutterBottom variant="h5" component="h2" color="textPrimary">Admin Login</Typography> 
+                    <div className={classes.flexDiv}> 
                         <TextField
-                            id="outlined-password-input"
+                            id="password-input"
                             label="Password"
                             type="password"
                             autoComplete="current-password"
@@ -120,8 +116,9 @@ export default function Admin () {
                             size="small"
                             value={passwordTextInput}
                             onChange={(event) => setPasswordTextInput(event.target.value)}
-                            />
-                        <Button variant="outlined" color="primary" onClick={checkNewPassword}>Log In</Button>
+                        />
+                        <Button variant="outlined" onClick={checkNewPassword} className={classes.leftMargin}>Log In</Button>
+                    </div> 
                 </Paper>
                 <Snackbar 
                     open={snackBarOpen} 

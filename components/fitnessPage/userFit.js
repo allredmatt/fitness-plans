@@ -30,7 +30,7 @@ export default function UserFitnessPlan ({
 
     const useStyles = makeStyles((theme) => ({
         card: {
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: theme.palette.background.light,
             margin: theme.spacing(1),
             
         },
@@ -40,6 +40,7 @@ export default function UserFitnessPlan ({
         },
         root: {
             width: '100%',
+            backgroundColor: theme.palette.primary.main
         },
         flexDiv:{
             display: 'flex',
@@ -55,7 +56,6 @@ export default function UserFitnessPlan ({
         listRoot: {
             width: '100%',
             maxWidth: '36ch',
-            backgroundColor: theme.palette.background.paper,
         },
         listItem:{
             marginLeft: '4px'
@@ -245,7 +245,7 @@ export default function UserFitnessPlan ({
                 <span className={classes.rightAlign} hidden={allSessionsRendered}>
                     <Tooltip title="Save Your Workout Data" aria-label="save data">
                     <Fab 
-                        color="primary"
+                        color="secondary"
                         aria-label="save"
                         onClick={submitUserData}
                     >

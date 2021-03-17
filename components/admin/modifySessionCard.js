@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     closeButton:{
         position: "absolute",
         right: "0px",
+    },
+    cardPaper:{
+        backgroundColor: theme.palette.background.highlighted
     }
 }))
 
@@ -120,7 +123,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
             //Add new input to activity within card
             setCardData({newValue: {id: tempId, unit: formData.unit}, activityIndex: addLink.activityIndex, cardIndex: addLink.cardIndex, changeType: {key: "units", object: "activity"}})
             //Store creation of newUserInputData till save is clicked in userTrackingData.
-            setUserDataTracking([...userDataTracking, {customId: tempId, inputDataUnit: formData.unit, name: formData.name}])
+            setUserDataTracking([...userDataTracking, {customId: tempId, inputDataUnit: formData.unit, name: formData.name, details: `${cardData.cardTitle}: ${cardData.listOfActivities[activityIndex].primary}`}])
           }
           handleClose()
         };
@@ -241,14 +244,16 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                         <DeleteIcon color="secondary"/>
                     </IconButton>
                     <Typography>Current user inputs for this activity:</Typography>
-                    {Boolean(activity.userInputDataId) && 
+                    {activity.userInputDataId.length === 0 ?
+                    <Typography>None</Typography>
+                    :
                     <TableContainer component={Paper}>
                         <Table size="small" aria-label="input data table">
                             <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Unit</TableCell>
+                                <TableCell><b>Name</b></TableCell>
+                                <TableCell><b>ID</b></TableCell>
+                                <TableCell><b>Unit</b></TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
@@ -269,7 +274,6 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
             )}
             <Button 
                 variant="outlined"
-                color="primary"
                 className={classes.bottomMargin}
                 onClick={() => setCardData({cardIndex: cardIndex, changeType: {key: "new", object: "activity"}})}
                 >New Activity

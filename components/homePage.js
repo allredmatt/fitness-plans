@@ -4,83 +4,137 @@ import Paper                    from '@material-ui/core/Paper';
 import CardContent              from '@material-ui/core/CardContent';
 import Typography               from '@material-ui/core/Typography';
 import CardMedia                from '@material-ui/core/CardMedia';
-import Divider                  from '@material-ui/core/Divider';
 import MailOutlineIcon          from '@material-ui/icons/MailOutline';
 import IconButton               from '@material-ui/core/IconButton';
+import { Button, CardActions, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
-const useAboutStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   flexDiv: {
     display: 'flex',
-    flexFlow: 'row wrap',
-    justifyContent: 'left',
+    flexWrap: 'nowrap',
+    [theme.breakpoints.up('lg')]: {
+      justifyContent: 'center'
     },
-  headCard: {
-    padding: '1.5%',
-    marginBottom: theme.spacing(1),
-  },
-  bannerImage: {
-    height: 420,
-  },
+    overflowX: 'auto',
+    width: 'calc(100% + 20px)',
+    columnGap: theme.spacing(1.5)
+    },
   profileImage: {
     height: 200,
     width: 150,
   },
   detailsCard1: {
+    flex: '0 0 auto',
     order: 1,
-    width: 350,
-    margin: '2vh 1vw 3px 0px',
+    width: 325,
+
   },
   detailsCard2: {
+    flex: '0 0 auto',
     order: 2,
-    width: 350,
-    margin: '2vh 1vw 3px 0px',
+    width: 325,
+
   },
   serviceCard1: {
+    flex: '0 0 auto',
     order: 1,
-    width: 350,
-    margin: '2vh 1vw 3px 0px',
+    width: 325,
+    //marginLeft: '350px',
+    zIndex: '100',
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
   },
   serviceCard2: {
+    flex: '0 0 auto',
     order: 2,
-    width: 350,
-    margin: '2vh 1vw 3px 0px',
+    width: 325,
+    //marginLeft: '-350px',
     background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
   },
+  animateServiceCard2: {
+    order: 2,
+    width: 325,
+    //marginLeft: '-350px',
+    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+    '-webkit-transition': '1s',
+    '-moz-transition': '1s',
+    transition: '1s',
+    transform: 'translateX(-370px)'
+  },
   serviceCard3: {
+    flex: '0 0 auto',
     order: 3,
-    width: 350,
-    margin: '2vh 1vw 3px 0px',
-    background: 'linear-gradient(45deg, #ebb00e 30%, #ebe134 90%)'
+    width: 325,
+    //marginLeft: '-350px',
+    background: 'linear-gradient(45deg, #e8932c 40%, #ebb00e 70%)'
+  },
+  animateServiceCard3: {
+    order: 3,
+    width: 325,
+    marginLeft: '-350px',
+    background: 'linear-gradient(45deg, #ebb00e 30%, #ebe134 60%)',
+    '-webkit-transition': '1s',
+    '-moz-transition': '1s',
+    transition: '1s',
+    transform: 'translateX(350px)'
   },
   margin: {
     margin: theme.spacing(1),
   },
-  media:{
-    height: 150
+  media: {
+    height: 100,
+    marginBottom: theme.spacing(1),
+  },
+  slide: {
+    width: "100%",
+    height: "100%",
+    padding: theme.spacing(1),
+
+    /* align center */
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+
+    /* scroll-snap */
+    scrollSnapAlign: "start",
+    scrollSnapStop: "normal",
+  },
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: theme.palette.primary.dark,
+    padding: theme.spacing(2),
+
+    /* align center */
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  bannerImage:{
+    [theme.breakpoints.up('lg')]: {
+      width: '60%'
+    },
+    width: '100%',
+    height: 'auto'
+  },
+  scrollXMobile: {
+    display: 'flex',
+    flexWrap: 'nowrap',
+    
+    width: 'auto',
+  },
+  textSecondary:{
+    color: theme.palette.text.secondary
   }
 }));
-
-const useStyles = makeStyles((theme) => ({
-    container:{
-      width: '100%',
-      backgroundColor: '#6d7896',
-      marginBottom: theme.spacing(1),
-      marginTop: theme.spacing(1),
-    },
-    card:{
-      marginBottom: theme.spacing(1),
-    },
-    bannerImage:{
-      width: "100%",
-      height: "640px",
-    }
-  }));
 
 const HomeHeader = () => {
   const classes = useStyles();
 
   return (
+    <div className={classes.slide}>
     <Paper className={classes.container} elevation={0}> 
         <img
             className={classes.bannerImage}
@@ -88,28 +142,39 @@ const HomeHeader = () => {
             title="Weights and fruit"
             />
     </Paper>
+    </div>
   );
 }
 
 const About = React.forwardRef((props, ref) => {
-  const classes = useAboutStyles();
+  const classes = useStyles();
 
   return (
-    <div ref={ref} >
-      <Paper className={classes.headCard}>
-        <Typography gutterBottom variant="h5" component="h2" color="secondary">
+    <div ref={ref} className={classes.slide}>
+      <Paper className={classes.container}>
+        <Typography gutterBottom variant="h4" component="h2" color="textPrimary">
             About us
-      </Typography>
-        <Typography gutterBottom variant="h6" color="textPrimary" component="p">
-                Some rubbish about what you do and how great you are.
-                <br />
-                <i>"Excellent personalised service, really helped me feel less hungry. Came up with some excellent ideas of how to exercise with kids."</i>
         </Typography>
-        <Divider variant="middle"/>
-        <Typography variant="body1" color="textPrimary" component="p">
-            Millers fitness are founded on the belief that everyone can attain their potential. We are a husband and wife team who will help you on your journey:
+        <Typography gutterBottom variant="body1" color="textPrimary" component="p">
+            Millers fitness are founded on the belief that everyone can attain their potential.
         </Typography>
       <div className={classes.flexDiv}>
+        <Card className={classes.detailsCard1}>
+        <CardContent>
+            <CardMedia
+            className={classes.profileImage}
+            image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/jedward-2017-1550236010.jpg"
+            title="Millers Fitness"
+            />
+            <Typography gutterBottom variant="h6" component="h3">
+              Our Company
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p">
+              Formed in 2019 to help a friend train in rubbish, blah blah blah. Something about how we've helped people.
+            </Typography>
+        </CardContent>
+        </Card>
+
         <Card className={classes.detailsCard1}>
         <CardContent>
             <CardMedia
@@ -148,69 +213,138 @@ const About = React.forwardRef((props, ref) => {
 })
 
 const Services = React.forwardRef((props, ref) => {
-  const classes = useAboutStyles();
+
+  const {isOnScreen} = props
+
+  const classes = useStyles();
 
   return (
-    <div ref={ref}> 
-        <Paper className={classes.headCard}>
-            <Typography gutterBottom variant="h6" component="h1" color='primary'>
+    <div ref={ref} className={classes.slide}> 
+        <Paper className={classes.container}>
+            <Typography gutterBottom variant="h4" component="h1" color="textPrimary">
                 Our Services
             </Typography>
-            <Typography variant="body1" color="textPrimary" component="p">
-                Depending on what you wish to achieve we offer a range of bespoke services.
-            </Typography>
-            <Typography variant="body1" color="textSecondary" component="p">
-                Choose from having your food intake analysed and recommendations give to help you feel full throughout the day, and ensure you are gaining all the correct nutrients each week.
-                We also offer a fully formed daily fitness plan, whether you are training for a specific event or just wanting to maximise your gym time we will write a program to fit your needs. 
-                Prices will vary depending on your requirements from us, don't hesitate to be in contact fro further info.
+            <Typography gutterBottom variant="body1" color="textPrimary" component="p">
+              Depending on what you wish to achieve we offer a range of bespoke services.
             </Typography>
             <div className={classes.flexDiv}>
-            <Card className={classes.serviceCard1}>
+
+            <Card className={isOnScreen? classes.serviceCard1 : classes.serviceCard1}>
               <CardMedia
                 className={classes.media}
                 image="/veg.jpg"
                 title="Vegetables"
               />
               <CardContent>
-                  <Typography gutterBottom variant="subtitle2" component="h3">
-                    Dietary analysis
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p">
-                    We will use our experience in this field, as well as government guidelines to give you personalised feedback on your diet, and recommend changes to address any issues or problems 
-                    you may be having.
-                  </Typography>
+              <Typography gutterBottom variant="h5" color="textSecondary" component="h3">
+                <b>Diet Analysis</b>
+              </Typography>
+              <List className={classes.textSecondary}>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Assess your diet against recommended guidelines'}/>
+                </ListItem>
+
+                <ListItem >
+                  <ListItemIcon>
+                    <CheckCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Check your intake of nutrients' />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Work out how to improve any periods of hunger'/>
+                </ListItem>
+
+              </List>
               </CardContent>
+              <CardActions>
+                <Button variant='outlined' className={classes.textSecondary}>More Info</Button>
+              </CardActions>
             </Card>
-            <Card className={classes.serviceCard2}>
+
+            <Card className={isOnScreen? classes.serviceCard2 : classes.serviceCard2}>
               <CardMedia
                 className={classes.media}
                 image="/running.jpg"
-                title="Vegetables"
+                title="Running"
               />
               <CardContent>
-                  <Typography gutterBottom variant="subtitle2" component="h3">
-                    Bespoke fitness plans
+                  <Typography gutterBottom color='textSecondary' variant="h5">
+                    <b>Fitness plans</b>
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p">
-                    We will consult with you to develop a fitness plan to suit you, no matter what your goals. If you want to maintain a level of fitness, are looking to make the best use of your time at the gym, or are 
-                    after innovative ways to work out then we will tailor a sessions to do this.
-                  </Typography>
+                  <List className={classes.textSecondary}>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={'Consult with you to ascertain your goals'}/>
+                </ListItem>
+
+                <ListItem >
+                  <ListItemIcon>
+                    <CheckCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Develop a schedule for you to follow in your training' />
+                </ListItem>
+
+                <ListItem>
+                  <ListItemIcon>
+                    <CheckCircleOutlineIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Use of fitness plan and tracking web app'/>
+                </ListItem>
+              </List>
               </CardContent>
+              <CardActions>
+                <Button variant='outlined' className={classes.textSecondary}>More Info</Button>
+              </CardActions>
             </Card>
-            <Card className={classes.serviceCard3}>
+            <Card className={isOnScreen? classes.serviceCard3 : classes.serviceCard3}>
               <CardMedia
                 className={classes.media}
                 image="/tape.jpg"
                 title="Vegetables"
               />
               <CardContent>
-                  <Typography gutterBottom variant="subtitle2" component="h3">
-                    Combined Service
+                  <Typography gutterBottom variant="h5" component="h3" color='textSecondary'>
+                    <b>Combined Service</b>
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" component="p">
-                    We will look at providing the dietary analysis and bespoke fitness plans but will manage both of these together to ensure any dietary changes work in tandem with your fitness plans to fully support your development. 
-                  </Typography>
-              </CardContent>
+                  <List className={classes.textSecondary}>
+
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleOutlineIcon />
+                    </ListItemIcon>
+                    <ListItemText primary='All the items included in the other packages'/>
+                  </ListItem>
+
+                  <ListItem >
+                    <ListItemIcon>
+                      <CheckCircleOutlineIcon />
+                    </ListItemIcon>
+                    <ListItemText primary='Match your diet against your fitness plan' />
+                  </ListItem>
+
+                  <ListItem>
+                    <ListItemIcon>
+                      <CheckCircleOutlineIcon />
+                    </ListItemIcon>
+                    <ListItemText primary='Ensure these work in tandem to support you'/>
+                  </ListItem>
+
+                  </List>
+                  </CardContent>
+                  <CardActions>
+                  <Button variant='outlined' className={classes.textSecondary}>More Info</Button>
+                  </CardActions>
             </Card>
             </div>
         </Paper>
@@ -219,12 +353,12 @@ const Services = React.forwardRef((props, ref) => {
 })
 
 const Contacts = React.forwardRef((props, ref) => {
-  const classes = useAboutStyles();
+  const classes = useStyles();
 
   return (
-    <div ref={ref}>
-      <Paper className={classes.headCard}>
-            <Typography gutterBottom variant="h6" component="h1" color='secondary'>
+    <div ref={ref} className={classes.slide}>
+      <Paper className={classes.container}>
+            <Typography gutterBottom variant="h4" component="h1" color="textPrimary">
                 Contact Us
       </Typography>
             <Typography variant="body1" color="textPrimary" component="p">

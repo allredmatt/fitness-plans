@@ -32,7 +32,7 @@ import FoodListItem             from './foodListItem'
 const useStyles = makeStyles((theme) => ({
     card: {
         width: '100%',
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.primary.main,
         marginBottom: theme.spacing(1)
     },
     actions: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
     root: {
         width: '100%',
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.primary.main,
       },
     fab: {
         position: 'absolute',
@@ -175,7 +175,8 @@ export default function FoodCalendar ({user, foodData, setFoodData, setShowBackD
                         />
                     )}
                 <br /><br />
-                <Fab color="primary" 
+                <Fab 
+                    color="secondary" 
                     aria-label="add" 
                     className={classes.fab} 
                     onClick={() => {
@@ -210,7 +211,7 @@ export default function FoodCalendar ({user, foodData, setFoodData, setShowBackD
                 message="Delete this item?"
                 action={
                 <React.Fragment>
-                    <Button color="primary" size="small" onClick={handleSnackBarClose}>
+                    <Button size="small" onClick={handleSnackBarClose}>
                     YES
                     </Button>
                     <Button color="secondary" size="small" onClick={()=> setSnackBarInfo({data: null, isOpen: false})}>

@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     gridPaper:{
         padding: theme.spacing(1),
         height: "100%",
-        backgroundColor: "#e6ebfb"
+        backgroundColor: theme.palette.primary.main
     },
     gridRoot: {
         flexGrow: 1,
@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(2),
         marginBottom: theme.spacing(2),
         padding: theme.spacing(1),
+        backgroundColor: theme.palette.background.highlighted
     },
     typographyPad:{
         padding: theme.spacing(1),
@@ -112,6 +113,22 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
         }
 
         setIsBackDropOpen(true)
+        
+        //Save user input data info to server
+        let newUserDataTracking = userDataTracking.filter(input => !input.hasOwnProperty("_id"))
+        
+        newUserDataTracking.forEach((userInput) => {
+            serverFetch.newInputData({
+                userId: user.id,
+                name: userInput.name,
+                details: userInput.details,
+                customId: userInput.customId,
+                unit: userInput.inputDataUnit
+            })
+        })
+        setUserDataTracking(userDataTracking.map(data => data.hasOwnProperty('_id')? data : {...data, _id: "willLoadOnRefresh"}))
+
+        //Save info of session to server
         if(currentSessionInfo.isNew) {
             serverFetch.newSession({
                 user_id: user.id,
@@ -142,17 +159,7 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                 })
         }
 
-        let newUserDataTracking = userDataTracking.filter(input => !input.hasOwnProperty("_id"))
-        let returnedObjectOfIds = {}
-        newUserDataTracking.forEach((userInput) => {
-            serverFetch.newInputData({
-                userId: user.id,
-                name: userInput.name,
-                customId: userInput.customId,
-                unit: userInput.inputDataUnit
-            })
-        })
-        setUserDataTracking(userDataTracking.map(data => data.hasOwnProperty('_id')? data : {...data, _id: "willLoadOnRefresh"}))
+      
     }
 
     const handleDeleteSession = () => {
@@ -194,8 +201,6 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                 <Tabs 
                     value={currentIndex}
                     onChange={(event, newValue) => setCurrentIndex(newValue)}
-                    indicatorColor="primary"
-                    textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
                     className={classes.bottomMargin}
@@ -227,7 +232,6 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                 <Grid item xs={12} className={classes.gridItemFlex}>
                 <Button 
                     variant="outlined"
-                    color="primary"
                     className={classes.bottomMargin}
                     onClick={() => handleCardChange({changeType:{object: 'cardInfo', key: 'new'}})}
                 >
@@ -236,7 +240,6 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                 <span className={classes.rightAlign}>
                 <Button 
                 variant="outlined"
-                color="primary"
                 onClick={handleSaveToServer}
                 >
                     Save

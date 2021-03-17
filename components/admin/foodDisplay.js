@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
         gridPaper:{
             padding: theme.spacing(1),
             height: "100%",
-            backgroundColor: "white"
+            backgroundColor: theme.palette.primary.main
         },
         gridItem:{
             marginBottom: theme.spacing(1),

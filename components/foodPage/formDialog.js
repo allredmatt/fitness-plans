@@ -115,11 +115,10 @@ export default function FormDialog ({
                             setOpen(false);
                             setEditElementId(false);
                         }} 
-                        color="primary"
                     >
                         Cancel
                     </Button>
-                    <Button onClick={handleSave} color="primary">
+                    <Button onClick={handleSave}>
                         Save
                     </Button>
                 </DialogActions>

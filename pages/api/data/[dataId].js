@@ -10,7 +10,7 @@ export default function userAPI (req, res) {
     switch (method) {
         case 'GET':
             userDataById(dataId)
-                .then((data) => res.status(200).json(data))
+                .then((data) => res.status(200).json(data.findUserInput))
                 .catch((error) => res.status(401).json({error: "No user data with ID given", info: error}))
             break
         case 'PUT':
