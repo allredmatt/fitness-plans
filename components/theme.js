@@ -57,6 +57,16 @@ const theme = createMuiTheme({
         }
       }
     }
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 360,
+      md: 750,
+      lg: 1280,
+      xl: 1920,
+      //xs for old iPhones, sm for most modern phones, md for tablets, lg for 720p, xl for 1080p
+    },
   }
 });
 
