@@ -21,6 +21,7 @@ import RestaurantIcon                     from '@material-ui/icons/Restaurant';
 import ExitToAppIcon                      from '@material-ui/icons/ExitToApp';
 import EventIcon                          from '@material-ui/icons/Event';
 import ViewListIcon                       from '@material-ui/icons/ViewList';
+import Hidden                             from '@material-ui/core/Hidden'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -114,11 +115,20 @@ export function TopBar({scrollToRef}) {
               </List>
             </div>
             </Drawer>
-          <Link href="/">
-            <Typography variant="h6" className={classes.title}>
-              Millers Fitness and Nutrition
-            </Typography>
-          </Link>
+            <Hidden xsDown>
+              <Link href="/">
+              <Typography variant="h6" className={classes.title}>
+                Millers Fitness and Nutrition
+              </Typography>
+              </Link>
+            </Hidden>
+            <Hidden smUp>
+              <Link href="/">
+              <Typography variant="h6" className={classes.title}>
+                Millers Fitness
+              </Typography>
+              </Link>
+            </Hidden>
           </Toolbar>
       </AppBar>
       <Toolbar />
@@ -197,12 +207,21 @@ export function AuthedTopBar({logout, setUserAreaToDisplay}) {
                 </ListItem>
               </List>
             </div>
-            </Drawer>
-          <Link href="/">
-            <Typography variant="h6" className={classes.title}>
-              Millers Fitness and Nutrition
-            </Typography>
-          </Link>
+          </Drawer>
+          <Hidden xsDown>
+              <Link href="/">
+              <Typography variant="h6" className={classes.title}>
+                Millers Fitness and Nutrition
+              </Typography>
+              </Link>
+            </Hidden>
+            <Hidden smUp>
+              <Link href="/">
+              <Typography variant="h6" className={classes.title}>
+                Millers Fitness
+              </Typography>
+              </Link>
+            </Hidden>
           </Toolbar>
       </AppBar>
       <Toolbar />
