@@ -6,8 +6,13 @@ import Typography               from '@material-ui/core/Typography';
 import CardMedia                from '@material-ui/core/CardMedia';
 import MailOutlineIcon          from '@material-ui/icons/MailOutline';
 import IconButton               from '@material-ui/core/IconButton';
-import { Button, CardActions, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { Button, CardActions,
+   List, ListItem, ListItemIcon, 
+   ListItemText, Hidden }               from '@material-ui/core';
+import CheckCircleOutlineIcon   from '@material-ui/icons/CheckCircleOutline';
+import Avatar                   from '@material-ui/core/Avatar';
+import ProfileCard from './profileCard';
+import Endorsement, { EndorsementSmall, Footer } from './footer';
 
 const useStyles = makeStyles((theme) => ({
   flexDiv: {
@@ -18,29 +23,32 @@ const useStyles = makeStyles((theme) => ({
     },
     overflowX: 'auto',
     width: 'calc(100% + 20px)',
-    columnGap: theme.spacing(1.5)
     },
   profileImage: {
-    height: 200,
-    width: 150,
+    height: theme.spacing(15),
+    width: theme.spacing(15),
+    marginRight: theme.spacing(1.5)
   },
   serviceCard1: {
     flex: '0 0 auto',
     width: 325,
     overflowY: 'auto',
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    marginRight: theme.spacing(1.5)
   },
   serviceCard2: {
     flex: '0 0 auto',
     width: 325,
     overflowY: 'auto',
-    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
+    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+    marginRight: theme.spacing(1.5)
   },
   serviceCard3: {
     flex: '0 0 auto',
     width: 325,
     overflowY: 'auto',
-    background: 'linear-gradient(45deg, #e8932c 40%, #ebb00e 70%)'
+    background: 'linear-gradient(45deg, #e8932c 40%, #ebb00e 70%)',
+    marginRight: theme.spacing(1.5)
   },
   margin: {
     margin: theme.spacing(1),
@@ -64,6 +72,8 @@ const useStyles = makeStyles((theme) => ({
     /* scroll-snap */
     scrollSnapAlign: "start",
     scrollSnapStop: "normal",
+
+    backgroundColor: theme.palette.primary.light
   },
   container: {
     width: '100%',
@@ -79,9 +89,11 @@ const useStyles = makeStyles((theme) => ({
   },
   bannerImage:{
     position: 'absolute',
+    objectFit: 'cover',
     overflowX: 'hidden',
     padding: theme.spacing(2),
-    height: '100%'
+    height: '100%',
+    maxWidth: '100vw',
   },
   scrollXMobile: {
     display: 'flex',
@@ -97,11 +109,40 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapper:{
     position: 'absolute',
-    top: '30%',
-    paddingLeft: '100px',
+    top: '35%',
+    transform: 'translate(0%, -30%)',
+    paddingLeft: '70px',
     paddingRight: '100px',
+    maxWidth: '100vw',
     background: 'radial-gradient(ellipse, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.4) 100%)',
   },
+  profileContainer:{
+    display: 'grid',
+    gridTemplateColumns: '50px 50px 50px 50px',
+    gridTemplateRows: 'auto',
+    gridTemplateAreas: 
+      `"header header header header"
+       "main main . sidebar"
+       "footer footer footer footer"`,
+  },
+  infoContainer:{
+    /* If on larger screen make space for endorsement footer */
+    [theme.breakpoints.up('md')]: {
+      transform: 'translate(0, -16%)' 
+    },
+    [theme.breakpoints.only('sm')]: {
+      transform: 'translate(0, -10%)' 
+    },
+    [theme.breakpoints.only('xl')]: {
+      transform: 'translate(0, -20%)' 
+    },
+    /* align center */
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    width: '100%'
+  }
 }));
 
 const HomeHeader = () => {
@@ -110,7 +151,12 @@ const HomeHeader = () => {
   return (
     <div className={classes.slide}>
     <Paper className={classes.container} elevation={0}> 
-    <img src='/turfgames.jpg' className={classes.bannerImage}/>
+    <Hidden smDown>
+      <img src='/turfgames.jpg' alt="Human Pyramid with Ed and Jess Miller" className={classes.bannerImage}/>
+    </Hidden>
+    <Hidden mdUp>
+      <img src='/turfgames-sm.jpg' alt="Human Pyramid with Ed and Jess Miller" className={classes.bannerImage}/>
+    </Hidden>
     <div className={classes.wrapper}>
       <div className={classes.verticalPad}>
         <Typography variant='h2' color="secondary">Millers Fitness and Nutrition</Typography>
@@ -128,61 +174,45 @@ const About = React.forwardRef((props, ref) => {
   return (
     <div ref={ref} className={classes.slide}>
       <Paper className={classes.container}>
-        <Typography gutterBottom variant="h4" component="h2" color="textPrimary">
-            About us
-        </Typography>
-        <Typography gutterBottom variant="body1" color="textPrimary" component="p">
-            Millers fitness are founded on the belief that everyone can attain their potential.
-        </Typography>
-      <div className={classes.flexDiv}>
-        <Card className={classes.serviceCard3}>
-        <CardContent>
-            <CardMedia
-            className={classes.profileImage}
-            image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/jedward-2017-1550236010.jpg"
-            title="Millers Fitness"
+        <div className={classes.infoContainer}>
+            <Typography gutterBottom variant="h4" component="h2" color="textPrimary">
+                About us
+            </Typography>
+            <Typography gutterBottom variant="body1" color="textPrimary" component="p">
+                Millers fitness are founded on the belief that everyone can attain their potential.
+            </Typography>
+          <div className={classes.flexDiv}>
+            <ProfileCard 
+              image = 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/jedward-2017-1550236010.jpg'
+              name = 'Millers'
+              title = 'Fitness and Nutrition'
+              body = "Formed in 2019 to help a friend train in rubbish, blah blah blah. Something about how we've helped people."
+              backgroundColor = 'linear-gradient(45deg, #e8932c 40%, #ebb00e 70%)'
             />
-            <Typography gutterBottom color='textSecondary' variant="h6" component="h3">
-              Our Company
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Formed in 2019 to help a friend train in rubbish, blah blah blah. Something about how we've helped people.
-            </Typography>
-        </CardContent>
-        </Card>
 
-        <Card className={classes.serviceCard2}>
-        <CardContent>
-            <CardMedia
-            className={classes.profileImage}
-            image="https://pbs.twimg.com/profile_images/378800000567385280/4c5097d465d0e197288d9988e237848f.jpeg"
-            title="Ed Miller"
+            <ProfileCard 
+              image = 'https://pbs.twimg.com/profile_images/378800000567385280/4c5097d465d0e197288d9988e237848f.jpeg'
+              name = 'Ed Miller'
+              title = 'Personal Trainer'
+              body = 'I have worked as a personal fitness trainer for 10 years, training and coaching people though various training programs. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder..'
+              backgroundColor = 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
             />
-            <Typography gutterBottom color='textSecondary' variant="h6" component="h3">
-              Ed Miller
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              I have worked as a personal fitness trainer for 10 years, training and coaching people though various training programs. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder..
-            </Typography>
-        </CardContent>
-        </Card>
 
-        <Card className={classes.serviceCard1}>
-        <CardContent>
-            <CardMedia
-            className={classes.profileImage}
-            image="https://www.famousbirthdays.com/headshots/edward-grimes-singer-5.jpg"
-            title="Jess Miller"
+            <ProfileCard 
+              image="https://www.famousbirthdays.com/headshots/edward-grimes-singer-5.jpg"
+              name = 'Jess Miller'
+              title = 'Physiotherapist'
+              body = ' I am a fully trained and practising physio therapist. I have been working to More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder..'
+              backgroundColor = 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
             />
-            <Typography gutterBottom color='textSecondary' variant="h6" component="h3">
-                Jess Miller
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              I am a fully trained and practising physio therapist. I have been working to More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder..
-            </Typography>
-        </CardContent>
-        </Card>
         </div>
+        </div>
+        <Hidden mdDown>
+          <Endorsement name='Tracey' quote='I now have fun exercises I can do with the children' />
+        </Hidden>
+        <Hidden only={['xs', 'md', 'lg', 'xl']}>
+             <EndorsementSmall name='Tracey' quote='I now have fun exercises I can do with the children' />
+          </Hidden>
         </Paper>
     </div>
   );
@@ -190,20 +220,19 @@ const About = React.forwardRef((props, ref) => {
 
 const Services = React.forwardRef((props, ref) => {
 
-  const {isOnScreen} = props
-
   const classes = useStyles();
 
   return (
     <div ref={ref} className={classes.slide}> 
         <Paper className={classes.container}>
-          
+        <div className={classes.infoContainer}>
             <Typography gutterBottom variant="h4" component="h1" color="textPrimary">
                 Our Services
             </Typography>
+            <Hidden xsDown>
             <Typography gutterBottom variant="body1" color="textPrimary" component="p">
               Depending on what you wish to achieve we offer a range of bespoke services.
-            </Typography>
+            </Typography></Hidden>
          
             <div className={classes.flexDiv}>
 
@@ -214,12 +243,12 @@ const Services = React.forwardRef((props, ref) => {
                 title="Vegetables"
               />
               <CardContent>
-              <Typography gutterBottom variant="h5" color="textSecondary" component="h3">
+              <Typography variant="h5" color="textSecondary" component="h3">
                 <b>Diet Analysis</b>
               </Typography>
-              <List className={classes.textSecondary}>
+              <List className={classes.textSecondary} disablePadding >
 
-                <ListItem>
+                <ListItem >
                   <ListItemIcon>
                     <CheckCircleOutlineIcon />
                   </ListItemIcon>
@@ -242,9 +271,6 @@ const Services = React.forwardRef((props, ref) => {
 
               </List>
               </CardContent>
-              <CardActions>
-                <Button variant='outlined' className={classes.textSecondary}>More Info</Button>
-              </CardActions>
             </Card>
 
             <Card className={classes.serviceCard2}>
@@ -254,10 +280,10 @@ const Services = React.forwardRef((props, ref) => {
                 title="Running"
               />
               <CardContent>
-                  <Typography gutterBottom color='textSecondary' variant="h5">
+                  <Typography color='textSecondary' variant="h5">
                     <b>Fitness plans</b>
                   </Typography>
-                  <List className={classes.textSecondary}>
+                  <List className={classes.textSecondary} disablePadding>
 
                 <ListItem>
                   <ListItemIcon>
@@ -281,9 +307,6 @@ const Services = React.forwardRef((props, ref) => {
                 </ListItem>
               </List>
               </CardContent>
-              <CardActions>
-                <Button variant='outlined' className={classes.textSecondary}>More Info</Button>
-              </CardActions>
             </Card>
             <Card className={classes.serviceCard3}>
               <CardMedia
@@ -292,10 +315,10 @@ const Services = React.forwardRef((props, ref) => {
                 title="Vegetables"
               />
               <CardContent>
-                  <Typography gutterBottom variant="h5" component="h3" color='textSecondary'>
+                  <Typography variant="h5" component="h3" color='textSecondary'>
                     <b>Combined Service</b>
                   </Typography>
-                  <List className={classes.textSecondary}>
+                  <List className={classes.textSecondary} disablePadding>
 
                   <ListItem>
                     <ListItemIcon>
@@ -320,11 +343,15 @@ const Services = React.forwardRef((props, ref) => {
 
                   </List>
                   </CardContent>
-                  <CardActions>
-                  <Button variant='outlined' className={classes.textSecondary}>More Info</Button>
-                  </CardActions>
             </Card>
             </div>
+            </div>
+            <Hidden smDown>
+             <Endorsement name='Tracey' quote='Really helped me feel less hungry throughout the day' />
+            </Hidden>
+            <Hidden only={['xs', 'md', 'lg', 'xl']}>
+             <EndorsementSmall name='Tracey' quote='Really helped me feel less hungry throughout the day' />
+            </Hidden>
         </Paper>
     </div>
   );
@@ -346,6 +373,7 @@ const Contacts = React.forwardRef((props, ref) => {
               <MailOutlineIcon fontSize="large" />
             </IconButton>
       </Paper>
+      <Footer />
     </div>
   );
 })

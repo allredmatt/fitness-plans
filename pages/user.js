@@ -1,4 +1,3 @@
-import Main                                     from '../components/pageWrapper.js'
 import UserPage                                 from '../components/userPage.js'
 import { useState, useEffect }                  from 'react';
 import { makeStyles }                           from '@material-ui/core/styles';
