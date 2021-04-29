@@ -9,6 +9,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta name="theme-color" content={theme.palette.primary.main} />
+          <meta name="description" content="Family run company providing personalised fitness plans and dietary analysis to help you attain your exercise goals."></meta>
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
