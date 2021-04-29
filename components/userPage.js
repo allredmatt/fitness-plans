@@ -21,12 +21,13 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(0.1)
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     textAlign: 'center',
     //padding: 'auto',
     backgroundColor: theme.palette.primary.main,
-    minHeight: "35px",
-    height: '100%'
+    marginTop: theme.spacing(-8),
+    marginLeft: theme.spacing(1),
+    position: 'relative',
   },
   iframePaper: {
     padding: theme.spacing(0.5),
@@ -152,30 +153,30 @@ export default function UserPage({user, pageToShow, setPageToShow, setShowBackDr
       localStorage.setItem('pageToShow', pageToShow);
   }, [pageToShow, foodCalenderData])
 
+  const pageName = (pageDisplayed) => {
+    switch(pageDisplayed){
+      case 'food':
+        return 'Food Journal'
+      case 'plan':
+        return 'Fitness Plan'
+      case 'whole':
+        return 'Overall Plan'
+      case 'feedback':
+        return 'Food Feedback'
+    }
+  }
+
 
   return (
     <div className={classes.container}>
       <Grid container spacing={3} alignItems="stretch" className={classes.bottomMargin} >
-        <Grid item xs={6} sm={3}>
-          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("food")}>
-          <Typography variant="h5" color="secondary">Food Diary</Typography>
+        <Grid item >
+          <Paper className={classes.paper} >
+          <Typography variant="h4" color="secondary">{
+            pageName(pageToShow)
+          }</Typography>
           </Paper>
         </Grid>
-        <Grid item xs={6} sm={3}>
-          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("feedback")}>
-          <Typography variant="h5" color="secondary">Food Feedback</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("plan")}>
-          <Typography variant="h5" color="secondary">Daily Plan</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={6} sm={3}>
-          <Paper className={classes.paper} button="true" onClick={() => setPageToShow("whole")}>
-          <Typography variant="h5" color="secondary">Overall Plan</Typography>
-          </Paper>
-        </Grid>  
       </Grid>
       {accountDetailsPage}
     </div>

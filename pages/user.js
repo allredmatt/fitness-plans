@@ -17,11 +17,12 @@ import Backdrop                                 from '@material-ui/core/Backdrop
 import CircularProgress                         from '@material-ui/core/CircularProgress';
 import { AuthedTopBar }                         from '../components/topbar';
 import Paper                                    from '@material-ui/core/Paper';
+import Image                                    from 'next/image'
 
 
 const useStyles = makeStyles((theme) => ({
   container:{
-    minWidth: 400,
+    width: '100vw',
     padding: theme.spacing(2),
     backgroundColor: theme.palette.primary.dark
   },
@@ -29,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
-  },
-  bannerImage: {
-    height: 150,
   },
   button: {
     margin: 2,
@@ -46,6 +44,11 @@ const useStyles = makeStyles((theme) => ({
   },
   backColour:{
     backgroundColor: theme.palette.primary.dark
+  },
+  imageDiv:{
+    width: '100%',
+    height: '15vh',
+    position: 'relative'
   }
 }));
 
@@ -97,23 +100,22 @@ export default function UserArea() {
   return (
     <div className={classes.backColour}> 
       <AuthedTopBar logout={handleLogout} setUserAreaToDisplay={setUserAreaToDisplay}/>
-      <Paper className={classes.container} elevation={0}>
-          <Card className={classes.headCard}>
-          <CardContent>
-          <CardMedia
-              className={classes.bannerImage}
-              image="/gym.jpg"
-              title="Empty Gym"
-              />
-              <Typography gutterBottom variant="h5" component="h2">
-                  Your personal plan and nutrition details
-              </Typography>
-              </CardContent>
-          </Card>
-
+      <div className={classes.imageDiv}>
+      <Image
+        objectFit='cover'
+        src="/gym.webp"
+        alt="Picture of gym equipment"
+        layout="fill"
+      />
+      </div>
+        <Paper className={classes.container} elevation={0}>
           {user.isLoggedIn ?
           <UserPage user={user} pageToShow={userAreaToDisplay} setPageToShow={setUserAreaToDisplay} setShowBackDrop={setShowBackDrop}/>
           : 
+          <React.Fragment>
+          <Typography gutterBottom variant="h5" component="h2">
+                  Your personal plan and nutrition details
+          </Typography>
           <Card className={classes.headCard}>
           <CardContent>
               <Typography gutterBottom variant="body1" color="textPrimary" component="p">
@@ -146,6 +148,7 @@ export default function UserArea() {
               </Typography>
           </CardContent>
           </Card>
+          </React.Fragment>
           }
           <Snackbar open={incorrectLogin} autoHideDuration={3000} onClose={() => setIncorrectLogin(false)}>
           <Alert onClose={() => setIncorrectLogin(false)} severity="warning">

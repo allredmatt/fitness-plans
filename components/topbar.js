@@ -167,7 +167,7 @@ export function AuthedTopBar({logout, setUserAreaToDisplay}) {
             aria-label="menu"
             onClick={handleMenuClick}
             >
-              <MenuIcon aria-controls="simple-menu" aria-haspopup="true" />
+              <PersonIcon aria-controls="simple-menu" aria-haspopup="true" />
             </IconButton>
             <Drawer
                 id="simple-menu"

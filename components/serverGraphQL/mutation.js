@@ -255,7 +255,7 @@ export async function newUserData(inputData) {
   return await graphQLClient.request(mutation, variables);
 }
 
-async function deleteUserDataById (userDataId) {
+export async function deleteUserDataById (userDataId) {
   const mutation = /* GraphQL */ `
   mutation deleteUserInputData($id: ID!) {
     deleteUserInputData(
@@ -272,7 +272,7 @@ async function deleteUserDataById (userDataId) {
   return await graphQLClient.request(mutation, variables);
 }
 
-async function modifyUserDataById(dataId, userInputData) {
+export async function modifyUserDataById(dataId, userInputData) {
   const mutation = /* GraphQL */ `
     mutation updateUserInputData($id: ID!, $name: String!, $customId: Int!, $details: String!,$inputDataUnit: String!, $inputtedData: [UserDataInput]) {
       updateUserInputData(

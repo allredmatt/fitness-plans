@@ -50,6 +50,15 @@ const useStyles = makeStyles((theme) => ({
         box: {
             display: 'flex',
             flexDirection: 'column'
+        },
+        flexDiv:{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap'
+        },
+        marginTop:{
+            marginTop: theme.spacing(1),
+            backgroundColor: theme.palette.secondary.main
         }
 }));
 
@@ -67,8 +76,6 @@ export const labels = {
           };
 
 export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
-
-    const minWidth = useMediaQuery('(min-width:1000px)');
 
     const classes = useStyles()
 
@@ -242,9 +249,6 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
             
             <div className={classes.root}>
             <Paper className={classes.paper} elevation={2}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                            Fitness Plan
-                    </Typography>
                     <UserFitnessPlan 
                         fitnessData={currentFitnessPlan}
                         setFitnessData={setCurrentFitnessPlan} 
@@ -253,17 +257,17 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                         saveToInputToServer={() => setIsSubmitRatingDialogOpen(true)} 
                         handleNextClick={handleNextClick} 
                         handlePreviousClick={handlePreviousClick}
-                        flexDirection={minWidth? "row" : "column"}
                         allSessionsRendered={false}
                     />
+                    <Divider className={classes.marginTop}/>
+                    <div className={classes.flexDiv}>
+                    {
+                        currentFitnessPlan.cardInfo?.map(card => card.listOfActivities.map(activity => activity.userInputDataId.map(customId => 
+                            <DataLog key={customId} customId={customId} />
+                        )))
+                    }</div>
             </Paper>
-            <Paper className={classes.paper} elevation={2}>
-                {
-                    currentFitnessPlan.cardInfo?.map(card => card.listOfActivities.map(activity => activity.userInputDataId.map(customId => 
-                        <DataLog key={customId} customId={customId} sessionTitle={currentFitnessPlan.sessionTitle} cardTitle={card.cardTitle} activityTitle={activity.primary} />
-                    )))
-                }
-            </Paper>
+            
             <Snackbar
                 anchorOrigin={{
                 vertical: 'bottom',

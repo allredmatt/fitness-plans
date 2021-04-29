@@ -15,6 +15,7 @@ import Tooltip                  from '@material-ui/core/Tooltip';
 import SkipPreviousIcon         from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon             from '@material-ui/icons/SkipNext';
 import Fab                      from '@material-ui/core/Fab';
+import Button                   from '@material-ui/core/Button'
 import SaveIcon                 from '@material-ui/icons/Save';
 import Rating                   from '@material-ui/lab/Rating';
 import InputBase                from '@material-ui/core/InputBase';
@@ -24,15 +25,16 @@ import { labels }               from './fitnessPlan'
 
 export default function UserFitnessPlan ({
     fitnessData, setFitnessData, userInputData, handleCardChange, 
-    saveToInputToServer, handleNextClick, handlePreviousClick, flexDirection,
+    saveToInputToServer, handleNextClick, handlePreviousClick,
     allSessionsRendered
 }) {
 
     const useStyles = makeStyles((theme) => ({
         card: {
             backgroundColor: theme.palette.background.light,
-            margin: theme.spacing(1),
-            
+            marginBottom: theme.spacing(1),
+            marginRight: theme.spacing(1),
+            width: 'min(100%, 320px)'           
         },
         paper: {
             padding: theme.spacing(2),
@@ -44,7 +46,9 @@ export default function UserFitnessPlan ({
         },
         flexDiv:{
             display: 'flex',
-            flexDirection: flexDirection,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'stretch',
             minWidth: '180px'
         },
         controls: {
@@ -55,10 +59,6 @@ export default function UserFitnessPlan ({
         },
         listRoot: {
             width: '100%',
-            maxWidth: '36ch',
-        },
-        listItem:{
-            marginLeft: '4px'
         },
         inline: {
             display: 'inline',
@@ -74,9 +74,8 @@ export default function UserFitnessPlan ({
             paddingRight: theme.spacing(4)
         },
         rightAlign:{
-            marginTop: "auto",
-            marginLeft: flexDirection === "row" ? theme.spacing(1) : "auto",
-            paddingRight: theme.spacing(1)
+            marginBottom: theme.spacing(1),
+            alignSelf: 'flex-end'
         }
     }));
 
@@ -244,13 +243,15 @@ export default function UserFitnessPlan ({
                 }
                 <span className={classes.rightAlign} hidden={allSessionsRendered}>
                     <Tooltip title="Save Your Workout Data" aria-label="save data">
-                    <Fab 
+                    <Button 
                         color="secondary"
+                        variant="contained"
                         aria-label="save"
                         onClick={submitUserData}
+                        startIcon={<SaveIcon />}
                     >
-                        <SaveIcon />
-                    </Fab>
+                        Save
+                    </Button>
                     </Tooltip>
                 </span>
                 </div>

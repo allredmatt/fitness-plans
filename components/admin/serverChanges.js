@@ -105,6 +105,18 @@ export async function findCard(cardId) {
     return sendData("card", "GET", raw)
 }
 
+export async function deleteUserData(id){
+    const raw = JSON.stringify({userDataId: id})
+
+    return sendData("data", "DELETE", raw)
+}
+
+export async function modifyUserData(body){
+    const raw = JSON.stringify(body)
+
+    return sendData("data", "POST", raw)
+}
+
 async function sendData (path, method, raw) {
     const requestOptions = {
             method: method,

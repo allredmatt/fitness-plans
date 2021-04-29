@@ -1,6 +1,6 @@
 import { blankCardInfo, blankActivity } from '../admin/fitnessDisplay'
 
-export function handleCardStateChange ({newValue, activityIndex, cardIndex, changeType}, currentSessionInfo, setCurrentSessionInfo) {
+export function handleCardStateChange ({newValue, activityIndex, cardIndex, changeType, userDataIndex}, currentSessionInfo, setCurrentSessionInfo) {
     //called args would look something look this: {newValue: event.target.value, activityIndex: activityIndex, cardIndex: cardIndex, changeType: {key: "primary", object: "activity"}}
     //add a hasChanged flag so can check for saving
     if(changeType.object === 'cardInfo'){
@@ -41,7 +41,13 @@ export function handleCardStateChange ({newValue, activityIndex, cardIndex, chan
                 newActivityArray = [...currentSessionInfo.cardInfo[cardIndex].listOfActivities]
                 newActivityArray[activityIndex].units.push(newValue.unit)
                 newActivityArray[activityIndex].userInputDataId.push(newValue.id)
-                newActivityArray[activityIndex].datum.push(0)
+                newActivityArray[activityIndex].datum.push("0")
+                break
+            case 'deleteUserData':
+                newActivityArray = [...currentSessionInfo.cardInfo[cardIndex].listOfActivities]
+                newActivityArray[activityIndex].units.splice(userDataIndex, 1)
+                newActivityArray[activityIndex].userInputDataId.splice(userDataIndex, 1)
+                newActivityArray[activityIndex].datum.splice(userDataIndex, 1)
                 break
             default:
                 newActivityArray = currentSessionInfo.cardInfo[cardIndex].listOfActivities.map((activity, index) => index === activityIndex ? {...activity, [changeType.key]: newValue } : activity)

@@ -2,6 +2,7 @@ import { useState, useEffect, useContext }  from 'react';
 import FoodDisplay                          from './foodDisplay'
 import FitDisplay                           from './fitnessDisplay'
 import FoodFeedbackInput                    from './foodFeedback'
+import UserDataForm                         from './userData'
 import { makeStyles, withStyles }           from '@material-ui/core/styles';
 import Card                                 from '@material-ui/core/Card';
 import CardContent                          from '@material-ui/core/CardContent';
@@ -174,6 +175,11 @@ export default function AuthedArea({userList, setUserList}) {
                 setTabContents(<FoodFeedbackInput user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} />)
                 setIsBackDropOpen(false)
                 break
+            case 3:
+                setTabContents(<UserDataForm user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} />)
+                setIsBackDropOpen(false)
+                break
+                break
             default:
                 setTabContents(null)
                 setIsBackDropOpen(false)
@@ -280,6 +286,7 @@ export default function AuthedArea({userList, setUserList}) {
                             <Tab label="Food Info" />
                             <Tab label="Fitness Plan" />
                             <Tab label="Food Feedback" />
+                            <Tab label="User Data" />
                         </Tabs>
                         </Grid>
                     </Paper>
