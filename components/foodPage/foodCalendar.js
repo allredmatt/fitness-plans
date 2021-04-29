@@ -149,9 +149,6 @@ export default function FoodCalendar ({user, foodData, setFoodData, setShowBackD
     return(
         <Card className={classes.card}>
             <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
-                    Food journal
-                </Typography>
                 <Typography gutterBottom variant="subtitle1" color="textSecondary">
                     Please enter the meals you have eaten today. Use the notes section to add any other information, such as if you felt unusually hungary that day etc... Any training you did that day can also be input here.
                 </Typography>

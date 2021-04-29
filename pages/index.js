@@ -7,7 +7,7 @@ import { TopBar, AuthedTopBar }                   from '../components/topbar';
 const useStyles = makeStyles((theme) => ({
   viewer:{
     width: "100%",
-    height: `calc(100vh - 65px)`,
+    height: `calc(100vh - 67px)`,
     [theme.breakpoints.up('md')]: {
       overflowY: "scroll",
       scrollSnapType: "y mandatory"

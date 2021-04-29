@@ -26,55 +26,23 @@ import Tab                      from '@material-ui/core/Tab';
 import Box                      from '@material-ui/core/Box';
 import UserFitnessPlan          from './fitnessPage/userFit'
 import * as serverFetch         from './serverFetch'
-import { getNullableType } from 'graphql';
 
 
 export default function AllSessions ({fitnessData, setShowBackDrop}) {
     
     const minWidth1000 = useMediaQuery('(min-width:1000px)');
-    const minWidth1300 = useMediaQuery('(min-width:1300px)')
 
     const useStyles = makeStyles((theme) => ({
-        bottomMargin:{
-            marginBottom: theme.spacing(0.1)
-        },
         paper: {
             padding: theme.spacing(2),
-            marginBottom: theme.spacing(1)
-        },
-        root: {
-            width: '100%',
-            marginBottom: theme.spacing(2)
-            },
-        heading: {
-            fontSize: theme.typography.pxToRem(15),
-            fontWeight: theme.typography.fontWeightRegular,
-        },
-        flex: {
-            display: 'flex',
-            paddingLeft: theme.spacing(1),
-            width: '100%',
-            flexGrow: '1'
-        },
-        padLeft:{
-            paddingLeft: theme.spacing(1)
-        },
-        chartDiv: {
-            width: '100%',
-            flexGrow: '1'
+            marginBottom: theme.spacing(1),
+            backgroundColor: theme.palette.primary.main
         },
         accord: {
             display: 'flex',
-            flexDirection: minWidth1300? "row" : "column",
-            minWidth: '180px'
+            flexDirection: "column",
+            backgroundColor: theme.palette.primary.main
         },
-        card: {
-            backgroundColor: theme.palette.background.paper,
-            margin: theme.spacing(1),
-        },
-        tabs:{
-            minWidth: "130px"
-        }
         }));
 
 
@@ -85,16 +53,16 @@ export default function AllSessions ({fitnessData, setShowBackDrop}) {
     return (
         <Paper className={classes.paper}>
 
-            <Typography gutterBottom variant="h5" component="h2"> 
+            <Typography gutterBottom color="textSecondary" variant="h6" component="h2"> 
               All your workout session and logged data
             </Typography>
-            <AllSessionList fitnessData={fitnessData} classes={classes} minWidthLarge={minWidth1000} minWidthXL={minWidth1300}/>
-            <DataLog fitnessData={[]} />
+            <AllSessionList fitnessData={fitnessData} classes={classes} minWidthLarge={minWidth1000} />
+            <DataLog />
         </Paper>
     )
 }
 
-function AllSessionList ({fitnessData, classes, minWidthLarge, minWidthXL}) {
+function AllSessionList ({fitnessData, classes, minWidthLarge}) {
 
     const [tabValue, setTabValue] = useState(0)
     const [currentFitnessPlan, setCurrentFitnessPlan] = useState()
@@ -112,16 +80,15 @@ function AllSessionList ({fitnessData, classes, minWidthLarge, minWidthXL}) {
     return(
         <div className={classes.accord}>
             <Tabs
-                className={classes.tabs}
                 value={tabValue}
                 onChange={(event, newValue) => setTabValue(newValue)}
-
-                orientation={minWidthXL? "vertical" : "horizontal"}
-                variant={minWidthXL? "scrollable" : "fullWidth" }
+                orientation="horizontal"
+                variant="scrollable"
+                scrollButtons="on"
                 aria-label="session tabs"
             >
                 {fitnessData.map( (session, index) => 
-                    <Tab label={session.sessionTitle} key={session._id} id={`tab-index-${index}`} aria-controls={`tab-panel-${session.shortTitle}`}/>
+                    <Tab label={session.sessionTitle} key={session._id} id={`tab-index-${index}`} aria-controls={`tab-panel-${session.title}`}/>
                 )}
             </Tabs>
             <Divider orientation="vertical"/>

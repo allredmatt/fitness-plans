@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     },
     cardPaper:{
         backgroundColor: theme.palette.background.highlighted
+    },
+    redButton:{
+        color: theme.palette.error.main
     }
 }))
 
@@ -123,7 +126,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
             //Add new input to activity within card
             setCardData({newValue: {id: tempId, unit: formData.unit}, activityIndex: addLink.activityIndex, cardIndex: addLink.cardIndex, changeType: {key: "units", object: "activity"}})
             //Store creation of newUserInputData till save is clicked in userTrackingData.
-            setUserDataTracking([...userDataTracking, {customId: tempId, inputDataUnit: formData.unit, name: formData.name, details: `${cardData.cardTitle}: ${cardData.listOfActivities[activityIndex].primary}`}])
+            setUserDataTracking([...userDataTracking, {customId: tempId, inputDataUnit: formData.unit, name: formData.name, details: `${cardData.cardTitle}: ${cardData.listOfActivities[addLink.activityIndex].primary}`}])
           }
           handleClose()
         };
@@ -190,7 +193,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                 onClick={() => setCardData({cardIndex: cardIndex, changeType: {key: "delete", object: "cardInfo"}})} 
                 className={classes.textArea}
             >
-                <DeleteIcon color="secondary"/>
+                <DeleteIcon className={localClasses.redButton} />
             </IconButton>   
             </Grid>
             <Grid item xs={12} className={classes.gridItem}>
@@ -233,7 +236,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                         onClick={(event) => setAddLink({...addLink, open: true, cardIndex: cardIndex, activityIndex: activityIndex, anchor: event.target})} 
                         className={classes.textArea}
                     >
-                        <LinkIcon color="primary"/>
+                        <LinkIcon color="secondary"/>
                     </IconButton>
                     <IconButton 
                         edge="end" 
@@ -241,7 +244,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                         onClick={() => setCardData({activityIndex: activityIndex, cardIndex: cardIndex, changeType: {key: "delete", object: "activity"}})} 
                         className={classes.textArea}
                     >
-                        <DeleteIcon color="secondary"/>
+                        <DeleteIcon className={localClasses.redButton} />
                     </IconButton>
                     <Typography>Current user inputs for this activity:</Typography>
                     {activity.userInputDataId.length === 0 ?
@@ -254,6 +257,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                                 <TableCell><b>Name</b></TableCell>
                                 <TableCell><b>ID</b></TableCell>
                                 <TableCell><b>Unit</b></TableCell>
+                                <TableCell><b>Delete</b></TableCell>
                             </TableRow>
                             </TableHead>
                             <TableBody>
@@ -262,6 +266,17 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                                 <TableCell >{findIdInUserTrackingData(inputId)?.name}</TableCell>
                                 <TableCell>{inputId}</TableCell>
                                 <TableCell>{activity.units[index]}</TableCell>
+                                <TableCell>
+                                    <IconButton 
+                                        edge="end" 
+                                        aria-label="delete"
+                                        size='small'
+                                        onClick={() => setCardData({activityIndex: activityIndex, cardIndex: cardIndex, userDataIndex: index, changeType: {key: "deleteUserData", object: "activity"}})} 
+                                        className={classes.textArea}
+                                    >
+                                        <DeleteIcon fontSize="small"/>
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                             )
                             }
