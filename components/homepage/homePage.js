@@ -13,6 +13,8 @@ import CheckCircleOutlineIcon   from '@material-ui/icons/CheckCircleOutline';
 import Avatar                   from '@material-ui/core/Avatar';
 import ProfileCard from './profileCard';
 import Endorsement, { EndorsementSmall, Footer } from './footer';
+import Image                                    from 'next/image'
+import { min } from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
   flexDiv: {
@@ -89,9 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bannerImage:{
     position: 'absolute',
-    objectFit: 'cover',
-    overflowX: 'hidden',
-    padding: theme.spacing(2),
+    //top: '50%',
     height: '100%',
     maxWidth: '100vw',
   },
@@ -115,6 +115,9 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: '100px',
     maxWidth: '100vw',
     background: 'radial-gradient(ellipse, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.4) 100%)',
+  },
+  imageWrapper:{
+    //transform: 'translate(0, -50%)'
   },
   profileContainer:{
     display: 'grid',
@@ -150,14 +153,21 @@ const HomeHeader = () => {
 
   return (
     <div className={classes.slide}>
-    <Paper className={classes.container} elevation={0}> 
-    <Hidden smDown>
-      <img src='/turfgames.jpg' alt="Human Pyramid with Ed and Jess Miller" className={classes.bannerImage}/>
-    </Hidden>
-    <Hidden mdUp>
-      <img src='/turfgames-sm.jpg' alt="Human Pyramid with Ed and Jess Miller" className={classes.bannerImage}/>
-    </Hidden>
+    <div className={classes.bannerImage}>
+      <Image
+        className={classes.imageWrapper}
+        src="/turfgames.jpg"
+        alt="Human Pyramid with Ed and Jess Miller"
+        width={1080}
+        height={1200}
+        layout="intrinsic"
+      /> 
+    </div>
+    
+    <Paper className={classes.container} elevation={0}>
+    
     <div className={classes.wrapper}>
+      
       <div className={classes.verticalPad}>
         <Typography variant='h2' color="secondary">Millers Fitness and Nutrition</Typography>
       </div>
@@ -183,15 +193,16 @@ const About = React.forwardRef((props, ref) => {
             </Typography>
           <div className={classes.flexDiv}>
             <ProfileCard 
-              image = 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/jedward-2017-1550236010.jpg'
+              image = '/bothProfile.webp'
               name = 'Millers'
               title = 'Fitness and Nutrition'
-              body = "Formed in 2019 to help a friend train in rubbish, blah blah blah. Something about how we've helped people."
+              body = "Miller's Fitness and Nutrition was founded by Jess and Ed, a Husband and Wife team with a passion for creating accessible fitness programmes and nutrition advice. We were tired of seeing generic programmes that made people lose motivation and put them off exercise or eating well forever. "
               backgroundColor = 'linear-gradient(45deg, #e8932c 40%, #ebb00e 70%)'
+              linkToPath="/home"
             />
 
             <ProfileCard 
-              image = 'https://pbs.twimg.com/profile_images/378800000567385280/4c5097d465d0e197288d9988e237848f.jpeg'
+              image = '/edProfile.webp'
               name = 'Ed Miller'
               title = 'Personal Trainer'
               body = 'I have worked as a personal fitness trainer for 10 years, training and coaching people though various training programs. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder..'
@@ -199,7 +210,7 @@ const About = React.forwardRef((props, ref) => {
             />
 
             <ProfileCard 
-              image="https://www.famousbirthdays.com/headshots/edward-grimes-singer-5.jpg"
+              image="/jessProfile.webp"
               name = 'Jess Miller'
               title = 'Physiotherapist'
               body = ' I am a fully trained and practising physio therapist. I have been working to More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder.. More more more, something here placeholder..'

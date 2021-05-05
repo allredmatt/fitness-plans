@@ -4,16 +4,19 @@ import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 import { Divider } from '@material-ui/core';
+import Link from '@material-ui/core/Link'
+import CardActions from '@material-ui/core/CardActions'
 
-export default function ProfileCard ({image, name, title, body, backgroundColor}) {
+export default function ProfileCard ({image, name, title, body, backgroundColor, linkToPath}) {
 
     const useStyles = makeStyles((theme) => ({
         card: {
             flex: '0 0 auto',
-            width: 325,
+            width: 315,
             overflowY: 'auto',
             background: backgroundColor,
-            marginRight: theme.spacing(1.5)
+            marginRight: theme.spacing(1.5),
+            padding: theme.spacing(-1)
           },
           profileContainer:{
             display: 'grid',
@@ -41,6 +44,14 @@ export default function ProfileCard ({image, name, title, body, backgroundColor}
           itemTitle:{
             marginLeft: 'auto',
             gridArea: 'title'
+          },
+          linkBorder:{
+            border: '1px solid',
+            borderRadius: theme.spacing(0.5),
+            paddingLeft: theme.spacing(0.3),
+            paddingTop: theme.spacing(0.2),
+            paddingBottom: theme.spacing(0.1),
+            paddingRight: theme.spacing(0.2)
           }
         })
     )
@@ -67,6 +78,19 @@ export default function ProfileCard ({image, name, title, body, backgroundColor}
               </Typography>
             </div>
         </CardContent>
+        { linkToPath ?
+        <CardActions>
+            <Link
+              color="textSecondary"
+              underline="none"
+              href={linkToPath}
+              className={classes.linkBorder}
+            >
+                Read More...
+            </Link>
+            </CardActions>
+            : null
+        } 
         </Card>
     )
 }
