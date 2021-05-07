@@ -22,6 +22,8 @@ import Fab                      from '@material-ui/core/Fab';
 import SaveIcon                 from '@material-ui/icons/Save';
 import DeleteIcon               from '@material-ui/icons/Delete';
 import DataLog                  from '../fitnessPage/dataLog'
+import { Dialog, DialogTitle, Button } from '@material-ui/core';
+import { FormatColorResetOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
         gridPaper:{
@@ -49,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
         marginRight:{
             marginRight: theme.spacing(2),
             backgroundColor: theme.palette.error.main
+        },
+        dialog:{
+            padding: theme.spacing(2)
         }
     }));
 
@@ -86,6 +91,7 @@ export default function UserDataForm ({user}) {
 function UserForm ({selected, userData, classes, setUserData, setSelected}) {
 
     const [formData, setFormData] = useState(userData[selected])
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
     useEffect(() => {
         //useEffect to reload state if selected prop changes
@@ -103,6 +109,7 @@ function UserForm ({selected, userData, classes, setUserData, setSelected}) {
     }
 
     const deleteThisUserData = () => {
+        setIsDeleteDialogOpen(false)
         //Change the tab that is selected as this one is about to be deleted. Only need to trigger if last item is one to be deleted
         if(userData.length === selected + 1){
             setSelected(selected - 1)
@@ -112,6 +119,19 @@ function UserForm ({selected, userData, classes, setUserData, setSelected}) {
         //update server
         deleteUserData(formData._id)
     }
+
+    const DeleteConfirmDialog = () => 
+        <Dialog 
+            onClose={() => setIsDeleteDialogOpen(false)} 
+            aria-labelledby="confirm delete dialog" 
+            open={isDeleteDialogOpen}
+            className={classes.dialog}
+        >
+            <DialogTitle id="confirm-delete">Confirm</DialogTitle>
+            <Typography className={classes.dialog} color="textSecondary">Please confirm you want to delete. Ensure you have deleted the data from the fitness plan as well</Typography>
+            <Button onClick={deleteThisUserData}>Delete</Button>
+            <Button onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+        </Dialog>
 
     return(
         <div>
@@ -157,7 +177,7 @@ function UserForm ({selected, userData, classes, setUserData, setSelected}) {
             className={classes.marginRight}
             color="secondary"
             aria-label="delete"
-            onClick={deleteThisUserData}
+            onClick={() => setIsDeleteDialogOpen(true)}
         >
             <DeleteIcon />
         </Fab>
@@ -170,7 +190,7 @@ function UserForm ({selected, userData, classes, setUserData, setSelected}) {
         </Fab>
         </span>
         </Paper>
-
+        <DeleteConfirmDialog />
         <Paper className={classes.cardPaper}>
             <DataLog key={formData.customId} customId={formData.customId}/>
         </Paper>

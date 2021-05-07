@@ -85,10 +85,10 @@ export default function FoodFeedbackInput ({user}) {
                 onBlur={(event) => setLinkForiframe(validateURL(event.currentTarget.value))}
                 onChange={(event) => setLink(event.currentTarget.value)}
             />
-            <Button color="primary" variant="outlined" onClick={saveLink}>Save</Button>
+            <Button color="secondary" variant="outlined" onClick={saveLink}>Save</Button>
         </Paper>
         <Paper className={classes.iframePaper}>
-            <Typography color="primary" variant="h6" >What the user will see:</Typography>
+            <Typography color="textSecondary" variant="h6" >What the user will see:</Typography>
             <iframe className={classes.iframe} src={linkForiframe} />
         </Paper>
         </Grid>

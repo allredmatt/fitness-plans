@@ -14,7 +14,6 @@ import Avatar                   from '@material-ui/core/Avatar';
 import ProfileCard from './profileCard';
 import Endorsement, { EndorsementSmall, Footer } from './footer';
 import Image                                    from 'next/image'
-import { min } from 'date-fns';
 
 const useStyles = makeStyles((theme) => ({
   flexDiv: {

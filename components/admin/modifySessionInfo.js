@@ -37,7 +37,7 @@ export default function ModifySessionInfo ({classes, currentSessionInfo, setCurr
                     checked={isActiveSession}
                     onChange={(event) => setShouldBeActiveSession(event.target.checked)}
                     name="isCurrent"
-                    color="primary"
+                    color="secondary"
                     
                 />}
             label="Is Active Session"

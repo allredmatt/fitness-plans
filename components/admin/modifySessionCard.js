@@ -25,6 +25,7 @@ import TableCell                            from '@material-ui/core/TableCell';
 import TableContainer                       from '@material-ui/core/TableContainer';
 import TableHead                            from '@material-ui/core/TableHead';
 import TableRow                             from '@material-ui/core/TableRow';
+import ToolTip                              from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles((theme) => ({
     paperContainer:{
@@ -135,7 +136,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
           <Dialog onClose={handleClose} aria-labelledby="add-new-user-input-data-link" open={isNewLinkDialogOpen} maxWidth="xs" fullWidth>
             <DialogTitle id="add-new-user-input-data-link">Enter details for new user data input:</DialogTitle>
             <Paper elevation={0} className={localClasses.paperContainer}>
-            <Typography className={classes.textArea}>Choose a unique name that makes this user input easy for you to remember.</Typography>
+            <Typography color="textSecondary" className={classes.textArea}>Choose a unique name that makes this user input easy for you to remember.</Typography>
             <TextField
                 id="input-name"
                 label="Input Name"
@@ -145,7 +146,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                 value={formData.name}
                 onChange={(event) => setFormData({...formData, name: event.target.value})}
             />
-            <Typography className={classes.textArea}>Please enter a unit that is displayed after the user input item eg km, reps, rounds...</Typography>
+            <Typography color="textSecondary" className={classes.textArea}>Please enter a unit that is displayed after the user input item eg km, reps, rounds...</Typography>
             <TextField
                 id="input-unit"
                 label="Input Unit"
@@ -177,7 +178,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
         <Paper className={classes.cardPaper}>
         <Grid container className={classes.gridRoot} spacing={2}>
             <Grid item xs={12} className={classes.gridItemFlex}>
-            <Typography className={classes.typographyPad}>Card {cardIndex + 1}:</Typography>
+            <Typography color="textSecondary" className={classes.typographyPad}>Card {cardIndex + 1}:</Typography>
             <TextField
                 id="card-title"
                 label="Card Title"
@@ -198,11 +199,11 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
             </Grid>
             <Grid item xs={12} className={classes.gridItem}>
             <Divider variant="middle" className={classes.bottomMargin}/>
-            <Typography>List of activities for this card:</Typography>
+            <Typography color="textSecondary" >List of activities for this card:</Typography>
             {cardData.listOfActivities.map((activity, activityIndex)  =>{
                 return (
                 <div className={classes.textArea} key={activityIndex}>
-                    <Typography className={classes.textArea}>Activity {activityIndex + 1}</Typography>
+                    <Typography color="textSecondary" className={classes.textArea}>Activity {activityIndex + 1}</Typography>
                     <TextField
                         id="primary-text"
                         label="Primary Text"
@@ -230,6 +231,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                         value={activity.video}
                         onChange={(event) => setCardData({newValue: event.target.value, activityIndex: activityIndex, cardIndex: cardIndex, changeType: {key: "video", object: "activity"}})}
                         />
+                    <ToolTip title="Add data input for user" aria-label="add data input for user">
                     <IconButton 
                         edge="end" 
                         aria-label="link" 
@@ -238,6 +240,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                     >
                         <LinkIcon color="secondary"/>
                     </IconButton>
+                    </ToolTip>
                     <IconButton 
                         edge="end" 
                         aria-label="delete" 
@@ -246,9 +249,9 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                     >
                         <DeleteIcon className={localClasses.redButton} />
                     </IconButton>
-                    <Typography>Current user inputs for this activity:</Typography>
+                    <Typography color="textSecondary" >Current user inputs for this activity:</Typography>
                     {activity.userInputDataId.length === 0 ?
-                    <Typography>None</Typography>
+                    <Typography color="textSecondary" >None</Typography>
                     :
                     <TableContainer component={Paper}>
                         <Table size="small" aria-label="input data table">
@@ -274,7 +277,7 @@ export default function ModifySessionCard ({classes, cardData, cardIndex, setCar
                                         onClick={() => setCardData({activityIndex: activityIndex, cardIndex: cardIndex, userDataIndex: index, changeType: {key: "deleteUserData", object: "activity"}})} 
                                         className={classes.textArea}
                                     >
-                                        <DeleteIcon fontSize="small"/>
+                                        <DeleteIcon fontSize="small" className={localClasses.redButton}/>
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
