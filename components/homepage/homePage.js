@@ -377,7 +377,7 @@ const Contacts = React.forwardRef((props, ref) => {
                 Contact Us
       </Typography>
             <Typography variant="body1" color="textPrimary" component="p">
-                Please contact us in any of the following way:
+                Please contact us by email if you need more information or  wish to sign up.
             </Typography>
             <IconButton aria-label="Email" className={classes.margin} href="mailto:millersfitnessandnutrition@gmail.com">
               <MailOutlineIcon fontSize="large" />
