@@ -235,10 +235,10 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                             </Box>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={() => setIsSubmitRatingDialogOpen(false)} variant="outlined" color="primary">
+                    <Button onClick={() => setIsSubmitRatingDialogOpen(false)} variant="outlined" color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={() => handleSaveInputToServer(sessionRating, notes)} variant="outlined" color="primary" autoFocus>
+                    <Button onClick={() => handleSaveInputToServer(sessionRating, notes)} variant="outlined" color="secondary" autoFocus>
                         Submit
                     </Button>
                     </DialogActions>

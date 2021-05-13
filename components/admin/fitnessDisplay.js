@@ -16,6 +16,8 @@ import DialogContent                             from '@material-ui/core/DialogC
 import DialogContentText                         from '@material-ui/core/DialogContentText';
 import DialogTitle                               from '@material-ui/core/DialogTitle';
 import { handleCardStateChange }                 from '../../components/fitnessPage/stateManagement'
+import List                                      from '@material-ui/core/List'
+import ListItem                                  from '@material-ui/core/ListItem'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -54,30 +56,66 @@ const useStyles = makeStyles((theme) => ({
     },
     rightAlign:{
         marginLeft: "auto"
+    },
+    span:{
+        display: 'flex',
+        alignItems: 'baseline'
+    },
+    selfAlign:{
+        marginLeft: 'auto'
     }
 }));
 
-
+const blankSession = {
+    _id: "noIdYet",
+    sessionTitle: "New Session",
+    shortTitle: "New",
+    isNew: true,
+    isBlank: true
+}
 export const blankActivity = () => [{primary: "Activity Name", secondary: "Details here...", userInputDataId: new Array(1), units: new Array(1), datum:new Array(1)}]
 export const blankCardInfo = () => [{cardTitle: "Title", listOfActivities: [{primary: "Activity Name", secondary: "Details here...", userInputDataId: new Array(1), units: new Array(1), datum: new Array(1)}]}]
 
-export default function FitDisplay ({sessionServerData, setSessionServerData, user, setIsBackDropOpen}) {
+export default function FitDisplay ({sessionServerData, setSessionServerData, user, setIsBackDropOpen, startAtEnd = false}) {
 
     const classes = useStyles();
 
-    const [currentIndex, setCurrentIndex] = useState(0)
+    const [currentIndex, setCurrentIndex] = useState(startAtEnd? sessionServerData.length - 1: 0)
     const [currentSessionInfo, setCurrentSessionInfo] = useState(sessionServerData[sessionServerData.length - 1])
     const [isDeletePopUpOpen, setIsDeletePopUpOpen] = useState(false)
+    const [isNewSessionPopUpOpen, setIsNewSessionPopUpOpen] = useState(false)
     const [userDataTracking, setUserDataTracking] = useState([])
-    const [shouldBeActiveSession, setShouldBeActiveSession] = useState(sessionServerData[currentIndex]._id === user.currentSession)
+    const [shouldBeActiveSession, setShouldBeActiveSession] = useState(initialValueForActiveSession)
 
-    //useEffect checks to see if any changes have been made and prompts user to save changes if so.
+    const initialValueForActiveSession = () => {
+        if(sessionServerData[currentIndex]) return sessionServerData[currentIndex]._id === user.currentSession
+        return true
+    }
+
+    //useEffect checks to see if any changes have been made and prompts user to save changes if so. Needs fixing!
     //to change selected session and fetches session data from server if not a new card selected.
     useLayoutEffect(() => {
         setIsBackDropOpen(true)
-        if(sessionServerData[currentIndex].isNew){
+        if(sessionServerData[currentIndex].isBlank){
             setCurrentSessionInfo({...sessionServerData[currentIndex], cardInfo: blankCardInfo()})
             setShouldBeActiveSession(sessionServerData.length === 1? true : false)
+        } else if (sessionServerData[currentIndex].isNew) {
+            serverFetch.getSessionById(sessionServerData[currentIndex].oldId)
+            .then((data) => {
+                setCurrentSessionInfo({
+                    sessionTitle: data.sessionTitle, 
+                    shortTitle: data.shortTitle, 
+                    hasChanged: true, 
+                    isNew: true,
+                    cardInfo: data.cardInfo.map((card) => {
+                        return {cardTitle: card.cardTitle, listOfActivities: card.listOfActivities.map((activity) => {
+                            return {primary: activity.primary, secondary: activity.secondary, video: activity.video, units: activity.units, userInputDataId: activity.userInputDataId, datum: []}
+                        })}
+                    })
+                })
+                setShouldBeActiveSession(false)
+            })
+            .catch(console.log("Get sessions error. See network fetch for details"))
         } else {
             serverFetch.getSessionById(sessionServerData[currentIndex]._id)
             .then((data) => {
@@ -183,13 +221,41 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                             </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={() => setIsDeletePopUpOpen(false)} variant="outlined" color="primary">
+                    <Button onClick={() => setIsDeletePopUpOpen(false)} variant="outlined" color="secondary">
                         Cancel
                     </Button>
-                    <Button onClick={handleDeleteSession} variant="outlined" color="primary" autoFocus>
+                    <Button onClick={handleDeleteSession} variant="outlined" color="secondary" autoFocus>
                         Delete
                     </Button>
                     </DialogActions>
+                </Dialog>)
+    }
+
+    function NewSessionDialog () {
+
+        const handleExistingSession = (index) => {
+            setIsNewSessionPopUpOpen(false)
+            if(index === 'new'){
+                setSessionServerData([...sessionServerData, blankSession])
+            } else {
+                setSessionServerData([...sessionServerData, {...sessionServerData[index], isNew: true, _id: 'noIdYet', oldId: sessionServerData[index]._id}])
+            }
+        }
+
+        return (<Dialog
+                    open={isNewSessionPopUpOpen}
+                    onClose={() => setIsNewSessionPopUpOpen(false)}
+                >
+                    <DialogTitle id="alert-dialog-title">New Session</DialogTitle>
+                    <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Select an existing session or start a new one from scratch:
+                            </DialogContentText>
+                            <List>
+                                <ListItem button onClick={() => handleExistingSession('new')} key={'new'}>New</ListItem>
+                                {sessionServerData.map((session, index) => <ListItem button onClick={() => handleExistingSession(index)} key={index}>{session.sessionTitle}</ListItem>)}
+                            </List>
+                    </DialogContent>
                 </Dialog>)
     }
 
@@ -198,15 +264,24 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
             <Grid item xs={8}>
             <Paper className={classes.gridPaper}>
                 <Typography>Enter the users fitness data below. If you want a user to be able to track their work out, please add a link between the sessions.</Typography>
-                <Tabs 
-                    value={currentIndex}
-                    onChange={(event, newValue) => setCurrentIndex(newValue)}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    className={classes.bottomMargin}
-                >
-                    {sessionServerData.map((datum) => <Tab key={datum._id} label={datum.shortTitle}/>)}
-                </Tabs>
+                <span className={classes.span}>
+                    <Tabs 
+                        value={currentIndex}
+                        onChange={(event, newValue) => setCurrentIndex(newValue)}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        className={classes.bottomMargin}
+                    >
+                        {sessionServerData.map((datum) => <Tab key={datum._id} label={datum.shortTitle}/>)}
+                    </Tabs>
+                    <Button 
+                        variant="outlined"
+                        onClick={() => setIsNewSessionPopUpOpen(true)}
+                        className={classes.selfAlign}
+                    >
+                        New Session
+                    </Button>
+                </span>
                 <div className={classes.bottomMargin}>
 
                 <ModifySessionInfo 
@@ -226,6 +301,7 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                         cardIndex={cardIndex}
                         userDataTracking={userDataTracking}
                         setUserDataTracking={setUserDataTracking}
+                        key={cardIndex}
                     />
                 )}
 
@@ -264,6 +340,7 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
             </Paper>
             </Grid>
             <DeleteDialog />
+            <NewSessionDialog />
         </React.Fragment>
     )
 }

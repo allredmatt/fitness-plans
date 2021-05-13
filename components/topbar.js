@@ -69,7 +69,7 @@ export function TopBar({scrollToRef}) {
   const classes = useStyles();
 
   return (
-      <div className={classes.root}>
+      <nav className={classes.root}>
       <AppBar className={classes.appBar} color="primary">
           <Toolbar>
           <IconButton 
@@ -131,9 +131,8 @@ export function TopBar({scrollToRef}) {
             </Hidden>
           </Toolbar>
       </AppBar>
-      <Toolbar />
       <Divider className={classes.backColour}/>
-      </div>
+      </nav>
   );
 }
 

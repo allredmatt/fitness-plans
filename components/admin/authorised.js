@@ -112,6 +112,7 @@ export default function AuthedArea({userList, setUserList}) {
     const [newUserDialog, setNewUserDialog] = useState({isOpen: false})
     const [isBackDropOpen, setIsBackDropOpen] = useState(false)
     const [tabContents, setTabContents] = useState(null)
+    const [key, setKey] = useState(0)
 
     const classes = useStyles();
 
@@ -119,7 +120,8 @@ export default function AuthedArea({userList, setUserList}) {
         _id: "noIdYet",
         sessionTitle: "New Session",
         shortTitle: "New",
-        isNew: true, 
+        isNew: true,
+        isBlank: true
     }
 
     useEffect(()=>{
@@ -145,24 +147,27 @@ export default function AuthedArea({userList, setUserList}) {
                 break
             case 1:
                 if(fitnessProgData){
-                    if(fitnessProgData[fitnessProgData.length - 1].isNew){
-                        setTabContents(<FitDisplay sessionServerData={fitnessProgData} setSessionServerData={setFitnessProgData} user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} setIsBackDropOpen={setIsBackDropOpen}/>)
-                        setIsBackDropOpen(false)
-                    } else {
-                        setFitnessProgData(fitnessProgData.concat([{...blankSession}]))
-                    }
+                    setTabContents(<FitDisplay 
+                                        key={key + 1}
+                                        sessionServerData={fitnessProgData} 
+                                        setSessionServerData={setFitnessProgData} 
+                                        user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} 
+                                        setIsBackDropOpen={setIsBackDropOpen} 
+                                        startAtEnd={true}
+                                    />)
+                    setIsBackDropOpen(false)
+                    setKey(key + 1)
                 } else {
                     fetchServer.getSessionList(userSelectBox)
                     .then(data => {
-                        let serverFitData = data
-                        serverFitData.push({...blankSession})
                         setTabContents(<FitDisplay 
-                                            sessionServerData={serverFitData} 
+                                            sessionServerData={data.length === 0 ? [blankSession] : data} 
                                             setSessionServerData={setFitnessProgData} 
                                             user={{name: userSelectBox, ...userDatabaseIdLookup(userSelectBox)}} 
                                             setIsBackDropOpen={setIsBackDropOpen}
+                                            startAtEnd={true}
                                             />)
-                        setFitnessProgData(serverFitData)
+                        setFitnessProgData(data.length === 0 ? [blankSession] : data)
                         setIsBackDropOpen(false)
                     })
                     .catch(error => {

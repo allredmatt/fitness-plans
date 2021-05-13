@@ -1,17 +1,15 @@
-reduce main image in size.
+Minutes don't change if form is reopened in food
 
-minutes don't change if form is reopened in food
+Reload data upon submit or update local state in sessions (admin?)
 
-Sort out loading of css in material ui with next.js
+Seperate data sections to track over time see more easily
 
-Add in use of subscription type to prevent other items loading
+New as a button with prompt of copying other sessions
 
-darker background such as https://renaissanceperiodization.com/
+Short snappy can read more, expand modal box. Same background as card
 
-brighter blue for accents - #1dc0e0
+Next arrow on cards in xs homepage (or three dots style scrolling snap on cards)
 
-black bar with blue writing
+Re save on daily fitness plan creates new entry in user data
 
-Prefers image (possibly black and white)
-
-Fancy scroll effect? http://6thsense.xyz/
+How to manage edit on daily fitness plan - Edit button for user area?

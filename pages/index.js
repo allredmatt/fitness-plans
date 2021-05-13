@@ -5,15 +5,6 @@ import { TopBar, AuthedTopBar }                   from '../components/topbar';
 
 
 const useStyles = makeStyles((theme) => ({
-  viewer:{
-    width: "100%",
-    height: `calc(100vh - 67px)`,
-    [theme.breakpoints.up('md')]: {
-      overflowY: "scroll",
-      scrollSnapType: "y mandatory"
-    },
-    backgroundColor: theme.palette.primary.light,
-  },
   backColour:{
     backgroundColor: theme.palette.primary.light,
     marginBottom: '2px'
@@ -27,7 +18,6 @@ export default function Index() {
   let aboutRef = useRef()
   let servicesRef = useRef()
   let contactRef = useRef()
-  let articleRef = useRef()
 
   const scrollToRef = (reference) => {
     switch(reference){
@@ -48,12 +38,17 @@ export default function Index() {
   return (
     <div className={classes.backColour}> 
       <TopBar scrollToRef={scrollToRef}/>
-      <article className={classes.viewer} ref={articleRef}>
         <HomeHeader />
         <About ref={aboutRef} />
         <Services ref={servicesRef}/>
         <Contacts ref={contactRef} />
-      </article>
+      <style jsx global>
+      {`
+        html {
+          scroll-snap-type: y mandatory;
+        }
+      `}
+      </style>
     </div>
   );
 }

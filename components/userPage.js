@@ -10,6 +10,8 @@ import FoodFeedback                         from './foodFeedback'
 import FitnessPlan                          from './fitnessPage/fitnessPlan.js';
 import AllSessions                          from './allSessions'
 import * as serverFetch                     from './serverFetch'
+import { Backdrop } from '@material-ui/core';
+import { Opacity, SportsRugbySharp } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +39,26 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     border: 0,
     minHeight: '50vh'
+  },
+  backDrop:{
+    zIndex: theme.zIndex.appBar + 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+  },
+  loadText:{
+    position: 'fixed',
+    top: 80,
+    left: theme.spacing(5)
+  },
+  circle:{
+    position: 'fixed',
+    left: 2,
+    top: 2,
+    height: 70,
+    width: 70,
+    backgroundColor: theme.palette.primary.contrastText,
+    opacity: 0.4,
+    borderRadius: '50%',
+    zIndex: theme.zIndex.appBar + 1
   }
 }));
 
@@ -44,18 +66,23 @@ export default function UserPage({user, pageToShow, setPageToShow, setShowBackDr
   
   const classes = useStyles();
   
-  const LoadingPage = () => 
-    <Card className={classes.headCard}>
-      <CardContent>
-          <Typography gutterBottom variant="body1" color="textPrimary" component="p">
-              You are logged in as user: <i>{user.name}  </i>loading your data...
-          </Typography>
-      </CardContent>
-    </Card>
+  const InitialLoad = () => {
+
+    const [isOpen, setIsOpen] = useState(true)
+
+    return(
+    <Backdrop className={classes.backDrop} open={isOpen} onClick={() => setIsOpen(false)}>
+      <Typography className={classes.loadText} variant="h6" color="textPrimary">
+          Please use the menu bar to navigate the user area
+      </Typography>
+      <span className={classes.circle} />
+    </Backdrop>
+    )
+  }
 
   const [foodCalenderData, setFoodCalenderData] = useState();
   const [fitnessSessionList, setFitnessSessionList] = useState();
-  const [accountDetailsPage, setAccountDetailsPage] = useState(<LoadingPage />)
+  const [accountDetailsPage, setAccountDetailsPage] = useState(<InitialLoad />)
 
   useEffect (()=> {
     //On first load - check to see if a page have been loaded before
@@ -148,7 +175,7 @@ export default function UserPage({user, pageToShow, setPageToShow, setShowBackDr
           break
         default:
           setShowBackDrop(false)
-          setAccountDetailsPage(null)
+          setAccountDetailsPage(<InitialLoad />)
       }
       localStorage.setItem('pageToShow', pageToShow);
   }, [pageToShow, foodCalenderData])

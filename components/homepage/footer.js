@@ -16,15 +16,20 @@ const useStyles = makeStyles((theme) => ({
     text:{
         position: 'absolute',
         bottom: theme.spacing(2),
-        left: '45%',
         textAlign: 'right',
         paddingRight: theme.spacing(1.5),
+        width: '100%',
+        [theme.breakpoints.up('lg')]: {
+            width: 'auto',
+            left: '45%'
+        }
     },
     flex:{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'flex-end',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        paddingRight: theme.spacing(2)
     }
 }))
 
@@ -36,16 +41,15 @@ export default function Endorsement ({name, quote}) {
     return (
         <div className={classes.container}>
             <span className={classes.text}>
-            <div className={classes.flex}>
-            <FormatQuoteIcon style={{ color: '#fafafa', fontSize: 40 }} className={classes.quote}/>
-            <Typography variant='h6' color='textSecondary'>
-                <b><i>{name}:</i></b>
-            </Typography>
-            </div>
-            <Typography variant='h5' color='textSecondary'>
-                <i>{quote}</i>
-            </Typography>
-            
+                <div className={classes.flex}>
+                    <FormatQuoteIcon style={{ color: '#fafafa', fontSize: 40 }} className={classes.quote}/>
+                    <Typography variant='h6' color='textSecondary'>
+                        <b><i>{name}:</i></b>
+                    </Typography>
+                </div>
+                <Typography variant='h5' color='textSecondary'>
+                    <i>{quote}</i>
+                </Typography>
             </span>
             
      </div>
@@ -60,16 +64,15 @@ export function EndorsementSmall ({name, quote}) {
     return (
         <div className={classes.container}>
             <span className={classes.text}>
-            <div className={classes.flex}>
-            <FormatQuoteIcon style={{ color: '#fafafa', fontSize: 24 }} className={classes.quote}/>
-            <Typography variant='body2' color='textSecondary'>
-                <b><i>{name}:</i></b>
-            </Typography>
-            </div>
-            <Typography variant='body1' color='textSecondary'>
-                <i>{quote}</i>
-            </Typography>
-            
+                <div className={classes.flex}>
+                    <FormatQuoteIcon style={{ color: '#fafafa', fontSize: 24 }} className={classes.quote}/>
+                    <Typography variant='body1' color='textSecondary'>
+                        <b><i>{name}:</i></b>
+                    </Typography>
+                </div>
+                    <Typography variant='body2' color='textSecondary'>
+                        <i>{quote}</i>
+                    </Typography>
             </span>
             
      </div>
