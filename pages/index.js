@@ -1,8 +1,10 @@
-import { HomeHeader, About, Services, Contacts }  from '../components/homepage/homePage.js'
-import { useState, useEffect, useRef }            from 'react';
-import { makeStyles}                              from '@material-ui/core/styles';
-import { TopBar, AuthedTopBar }                   from '../components/topbar';
-
+import { makeStyles}  from '@material-ui/core/styles';
+import { useRef }     from 'react';
+import { TopBar }     from '../components/topbar';
+import { HomeHeader } from '../components/homepage/imageHeader'
+import { About }      from '../components/homepage/about'
+import { Services }   from '../components/homepage/services'
+import { Contact }    from '../components/homepage/contact'
 
 const useStyles = makeStyles((theme) => ({
   backColour:{
@@ -41,11 +43,12 @@ export default function Index() {
         <HomeHeader />
         <About ref={aboutRef} />
         <Services ref={servicesRef}/>
-        <Contacts ref={contactRef} />
+        <Contact ref={contactRef} />
       <style jsx global>
       {`
         html {
           scroll-snap-type: y mandatory;
+          -webkit-overflow-scrolling: touch; 
         }
       `}
       </style>

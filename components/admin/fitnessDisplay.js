@@ -87,8 +87,12 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
     const [userDataTracking, setUserDataTracking] = useState([])
     const [shouldBeActiveSession, setShouldBeActiveSession] = useState(initialValueForActiveSession)
 
+    //Check to see if this the set as the current active session or not.
     const initialValueForActiveSession = () => {
+        //If sessions data exists, then check it against users current session
         if(sessionServerData[currentIndex]) return sessionServerData[currentIndex]._id === user.currentSession
+
+        //If no session data (probably a new user) set any session as current one
         return true
     }
 
@@ -96,6 +100,8 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
     //to change selected session and fetches session data from server if not a new card selected.
     useLayoutEffect(() => {
         setIsBackDropOpen(true)
+
+        //For a new session create a blank sessions or turn an existing one into a blank session
         if(sessionServerData[currentIndex].isBlank){
             setCurrentSessionInfo({...sessionServerData[currentIndex], cardInfo: blankCardInfo()})
             setShouldBeActiveSession(sessionServerData.length === 1? true : false)
@@ -109,7 +115,7 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
                     isNew: true,
                     cardInfo: data.cardInfo.map((card) => {
                         return {cardTitle: card.cardTitle, listOfActivities: card.listOfActivities.map((activity) => {
-                            return {primary: activity.primary, secondary: activity.secondary, video: activity.video, units: activity.units, userInputDataId: activity.userInputDataId, datum: []}
+                            return {primary: activity.primary, secondary: activity.secondary, video: activity.video, units: activity.units, userInputDataId: activity.userInputDataId, datum: new Array(activity.units.length).fill('0')}
                         })}
                     })
                 })
@@ -117,6 +123,7 @@ export default function FitDisplay ({sessionServerData, setSessionServerData, us
             })
             .catch(console.log("Get sessions error. See network fetch for details"))
         } else {
+            //If session isn't new then fetch the info from api
             serverFetch.getSessionById(sessionServerData[currentIndex]._id)
             .then((data) => {
                 setCurrentSessionInfo(data)

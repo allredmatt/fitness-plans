@@ -345,17 +345,29 @@ export async function modifyUserData (customId, body) {
 
   let data = returnedData.findUserInput
 
-  return await modifyUserDataById(
-    data._id,
-    {
-      name: data.name,
-      customId: customId,
-      details: data.details,
-      inputDataUnit: data.inputDataUnit,
-      inputtedData: data.inputtedData.concat([body]),
-    }
-  )
-
+  if (body.modify){
+    return await modifyUserDataById(
+      data._id,
+      {
+        name: data.name,
+        customId: customId,
+        details: data.details,
+        inputDataUnit: data.inputDataUnit,
+        inputtedData: data.inputtedData.map((existingData) => body.modify === existingData.sessionId ? {sessionId: body.sessionId, shortTitle: body.shortTitle, datum: body.datum} : existingData),
+      }
+    )
+  } else {
+    return await modifyUserDataById(
+      data._id,
+      {
+        name: data.name,
+        customId: customId,
+        details: data.details,
+        inputDataUnit: data.inputDataUnit,
+        inputtedData: data.inputtedData.concat([body]),
+      }
+    )
+  }
 }
 
 export async function deleteUserData (customId) {

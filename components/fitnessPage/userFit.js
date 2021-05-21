@@ -26,7 +26,7 @@ import { labels }               from './fitnessPlan'
 export default function UserFitnessPlan ({
     fitnessData, setFitnessData, userInputData, handleCardChange, 
     saveToInputToServer, handleNextClick, handlePreviousClick,
-    allSessionsRendered
+    allSessionsRendered, resubmit
 }) {
 
     const useStyles = makeStyles((theme) => ({
@@ -83,8 +83,8 @@ export default function UserFitnessPlan ({
 
     const [hover, setHover] = useState(-1)
 
-    function submitUserData() {
-        saveToInputToServer()
+    function resubmitUserData() {
+        resubmit(fitnessData.rating, fitnessData.notes, fitnessData._id)
     }
 
 
@@ -243,15 +243,27 @@ export default function UserFitnessPlan ({
                 }
                 <span className={classes.rightAlign} hidden={allSessionsRendered}>
                     <Tooltip title="Save Your Workout Data" aria-label="save data">
-                    <Button 
-                        color="secondary"
-                        variant="contained"
-                        aria-label="save"
-                        onClick={submitUserData}
-                        startIcon={<SaveIcon />}
-                    >
-                        Save
-                    </Button>
+                    {Boolean(fitnessData.rating)?
+                        <Button 
+                            color="primary"
+                            variant="contained"
+                            aria-label="save"
+                            onClick={resubmitUserData}
+                            startIcon={<SaveIcon />}
+                        >
+                            Resubmit
+                        </Button>
+                        :
+                        <Button 
+                            color="secondary"
+                            variant="contained"
+                            aria-label="save"
+                            onClick={saveToInputToServer}
+                            startIcon={<SaveIcon />}
+                        >
+                            Save
+                        </Button>
+                    }
                     </Tooltip>
                 </span>
                 </div>

@@ -1,15 +1,14 @@
 Minutes don't change if form is reopened in food
 
-Reload data upon submit or update local state in sessions (admin?)
+Separate data sections to track over time see more easily
 
-Seperate data sections to track over time see more easily
-
-New as a button with prompt of copying other sessions
-
-Short snappy can read more, expand modal box. Same background as card
+Modal dialog card, look at formatting when have all the data.
 
 Next arrow on cards in xs homepage (or three dots style scrolling snap on cards)
 
-Re save on daily fitness plan creates new entry in user data
+Add in publish button on admin area so can be worked on without user seeing - use of published flag with a .filter client side? Would meant cant delete/change existing
 
-How to manage edit on daily fitness plan - Edit button for user area?
+
+Solved needs testing:
+Re save on daily fitness plan creates new entry in user data // due to concat in mutation graphql file - not sure how to approach this.
+How to manage edit on daily fitness plan - Edit button for user area? Completed flag in DB? Use rating as a completed already flag.

@@ -140,14 +140,14 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
         }
     }
 
-    const handleSaveInputToServer = (rating, notes) => {
+    const handleSaveInputToServer = (rating, notes, id = false) => {
         setShowBackDrop(true)
         //Close dialog box
         setIsSubmitRatingDialogOpen(false)
 
         //User has inputted data and now need to change state and upload so server
         //Deal with session info first
-        serverFetch.modifySession(currentFitnessPlan._id, {...currentFitnessPlan, notes: notes, rating: rating})
+        serverFetch.modifySession(currentFitnessPlan._id, {...currentFitnessPlan, notes: notes, rating: parseInt(rating)})
 
         //Set next session in plan to be current
         const currentIndex = fitnessData.findIndex(session => session._id === idOfFitnessPlanToDisplay)
@@ -183,6 +183,7 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                             serverFetch.modifyInputData (
                                 activity.userInputDataId[index],
                                 {
+                                    modify: id,
                                     datum: activity.datum[index],
                                     shortTitle: currentFitnessPlan.shortTitle,
                                     sessionId: currentFitnessPlan._id
@@ -192,9 +193,6 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                     )
                 }
             )
-        
-        //Should really reload user input data here, going to be tricky as forEach isn't async but modifyInputData is.
-        //Don't want to await each one as slow down upload, will see how long it takes.
     }
     
     const handleCardChange = object => handleCardStateChange(object, currentFitnessPlan, setCurrentFitnessPlan)
@@ -258,6 +256,7 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                         handleNextClick={handleNextClick} 
                         handlePreviousClick={handlePreviousClick}
                         allSessionsRendered={false}
+                        resubmit={handleSaveInputToServer}
                     />
                     <Divider className={classes.marginTop}/>
                     <div className={classes.flexDiv}>
