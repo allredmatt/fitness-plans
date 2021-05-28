@@ -8,7 +8,7 @@ import { Contact }    from '../components/homepage/contact'
 
 const useStyles = makeStyles((theme) => ({
   backColour:{
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.primary.dark,
     marginBottom: '2px'
   }
 }))

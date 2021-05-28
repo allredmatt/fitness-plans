@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
         /* scroll-snap */
         scrollSnapAlign: "start",
 
-        backgroundColor: theme.palette.primary.light
+        backgroundColor: theme.palette.primary.dark
     },
     offset: theme.mixins.toolbar,
     container: {
