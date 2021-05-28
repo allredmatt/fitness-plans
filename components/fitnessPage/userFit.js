@@ -21,7 +21,18 @@ import Rating                   from '@material-ui/lab/Rating';
 import InputBase                from '@material-ui/core/InputBase';
 import { labels }               from './fitnessPlan'
 
-
+export const labelForUnit = {
+    'km': 'Distance',
+    'g': 'Weight',
+    'kg': 'Weight',
+    'reps': 'Reps',
+    'miles': 'Distance',
+    'mins': 'Time',
+    'hours': 'Time',
+    'hrs': 'Time',
+    'secs': 'Time',
+    'sec': 'Time',
+}
 
 export default function UserFitnessPlan ({
     fitnessData, setFitnessData, userInputData, handleCardChange, 
@@ -170,14 +181,14 @@ export default function UserFitnessPlan ({
                                                     {activity.units.map((unit, inputDataIndex) => 
                                                     <ListItem key={inputDataIndex}>
                                                         <TextField
-                                                            label="Your workout"
+                                                            label={labelForUnit[unit]? labelForUnit[unit] : ''}
                                                             id="your-workout"
                                                             className={classes.textField}
                                                             value={activity.datum[inputDataIndex]}
                                                             onChange={(event) => handleUserInputChange(event.currentTarget.value, cardIndex, activityIndex, inputDataIndex)}
                                                             InputProps={{
                                                                 endAdornment: <InputAdornment position="end">{unit}</InputAdornment>,
-                                                                startAdornment: allSessionsRendered? null : <InputAdornment className={classes.inputStart} position="start">Prev: {lookupPreviousData(activity.userInputDataId[inputDataIndex], fitnessData._id)}</InputAdornment>,
+                                                                startAdornment: allSessionsRendered? null : <InputAdornment className={classes.inputStart} position="start">Prev {lookupPreviousData(activity.userInputDataId[inputDataIndex], fitnessData._id)}</InputAdornment>,
                                                                 readOnly: allSessionsRendered,
                                                             }}
                                                             variant="outlined"

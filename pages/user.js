@@ -113,12 +113,12 @@ export default function UserArea() {
           <UserPage user={user} pageToShow={userAreaToDisplay} setPageToShow={setUserAreaToDisplay} setShowBackDrop={setShowBackDrop}/>
           : 
           <React.Fragment>
-          <Typography gutterBottom variant="h5" component="h2">
+          <Typography gutterBottom variant="h5" component="h2" color="textPrimary">
                   Your personal plan and nutrition details
           </Typography>
           <Card className={classes.headCard}>
           <CardContent>
-              <Typography gutterBottom variant="body1" color="textPrimary" component="p">
+              <Typography gutterBottom variant="body1" color="textSecondary" component="p">
                   Please log in to view your details
               </Typography>
               <TextField 

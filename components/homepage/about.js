@@ -77,7 +77,7 @@ const About = React.forwardRef((props, ref) => {
               <Typography gutterBottom variant="h4" component="h2" color="textPrimary">
                   About us
               </Typography>
-              <Hidden xsDown>
+              <Hidden smDown>
                 <Typography gutterBottom variant="body1" color="textPrimary" component="p">
                     Millers fitness are founded on the belief that everyone can attain their potential.
                 </Typography>

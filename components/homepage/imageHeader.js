@@ -24,12 +24,14 @@ const useStyles = makeStyles((theme) => ({
     offset: theme.mixins.toolbar,
     bannerImage:{
         position: 'absolute',
+        overflow: 'hidden',
         //top: '50%',
-        height: '100%',
         maxWidth: '100vw',
     },
     imageWrapper:{
-        //transform: 'translate(0, -50%)'
+        width: 'max(500px, 100%)',
+        transform: 'translate(-10%, 10%)',
+        objectFit: 'contain'
     },
     container: {
         width: '100%',
@@ -46,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     wrapper:{
         position: 'absolute',
         top: '35%',
-        transform: 'translate(0%, -30%)',
+        transform: 'translate(0%, -25%)',
         paddingLeft: '70px',
         paddingRight: '100px',
         maxWidth: '100vw',
@@ -65,14 +67,15 @@ const HomeHeader = () => {
       <section className={classes.slide}>
         <div className={classes.offset} />
         <div className={classes.bannerImage}>
+          <div className={classes.imageWrapper}>
           <Image
-            className={classes.imageWrapper}
-            src="/turfgames.jpg"
+            src="/turfgames.webp"
             alt="Human Pyramid with Ed and Jess Miller"
-            width={1080}
-            height={1200}
+            width={960}
+            height={1130}
             layout="intrinsic"
-          /> 
+          />
+          </div>
         </div>
         <Paper className={classes.container} elevation={0}>
           <div className={classes.wrapper}>
@@ -86,3 +89,7 @@ const HomeHeader = () => {
 }
 
 export {HomeHeader}
+
+/*
+
+*/
