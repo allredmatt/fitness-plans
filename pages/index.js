@@ -9,7 +9,8 @@ import { Contact }    from '../components/homepage/contact'
 const useStyles = makeStyles((theme) => ({
   backColour:{
     backgroundColor: theme.palette.primary.dark,
-    marginBottom: '2px'
+    marginBottom: '2px', 
+    '-webkit-overflow-scrolling' : 'touch' 
   }
 }))
 
@@ -48,7 +49,8 @@ export default function Index() {
       {`
         html {
           scroll-snap-type: y mandatory;
-          -webkit-overflow-scrolling: touch; 
+          -webkit-overflow-scrolling: touch;
+
         }
       `}
       </style>
