@@ -364,7 +364,7 @@ export async function modifyUserData (customId, body) {
         customId: customId,
         details: data.details,
         inputDataUnit: data.inputDataUnit,
-        inputtedData: data.inputtedData.concat([body]),
+        inputtedData: data.inputtedData.concat([{sessionId: body.sessionId, shortTitle: body.shortTitle, datum: body.datum}]),
       }
     )
   }

@@ -37,3 +37,6 @@ yarn-error.log*
 fauna.js
 /components/hash.js
 /components/customHook.js
+
+#other
+ToLookAt

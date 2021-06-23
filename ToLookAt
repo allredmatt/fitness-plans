@@ -1,10 +1,12 @@
 Minutes don't change if form is reopened in food
 
-Separate data sections to track over time see more easily
+Separate data sections to track over time see more easily. Need to add this to a the user screen.
+
+Change menu rendered based on subscription type. Also need to add in a way to change subscription type in admin screen.
 
 Modal dialog card, look at formatting when have all the data.
 
-Next arrow on cards in xs homepage (or three dots style scrolling snap on cards)
+Next arrow on cards in xs homepage (or three dots style scrolling snap on cards) - Need to work out how to use intersect
 
 Add in publish button on admin area so can be worked on without user seeing - use of published flag with a .filter client side? Would meant cant delete/change existing
 
@@ -12,3 +14,7 @@ Add in publish button on admin area so can be worked on without user seeing - us
 Solved needs testing:
 Re save on daily fitness plan creates new entry in user data // due to concat in mutation graphql file - not sure how to approach this.
 How to manage edit on daily fitness plan - Edit button for user area? Completed flag in DB? Use rating as a completed already flag.
+
+
+NEW:
+Hard refresh needed for new user data to display - need to change state upon save to server
