@@ -17,4 +17,5 @@ How to manage edit on daily fitness plan - Edit button for user area? Completed 
 
 
 NEW:
-Hard refresh needed for new user data to display - need to change state upon save to server
+Hard refresh needed for new user data to display - need to change state upon save to server.
+    same with ratings

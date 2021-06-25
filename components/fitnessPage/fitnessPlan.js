@@ -141,13 +141,16 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
     }
 
     const handleSaveInputToServer = (rating, notes, id = false) => {
+
         setShowBackDrop(true)
         //Close dialog box
         setIsSubmitRatingDialogOpen(false)
 
         //User has inputted data and now need to change state and upload so server
         //Deal with session info first
-        serverFetch.modifySession(currentFitnessPlan._id, {...currentFitnessPlan, notes: notes, rating: parseInt(rating)})
+        if (user.name != 'dummyUser') {
+            serverFetch.modifySession(currentFitnessPlan._id, {...currentFitnessPlan, notes: notes, rating: parseInt(rating)})
+        }
 
         //Set next session in plan to be current
         const currentIndex = fitnessData.findIndex(session => session._id === idOfFitnessPlanToDisplay)
@@ -161,7 +164,9 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
             console.log("Error finding current session in fitness plan")
             setShowBackDrop(false)
         } else {
-            serverFetch.changeCurrentSession(user.id, fitnessData[currentIndex + 1]._id)
+            if (user.name != 'dummyUser') {
+                serverFetch.changeCurrentSession(user.id, fitnessData[currentIndex + 1]._id)
+            }
 
             setIdOfFitnessPlanToDisplay(fitnessData[currentIndex + 1]._id)
         }
@@ -180,15 +185,18 @@ export default function FitnessPlan ({fitnessData, user, setShowBackDrop}) {
                 (activity) => {
                     activity.units.forEach(
                         (unit, index) => {
-                            serverFetch.modifyInputData (
-                                activity.userInputDataId[index],
-                                {
-                                    modify: id,
-                                    datum: activity.datum[index],
-                                    shortTitle: currentFitnessPlan.shortTitle,
-                                    sessionId: currentFitnessPlan._id
-                                }
-                            )
+                            if (user.name != 'dummyUser') {
+                                serverFetch.modifyInputData (
+                                    activity.userInputDataId[index],
+                                    {
+                                        modify: id,
+                                        datum: activity.datum[index],
+                                        shortTitle: currentFitnessPlan.shortTitle,
+                                        sessionId: currentFitnessPlan._id
+                                    }
+                                )
+                            }
+                            //Need to change local state here, or force hard refresh
                         }
                     )
                 }

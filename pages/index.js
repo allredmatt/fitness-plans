@@ -10,8 +10,6 @@ const useStyles = makeStyles((theme) => ({
   backColour:{
     backgroundColor: theme.palette.primary.dark,
     marginBottom: '2px',
-    scrollSnapType: 'y mandatory',
-    '-webkit-overflow-scrolling' : 'touch' 
   }
 }))
 
@@ -47,19 +45,18 @@ export default function Index() {
         <Services ref={servicesRef}/>
         <Contact ref={contactRef} />
       
-      
-      
+        <style jsx global>
+        {`
+                html {
+                  scroll-snap-type: y mandatory;
+                  -webkit-overflow-scrolling: touch;
+
+                }
+              `}
+        </style>
     </div>
   );
 }
 /*
-<style jsx global>
-{`
-        html {
-          scroll-snap-type: y mandatory;
-          -webkit-overflow-scrolling: touch;
 
-        }
-      `}
-</style>
 */

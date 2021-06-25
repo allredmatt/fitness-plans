@@ -103,17 +103,23 @@ export default function FoodCalendar ({user, foodData, setFoodData, setShowBackD
         setShowBackDrop(true)
         if(idOfFoodElementClicked === false) {
             //Adds a new entry to food database
-            serverFetch.newFood({...formData, id: user.id})
-                .then((data) => {
-                    setFoodData([...foodData, { ...formData, id: data.id }])
-                    setShowBackDrop(false)
-                }) //Updates local state with new id
-                .catch(error => console.log('error', error));
+            if (user.name != 'dummyUser') {
+                serverFetch.newFood({...formData, id: user.id})
+                    .then((data) => {
+                        setFoodData([...foodData, { ...formData, id: data.id }])
+                        setShowBackDrop(false)
+                    }) //Updates local state with new id
+                    .catch(error => console.log('error', error));
+            } else {
+                setShowBackDrop(false)
+            }
         } else {
             //Updating a existing entry
             //Save To server
-            serverFetch.modifyFood(formData.id, formData)
-                .catch(error => console.log('error', error));
+            if (user.name != 'dummyUser') {
+                serverFetch.modifyFood(formData.id, formData)
+                    .catch(error => console.log('error', error));
+            }
             //Update local state
             setFoodData(foodData.map((element) => element.id === formData.id? formData : element))
             setIsFoodElementClicked(false)
@@ -133,12 +139,16 @@ export default function FoodCalendar ({user, foodData, setFoodData, setShowBackD
     const handleSnackBarClose = () => {
         setShowBackDrop(true)
         let id = snackBarInfo.data
-        serverFetch.deleteFood(id)
-            .then(() => {
-                setFoodData(foodData.filter((element) => element.id != id))
-                setShowBackDrop(false)
-            })
-            .catch(error => console.log('error', error));
+        if (user.name != 'dummyUser') {
+            serverFetch.deleteFood(id)
+                .then(() => {
+                    setFoodData(foodData.filter((element) => element.id != id))
+                    setShowBackDrop(false)
+                })
+                .catch(error => console.log('error', error));
+        } else {
+            setShowBackDrop(false)
+        } 
         setSnackBarInfo({data: null, isOpen: false})
     }
 
