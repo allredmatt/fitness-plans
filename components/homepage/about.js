@@ -118,10 +118,10 @@ const About = React.forwardRef((props, ref) => {
           </div>
           </div>
           <Hidden mdDown>
-            <Endorsement name='Tracey' quote='I now have fun exercises I can do with the children' />
+            <Endorsement name='Tracey' quote='I now have fun exercises I can do more often with the children' />
           </Hidden>
           <Hidden only={['xs', 'md', 'lg', 'xl']}>
-               <EndorsementSmall name='Tracey' quote='I now have fun exercises I can do with the children' />
+               <EndorsementSmall name='Tracey' quote='I now have fun exercises I can do more often with the children' />
             </Hidden>
           </Paper>
       </section>
