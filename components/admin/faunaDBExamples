@@ -1,0 +1,140 @@
+/*
+User Table:
+{
+  userId: "dummyUser",
+  subscriptionType: "both",
+  currentSession: "302186874780254728"
+}
+
+FitPlan Table:
+{
+  userId: User.byId("298463589027545605"),
+  sessionTitle: "Session 4",
+  shortTitle: "S2",
+  cardInfo: [
+    {
+      cardTitle: "15 minute of rounds - Repeat 3 times",
+      listOfActivities: [
+        {
+          userInputDataId: [
+            5678
+          ],
+          datum: [
+            "25"
+          ],
+          secondary: "Do push ups for 2 mins",
+          units: [
+            "reps"
+          ],
+          primary: "Push Ups"
+        },
+        {
+          userInputDataId: [
+            503,
+            2341
+          ],
+          datum: [
+            "15",
+            "15"
+          ],
+          secondary: "Do squats with a weight for 1 min",
+          video: "https://www.youtube.com/watch?v=MeIiIdhvXT4",
+          units: [
+            "kg",
+            "reps"
+          ],
+          primary: "Goblet Squats"
+        }
+      ]
+    }
+  ]
+}
+{
+  userId: User.byId("298463589027545605"),
+  sessionTitle: "Session 5",
+  shortTitle: "S5",
+  cardInfo: [
+    {
+      cardTitle: "15 minute of rounds - Repeat 3 times",
+      listOfActivities: [
+        {
+          userInputDataId: [
+            5678
+          ],
+          datum: [
+            "0"
+          ],
+          secondary: "Do push ups for 2 mins",
+          units: [
+            "reps"
+          ],
+          primary: "Push Ups"
+        },
+        {
+          userInputDataId: [
+            503,
+            2341
+          ],
+          datum: [
+            "0",
+            "0"
+          ],
+          secondary: "Do squats with a weight for 1 min",
+          video: "https://www.youtube.com/watch?v=MeIiIdhvXT4",
+          units: [
+            "kg",
+            "reps"
+          ],
+          primary: "Goblet Squats"
+        }
+      ]
+    }
+  ]
+}
+
+FoodTable:
+{
+  userId: User.byId("290311283792675329"),
+  type: "Breakfast",
+  time: "2021-02-23T08:30:09.304Z",
+  details: "Muesli"
+}
+
+{
+  userId: User.byId("290311283792675329"),
+  type: "Notes",
+  time: "2021-02-23T12:00:55.863Z",
+  details: "Felt hungry"
+}
+
+UserData:
+{
+  userId: User.byId("290311283792675329"),
+  name: "sessionB-pushups",
+  customId: 270,
+  details: "Rounds - Do 30 seconds of: Pushups",
+  inputDataUnit: "reps",
+  inputtedData: [
+    {
+      sessionId: "290321001967780357",
+      shortTitle: "SB1",
+      datum: "5"
+    },
+    {
+      sessionId: "297925333434237447",
+      shortTitle: "SB2",
+      datum: "6"
+    },
+    {
+      sessionId: "290321001967780357",
+      shortTitle: "SB1",
+      datum: "5"
+    },
+    {
+      sessionId: "290321001967780357",
+      shortTitle: "SB1",
+      datum: "5"
+    }
+  ]
+}
+*/
