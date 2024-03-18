@@ -1,14 +1,14 @@
 const { GraphQLClient } = require('graphql-request')
-const endpoint = 'https://graphql.fauna.com/graphql'
-const FAUNA_KEY = process.env.FAUNA_KEY
-const graphQLClient = new GraphQLClient(endpoint, {
+const endpoint = 'https://nameless-brook-610016.eu-central-1.aws.cloud.dgraph.io/graphql'
+const DGRAPH_KEY = process.env.DGRAPH_KEY
+/*const graphQLClient = new GraphQLClient(endpoint, {
   headers: {
     authorization: `Bearer ${FAUNA_KEY}`,
   },
 });
 
 export async function lookupUserID(userId) {
-    const findIdQuery = /* GraphQL */
+    const findIdQuery =
     `{
         findId(userId: "${userId}") {
         _id
@@ -17,8 +17,7 @@ export async function lookupUserID(userId) {
     }`
 
     return await graphQLClient.request(findIdQuery)
-}
-
+}*/
 export async function foodDataList(userId) {
 
     const findIdQuery = /* GraphQL */
@@ -164,4 +163,46 @@ export async function fetchUserList() {
     }`
     
     return await graphQLClient.request(listUsers)
+}
+
+//Dgraph new code for GQL
+
+async function fetchGraphQL(operationsDoc, operationName, variables) {
+    const result = await fetch(
+      "https://nameless-brook-610016.eu-central-1.aws.cloud.dgraph.io/graphql",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Auth-Token": DGRAPH_KEY,
+        },
+        body: JSON.stringify({
+          query: operationsDoc,
+          variables: variables,
+          operationName: operationName
+        })
+      }
+    );
+  
+    return await result.json();
+}
+  
+
+
+export async function lookupUserID(userID) {
+    
+    const operationsDoc = `
+        query MyQuery {
+            queryUser(filter: {userId: {anyofterms: "${userID}"}}) {
+            userId
+            subscriptionType
+            currentSession
+            }
+        }
+        `;
+    return fetchGraphQL(
+        operationsDoc,
+        "MyQuery",
+        {}
+    );
 }
