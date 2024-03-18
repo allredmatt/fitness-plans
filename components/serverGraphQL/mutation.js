@@ -1,8 +1,8 @@
 const { GraphQLClient } = require('graphql-request')
 const { userDataById } = require('./query')
 
-const endpoint = 'https://graphql.fauna.com/graphql'
-const FAUNA_KEY = process.env.FAUNA_KEY
+const endpoint = 'https://nameless-brook-610016.eu-central-1.aws.cloud.dgraph.io/graphql'
+const FAUNA_KEY = process.env.DGRAPH_KEY
 const graphQLClient = new GraphQLClient(endpoint, {
   headers: {
     authorization: `Bearer ${FAUNA_KEY}`,
