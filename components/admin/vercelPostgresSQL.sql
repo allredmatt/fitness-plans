@@ -1,24 +1,24 @@
 CREATE TABLE "Users" (
-  "_id" integer PRIMARY KEY,
+  "_id" serial PRIMARY KEY,
   "userId" string,
   "currentSession" integer
 );
 
 CREATE TABLE "FitPlan" (
-  "_id" integer PRIMARY KEY,
+  "_id" serial PRIMARY KEY,
   "userId" integer,
   "sessionTitle" string,
   "sortTitle" string
 );
 
 CREATE TABLE "FitCard" (
-  "_id" integer,
+  "_id" serial PRIMARY KEY,
   "planId" integer,
   "cardTitle" string
 );
 
 CREATE TABLE "Activities" (
-  "_id" integer,
+  "_id" serial PRIMARY KEY,
   "fitCardId" integer,
   "userInputDataId" integer,
   "datum" string,
@@ -28,22 +28,22 @@ CREATE TABLE "Activities" (
   "units" string
 );
 
-CREATE TABLE "FoodTable" (
-  "_id" integer,
+CREATE TABLE "Food" (
+  "_id" serial PRIMARY KEY,
   "userId" integer,
   "type" string,
   "time" timestamp,
   "details" string
 );
 
-CREATE TABLE "UserInputDataTypes" (
-  "_id" integer,
+CREATE TABLE "UserInputDataFormat" (
+  "_id" serial PRIMARY KEY,
   "activityId" integer,
   "unit" string
 );
 
 CREATE TABLE "UserInputtedData" (
-  "_id" integer,
+  "_id" serial PRIMARY KEY,
   "datum" float
 );
 
@@ -55,4 +55,4 @@ ALTER TABLE "FitCard" ADD FOREIGN KEY ("planId") REFERENCES "FitPlan" ("_id");
 
 ALTER TABLE "Activities" ADD FOREIGN KEY ("fitCardId") REFERENCES "FitCard" ("_id");
 
-ALTER TABLE "UserInputDataTypes" ADD FOREIGN KEY ("activityId") REFERENCES "Activities" ("_id");
+ALTER TABLE "UserInputDataFormat" ADD FOREIGN KEY ("activityId") REFERENCES "Activities" ("_id");
